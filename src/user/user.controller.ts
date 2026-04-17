@@ -2,7 +2,7 @@ import { Controller, Post, Body, UseGuards, Get, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CurrentUser } from './decorators/auth_token.decorator';
-import { CreateUserDto } from 'src/validator/create_user_dto';
+import { CreateUserDto, LoginDto } from 'src/validator/user_dto';
 
 @Controller('user')
 export class UserController {
@@ -15,7 +15,7 @@ export class UserController {
     }
 
     @Post('login')
-    async loginUser(@Body() data: any) {
+    async loginUser(@Body() data: LoginDto) {
         return this.userService.loginUser(data)
     }
 
