@@ -21,8 +21,8 @@ export class UserController {
 
     @Get('profile')
     @UseGuards(JwtAuthGuard)
-    async getProfile(@CurrentUser() user) {
-        return user
+    async getProfile(@CurrentUser() user_id: number) {
+        return this.userService.getProfile(user_id)
     }
 
     @Put("update")

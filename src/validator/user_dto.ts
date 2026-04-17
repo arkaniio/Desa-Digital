@@ -15,3 +15,15 @@ export class CreateUserDto {
     Username: string
 
 }
+
+export class LoginDto {
+
+    @IsEmail()
+    @IsString()
+    Email: string
+
+    @IsString()
+    @MinLength(6)
+    Password: string
+
+}
