@@ -1,40 +1,30 @@
 import { IdentityService } from './identity.service';
+import { IdentityDto } from "../validator/identity_dto";
 export declare class IdentityController {
     private readonly identityService;
     constructor(identityService: IdentityService);
-    registerIdentity(data: any, req: any): Promise<{
-        data: {
-            id: number;
-            user_id: {
-                Full_Name: string;
-                Age: number;
-                Adress: string;
-                Created_at: Date;
-                Updated_at: Date;
-                id: number;
-                User_Id: number;
-            };
-            full_name: string;
-            age: number;
-            adress: string;
-        };
-    } | undefined>;
-    deleteIdentity(id: number): Promise<{
-        Full_Name: string;
-        Age: number;
-        Adress: string;
-        Created_at: Date;
-        Updated_at: Date;
-        id: number;
-        User_Id: number;
+    registerIdentity(data: IdentityDto, req: any): Promise<{
+        status_code: import("@nestjs/common").HttpStatus;
+        message: string;
+        data: any;
+        success: boolean;
     }>;
-    updateIdentity(id: number): Promise<{
-        Full_Name: string;
-        Age: number;
-        Adress: string;
-        Created_at: Date;
-        Updated_at: Date;
-        id: number;
-        User_Id: number;
+    deleteIdentity(id: number): Promise<{
+        status_code: import("@nestjs/common").HttpStatus;
+        message: string;
+        data: any;
+        success: boolean;
+    }>;
+    updateIdentity(id: number, data: any): Promise<{
+        status_code: import("@nestjs/common").HttpStatus;
+        message: string;
+        data: any;
+        success: boolean;
+    }>;
+    getIdentity(id: number): Promise<{
+        status_code: import("@nestjs/common").HttpStatus;
+        message: string;
+        data: any;
+        success: boolean;
     }>;
 }

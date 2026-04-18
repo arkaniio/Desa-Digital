@@ -65,7 +65,8 @@ export class UserService {
                 Email: data.Email
             }
         })
-        if (!user_data) return ResponseError(
+
+        if (user_data == undefined || user_data == null) return ResponseError(
             normalizeEmail,
             HttpStatus.BAD_REQUEST,
             "Failed to get the user data using email user!",
@@ -91,9 +92,9 @@ export class UserService {
 
     }
 
-    async getProfile(id: number) {
+    async getProfile(user_id: number) {
 
-        if (id == null) return ResponseError(
+        if (user_id == undefined || user_id == null) return ResponseError(
             null,
             HttpStatus.BAD_REQUEST,
             "Failed to get the id number!",
@@ -104,11 +105,11 @@ export class UserService {
 
             const data_user = await this.prisma.user.findUnique({
                 where: {
-                    id: id
+                    id: Number(user_id)
                 }
             })
 
-            if (!data_user) return ResponseError(
+            if (data_user == undefined || data_user == null) return ResponseError(
                 null,
                 HttpStatus.BAD_REQUEST,
                 "Failed to get the user data!",

@@ -47,6 +47,8 @@ const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const bcrypt = __importStar(require("bcrypt"));
 const jwt_1 = require("@nestjs/jwt");
+const response_status_1 = require("../utils/response_status");
+const validator_1 = require("validator");
 let UserService = class UserService {
     prisma;
     jwtService;
@@ -61,7 +63,7 @@ let UserService = class UserService {
             }
         });
         if (user_data)
-            throw Error("email has been already exists!");
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Email has been already exists!", false);
         const password_hash = await bcrypt.hash(data.Password, 10);
         if (!password_hash)
             throw Error("Failed to hash the password!");
@@ -74,25 +76,10 @@ let UserService = class UserService {
                     Role: data.Role
                 }
             });
-            if (!user) {
-                throw new common_1.BadRequestException("Failed to create new user!");
-            }
-            return {
-                message: "Successfully to create new user!",
-                status: true,
-                data: {
-                    id: user.id,
-                    username: user.Username,
-                    email: user.Email,
-                    role: user.Role,
-                    created_at: user.Created_at,
-                    updated_at: user.Updated_at
-                }
-            };
+            return (0, response_status_1.ResponseSuccess)(user, common_1.HttpStatus.OK, "Successfully to create new user!", true);
         }
         catch (error) {
-            if (error.code == "P2002")
-                throw new common_1.BadRequestException("Failed to create new user!");
+            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to create new user!", false);
         }
     }
     async loginUser(data) {
@@ -101,9 +88,9 @@ let UserService = class UserService {
                 Email: data.Email
             }
         });
-        if (!user_data)
-            throw Error("User not found!");
-        const isPasswordValid = await bcrypt.compare(data.Password, user_data.Password);
+        if (user_data == undefined || user_data == null)
+            return (0, response_status_1.ResponseError)(validator_1.normalizeEmail, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user data using email user!", false);
+        const isPasswordValid = await bcrypt.compare(data.Password, user_data?.Password);
         if (!isPasswordValid)
             throw Error("Invalid password!");
         const token = this.jwtService.sign({
@@ -112,28 +99,28 @@ let UserService = class UserService {
             role: user_data.Role,
             username: user_data.Username
         });
-        return {
-            message: "Successfully to login!",
-            status: true,
-            access_token: token,
-            user: {
-                Username: user_data.Username,
-                Email: user_data.Email,
-                Created_at: user_data.Created_at,
-                Updated_at: user_data.Updated_at
-            }
-        };
+        return (0, response_status_1.ResponseSuccess)(token, common_1.HttpStatus.OK, "Success to login as a user!", true);
     }
-    async getProfile(id) {
-        return await this.prisma.user.findUnique({
-            where: {
-                id: id
-            }
-        });
+    async getProfile(user_id) {
+        if (user_id == undefined || user_id == null)
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the id number!", false);
+        try {
+            const data_user = await this.prisma.user.findUnique({
+                where: {
+                    id: Number(user_id)
+                }
+            });
+            if (data_user == undefined || data_user == null)
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user data!", false);
+            return (0, response_status_1.ResponseSuccess)(data_user, common_1.HttpStatus.OK, "Success to get the profile!", true);
+        }
+        catch (error) {
+            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the profile!", false);
+        }
     }
     async updateProfile(user_id, data) {
         if (!user_id)
-            throw new common_1.UnauthorizedException("Failed to detect the user id!");
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user id!", false);
         const update_data = {};
         if (update_data.Username)
             update_data.Username = data.Username;
@@ -141,6 +128,8 @@ let UserService = class UserService {
             update_data.Email = data.Email;
         if (update_data.Password) {
             const password_hash = await bcrypt.hash(data.Password, 10);
+            if (!password_hash)
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to hashing the password!", false);
             update_data.Password = password_hash;
         }
         try {
@@ -151,18 +140,11 @@ let UserService = class UserService {
                 data: update_data
             });
             if (!update_users)
-                throw new common_1.BadRequestException("Failed to update the user data!");
-            return {
-                data: {
-                    username: update_users,
-                    email: update_users.Email,
-                    password: update_users.Password,
-                    updated_at: update_users.Updated_at
-                }
-            };
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the users!", false);
+            return (0, response_status_1.ResponseSuccess)(update_users, common_1.HttpStatus.OK, "Success to get the user profile!", true);
         }
         catch (error) {
-            throw new common_1.BadRequestException(error);
+            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update the users data!", false);
         }
     }
 };

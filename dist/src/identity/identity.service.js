@@ -12,57 +12,80 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdentityService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
+const response_status_1 = require("../utils/response_status");
 let IdentityService = class IdentityService {
     prisma;
     constructor(prisma) {
         this.prisma = prisma;
     }
     async registerIdentity(data, user_id) {
+        if (!user_id)
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user id!", false);
         const identity_data = await this.prisma.identity.findUnique({
             where: {
                 Full_Name: data.Full_Name
-            }
+            },
         });
         if (identity_data)
-            throw new common_1.BadRequestException("the name has been already exists!");
-        if (!user_id)
-            throw new common_1.UnauthorizedException("Failed to get the user id!");
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Name has been already exists!", false);
         try {
             const data_identity = await this.prisma.identity.create({
                 data: {
                     User_Id: user_id,
                     Full_Name: data.Full_Name,
                     Age: data.Age,
+                    Rt: data.Rt,
                     Adress: data.Adress,
                 }
             });
             if (!data_identity)
-                throw new common_1.BadRequestException("Failed to create the new identity!");
-            return {
-                data: {
-                    id: data_identity.id,
-                    user_id: data_identity,
-                    full_name: data_identity.Full_Name,
-                    age: data_identity.Age,
-                    adress: data_identity.Adress
-                }
-            };
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to create new identity!", false);
+            return (0, response_status_1.ResponseSuccess)(data_identity, common_1.HttpStatus.OK, "Successfully to create the new identity!", true);
         }
         catch (error) {
-            if (error.code == "P2005")
-                throw new common_1.BadRequestException("Failed to register as a identity");
+            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to create new data identity!", false);
         }
     }
     async deleteIdentity(id) {
-        return this.prisma.identity.delete({
-            where: {
-                id: id
-            }
-        });
+        if (id == null)
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to detect the id identity!", false);
+        try {
+            const data = await this.prisma.identity.findUnique({
+                where: {
+                    id: id
+                }
+            });
+            if (!data)
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
+            return (0, response_status_1.ResponseSuccess)(data, common_1.HttpStatus.OK, "Successfully to get the data!", true);
+        }
+        catch (error) {
+            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
+        }
     }
-    async updateIdentity(data, id) {
+    async getIdentity(id) {
         if (!id)
-            throw new common_1.BadRequestException("id must be required!");
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to detect the id!", false);
+        try {
+            const find_identity = await this.prisma.identity.findUnique({
+                where: {
+                    id: id
+                },
+                include: {
+                    User: true
+                }
+            });
+            if (!find_identity)
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the find identity!", false);
+            return (0, response_status_1.ResponseSuccess)(find_identity, common_1.HttpStatus.OK, "Successfully to get the identity!", true);
+        }
+        catch (error) {
+            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the identity!", false);
+        }
+    }
+    async updateIdentity(data, user_id) {
+        if (!user_id)
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to detect the user id!", false);
         const update_data = {};
         if (data.Full_Name)
             update_data.Full_Name = data.Full_Name;
@@ -73,21 +96,16 @@ let IdentityService = class IdentityService {
         try {
             const update_identity = await this.prisma.identity.update({
                 where: {
-                    id: id
+                    id: user_id
                 },
                 data: update_data
             });
             if (!update_identity)
-                throw new common_1.BadRequestException("Failed to update identity!");
-            return {
-                data: {
-                    status: true,
-                    message: "Success to update the identity!"
-                }
-            };
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the identity data!", false);
+            return (0, response_status_1.ResponseSuccess)(update_identity, common_1.HttpStatus.OK, "Successfully to update the identity data!", false);
         }
         catch (error) {
-            throw new common_1.BadRequestException(error);
+            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update data!", false);
         }
     }
 };

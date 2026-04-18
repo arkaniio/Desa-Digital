@@ -4,6 +4,10 @@ exports.CurrentUser = void 0;
 const common_1 = require("@nestjs/common");
 exports.CurrentUser = (0, common_1.createParamDecorator)((data, ctx) => {
     const requestUser = ctx.switchToHttp().getRequest();
-    return requestUser.user;
+    const user = requestUser.user;
+    console.log(user);
+    if (user.userId == undefined || user.userId == null)
+        return null;
+    return Number(user.userId);
 });
 //# sourceMappingURL=auth_token.decorator.js.map

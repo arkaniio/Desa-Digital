@@ -30,9 +30,11 @@ let UserController = class UserController {
         return this.userService.loginUser(data);
     }
     async getProfile(user_id) {
+        console.log(user_id);
         return this.userService.getProfile(user_id);
     }
     async updateProfile(data, user_id) {
+        console.log(user_id);
         return this.userService.updateProfile(data, user_id);
     }
 };

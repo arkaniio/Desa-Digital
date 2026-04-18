@@ -33,6 +33,7 @@ model Identity {
   User_Id    Int
   User       User     @relation(fields: [User_Id], references: [id])
   Full_Name  String   @unique
+  Rt         Int
   Age        Int
   Adress     String
   Created_at DateTime @default(now())

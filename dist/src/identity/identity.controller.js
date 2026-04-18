@@ -19,6 +19,7 @@ const jwt_auth_guard_1 = require("../user/jwt-auth.guard");
 const auth_token_decorator_1 = require("../user/decorators/auth_token.decorator");
 const role_guard_1 = require("../user/rolesGuard/role.guard");
 const role_decorator_1 = require("../user/decorators/role_decorator");
+const identity_dto_1 = require("../validator/identity_dto");
 let IdentityController = class IdentityController {
     identityService;
     constructor(identityService) {
@@ -30,8 +31,11 @@ let IdentityController = class IdentityController {
     async deleteIdentity(id) {
         return this.identityService.deleteIdentity(id);
     }
-    async updateIdentity(id) {
-        return this.identityService.deleteIdentity(id);
+    async updateIdentity(id, data) {
+        return this.identityService.updateIdentity(data, id);
+    }
+    async getIdentity(id) {
+        return this.identityService.getIdentity(id);
     }
 };
 exports.IdentityController = IdentityController;
@@ -41,7 +45,7 @@ __decorate([
     __param(0, (0, common_1.Body)()),
     __param(1, (0, auth_token_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:paramtypes", [identity_dto_1.IdentityDto, Object]),
     __metadata("design:returntype", Promise)
 ], IdentityController.prototype, "registerIdentity", null);
 __decorate([
@@ -58,10 +62,19 @@ __decorate([
     (0, common_1.Put)(":id"),
     (0, role_decorator_1.Roles)("ADMIN"),
     __param(0, (0, common_1.Param)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:returntype", Promise)
+], IdentityController.prototype, "updateIdentity", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
-], IdentityController.prototype, "updateIdentity", null);
+], IdentityController.prototype, "getIdentity", null);
 exports.IdentityController = IdentityController = __decorate([
     (0, common_1.Controller)('identity'),
     __metadata("design:paramtypes", [identity_service_1.IdentityService])
