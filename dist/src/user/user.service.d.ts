@@ -5,7 +5,9 @@ export declare class UserService {
     private jwtService;
     constructor(prisma: PrismaService, jwtService: JwtService);
     registerUser(data: any): Promise<{
-        user: {
+        message: string;
+        status: boolean;
+        data: {
             id: number;
             username: string;
             email: string;
@@ -13,8 +15,10 @@ export declare class UserService {
             created_at: Date;
             updated_at: Date;
         };
-    }>;
+    } | undefined>;
     loginUser(data: any): Promise<{
+        message: string;
+        status: boolean;
         access_token: string;
         user: {
             Username: string;
@@ -24,24 +28,24 @@ export declare class UserService {
         };
     }>;
     getProfile(id: number): Promise<{
-        id: number;
         Username: string;
         Email: string;
         Password: string;
         Role: string;
         Created_at: Date;
         Updated_at: Date;
+        id: number;
     } | null>;
     updateProfile(user_id: number, data: any): Promise<{
         data: {
             username: {
-                id: number;
                 Username: string;
                 Email: string;
                 Password: string;
                 Role: string;
                 Created_at: Date;
                 Updated_at: Date;
+                id: number;
             };
             email: string;
             password: string;

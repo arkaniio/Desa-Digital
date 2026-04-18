@@ -1,7 +1,9 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { ResponseError, ResponseSuccess } from 'src/utils/response_status';
+import { normalizeEmail } from 'validator';
 
 @Injectable()
 export class UserService {
@@ -18,7 +20,12 @@ export class UserService {
                 Email: data.Email
             }
         })
-        if (user_data) throw Error("email has been already exists!")
+        if (user_data) return ResponseError(
+            null,
+            HttpStatus.BAD_REQUEST,
+            "Email has been already exists!",
+            false
+        )
 
         const password_hash = await bcrypt.hash(data.Password, 10)
         if (!password_hash) throw Error("Failed to hash the password!")
@@ -32,22 +39,21 @@ export class UserService {
                     Role: data.Role
                 }
             })
-            if (!user) {
-                throw new BadRequestException("Failed to create new user!")
-            }
 
-            return {
-                user: {
-                    id: user.id,
-                    username: user.Username,
-                    email: user.Email,
-                    role: user.Role,
-                    created_at: user.Created_at,
-                    updated_at: user.Updated_at
-                }
-            }
+            return ResponseSuccess(
+                user,
+                HttpStatus.OK,
+                "Successfully to create new user!",
+                true
+            )
+
         } catch (error) {
-            throw new BadRequestException("Failed to create the user!")
+            return ResponseError(
+                error,
+                HttpStatus.BAD_REQUEST,
+                "Failed to create new user!",
+                false
+            )
         }
 
     }
@@ -59,9 +65,14 @@ export class UserService {
                 Email: data.Email
             }
         })
-        if (!user_data) throw Error("User not found!")
+        if (!user_data) return ResponseError(
+            normalizeEmail,
+            HttpStatus.BAD_REQUEST,
+            "Failed to get the user data using email user!",
+            false
+        )
 
-        const isPasswordValid = await bcrypt.compare(data.Password, user_data.Password)
+        const isPasswordValid = await bcrypt.compare(data.Password, user_data?.Password)
         if (!isPasswordValid) throw Error("Invalid password!")
 
         const token = this.jwtService.sign({
@@ -71,29 +82,65 @@ export class UserService {
             username: user_data.Username
         })
 
-        return {
-            access_token: token,
-            user: {
-                Username: user_data.Username,
-                Email: user_data.Email,
-                Created_at: user_data.Created_at,
-                Updated_at: user_data.Updated_at
-            }
-        }
+        return ResponseSuccess(
+            token,
+            HttpStatus.OK,
+            "Success to login as a user!",
+            true
+        )
 
     }
 
     async getProfile(id: number) {
-        return await this.prisma.user.findUnique({
-            where: {
-                id: id
-            }
-        })
+
+        if (id == null) return ResponseError(
+            null,
+            HttpStatus.BAD_REQUEST,
+            "Failed to get the id number!",
+            false
+        )
+
+        try {
+
+            const data_user = await this.prisma.user.findUnique({
+                where: {
+                    id: id
+                }
+            })
+
+            if (!data_user) return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Failed to get the user data!",
+                false
+            )
+
+            return ResponseSuccess(
+                data_user,
+                HttpStatus.OK,
+                "Success to get the profile!",
+                true
+            )
+
+        } catch (error) {
+            return ResponseError(
+                error,
+                HttpStatus.BAD_REQUEST,
+                "Failed to get the profile!",
+                false
+            )
+        }
+
     }
 
     async updateProfile(user_id: number, data: any) {
 
-        if (!user_id) throw new UnauthorizedException("Failed to detect the user id!")
+        if (!user_id) return ResponseError(
+            null,
+            HttpStatus.BAD_REQUEST,
+            "Failed to get the user id!",
+            false
+        )
 
         const update_data: any = {}
         if (update_data.Username) update_data.Username = data.Username
@@ -101,6 +148,14 @@ export class UserService {
         if (update_data.Password) {
 
             const password_hash = await bcrypt.hash(data.Password, 10)
+
+            if (!password_hash) return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Failed to hashing the password!",
+                false
+            )
+
             update_data.Password = password_hash
 
         }
@@ -115,19 +170,27 @@ export class UserService {
             })
 
 
-            if (!update_users) throw new BadRequestException("Failed to update the user data!")
+            if (!update_users) return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Failed to update the users!",
+                false
+            )
 
-            return {
-                data: {
-                    username: update_users,
-                    email: update_users.Email,
-                    password: update_users.Password,
-                    updated_at: update_users.Updated_at
-                }
-            }
+            return ResponseSuccess(
+                update_users,
+                HttpStatus.OK,
+                "Success to get the user profile!",
+                true
+            )
 
         } catch (error) {
-            throw new BadRequestException(error)
+            return ResponseError(
+                error,
+                HttpStatus.BAD_REQUEST,
+                "Failed to update the users data!",
+                false
+            )
         }
     }
 

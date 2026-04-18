@@ -78,7 +78,9 @@ let UserService = class UserService {
                 throw new common_1.BadRequestException("Failed to create new user!");
             }
             return {
-                user: {
+                message: "Successfully to create new user!",
+                status: true,
+                data: {
                     id: user.id,
                     username: user.Username,
                     email: user.Email,
@@ -89,7 +91,8 @@ let UserService = class UserService {
             };
         }
         catch (error) {
-            throw new common_1.BadRequestException("Failed to create the user!");
+            if (error.code == "P2002")
+                throw new common_1.BadRequestException("Failed to create new user!");
         }
     }
     async loginUser(data) {
@@ -110,6 +113,8 @@ let UserService = class UserService {
             username: user_data.Username
         });
         return {
+            message: "Successfully to login!",
+            status: true,
             access_token: token,
             user: {
                 Username: user_data.Username,

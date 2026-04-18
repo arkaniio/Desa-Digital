@@ -6,35 +6,35 @@ export declare class IdentityController {
         data: {
             id: number;
             user_id: {
-                id: number;
-                Created_at: Date;
-                Updated_at: Date;
                 Full_Name: string;
-                User_Id: number;
                 Age: number;
                 Adress: string;
+                Created_at: Date;
+                Updated_at: Date;
+                id: number;
+                User_Id: number;
             };
             full_name: string;
             age: number;
             adress: string;
         };
-    }>;
+    } | undefined>;
     deleteIdentity(id: number): Promise<{
-        id: number;
-        Created_at: Date;
-        Updated_at: Date;
         Full_Name: string;
-        User_Id: number;
         Age: number;
         Adress: string;
+        Created_at: Date;
+        Updated_at: Date;
+        id: number;
+        User_Id: number;
     }>;
     updateIdentity(id: number): Promise<{
-        id: number;
-        Created_at: Date;
-        Updated_at: Date;
         Full_Name: string;
-        User_Id: number;
         Age: number;
         Adress: string;
+        Created_at: Date;
+        Updated_at: Date;
+        id: number;
+        User_Id: number;
     }>;
 }

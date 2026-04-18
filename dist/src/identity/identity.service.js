@@ -49,7 +49,8 @@ let IdentityService = class IdentityService {
             };
         }
         catch (error) {
-            throw new common_1.BadRequestException(error);
+            if (error.code == "P2005")
+                throw new common_1.BadRequestException("Failed to register as a identity");
         }
     }
     async deleteIdentity(id) {

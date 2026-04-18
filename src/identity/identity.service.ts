@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { throwDeprecation } from 'node:process';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -8,12 +9,19 @@ export class IdentityService {
 
     async registerIdentity(data: any, user_id: number) {
 
-        const identity_data = await this.prisma.identity.findUnique({
-            where: {
-                Full_Name: data.Full_Name
-            }
-        })
-        if (identity_data) throw new BadRequestException("the name has been already exists!")
+        try {
+
+            const identity_data = await this.prisma.identity.findUnique({
+                where: {
+                    Full_Name: data.Full_Name
+                }
+            })
+            if (identity_data == null) throw new BadRequestException("Failed to get the name!")
+
+        } catch (error) {
+            if (error.code == "P2002") throw new BadRequestException("Name has been already exist!")
+        }
+
         if (!user_id) throw new UnauthorizedException("Failed to get the user id!")
 
         try {
@@ -41,7 +49,7 @@ export class IdentityService {
             }
 
         } catch (error) {
-            throw new BadRequestException(error)
+            throw new BadRequestException("Failed to register as a identity")
         }
 
     }
@@ -80,7 +88,7 @@ export class IdentityService {
                 }
             }
         } catch (error) {
-            throw new BadRequestException(error)
+            throw new BadRequestException("Failed to update the identity!")
         }
 
     }
