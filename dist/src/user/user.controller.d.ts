@@ -1,5 +1,6 @@
 import { UserService } from './user.service';
 import { CreateUserDto, LoginDto } from "../validator/user_dto";
+import type { UserUpdateDto } from "../validator/user_dto";
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
@@ -21,7 +22,7 @@ export declare class UserController {
         data: any;
         success: boolean;
     }>;
-    updateProfile(data: any, user_id: number): Promise<{
+    updateProfile(data: UserUpdateDto, user_id: number): Promise<{
         status_code: import("@nestjs/common").HttpStatus;
         message: string;
         data: any;

@@ -1,5 +1,13 @@
 import { IsEmail, IsAlpha, IsString, MinLength, IsDefined } from "class-validator";
 
+export type UserUpdateDto = {
+
+    Username?: string
+    Email?: string
+    Password?: string
+
+}
+
 export class CreateUserDto {
 
     @IsEmail()

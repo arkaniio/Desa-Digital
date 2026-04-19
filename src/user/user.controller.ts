@@ -3,6 +3,7 @@ import { UserService } from './user.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CurrentUser } from './decorators/auth_token.decorator';
 import { CreateUserDto, LoginDto } from 'src/validator/user_dto';
+import type { UserUpdateDto } from 'src/validator/user_dto';
 
 @Controller('user')
 export class UserController {
@@ -27,8 +28,14 @@ export class UserController {
 
     @Put("update")
     @UseGuards(JwtAuthGuard)
-    async updateProfile(@Body() data: any, @CurrentUser() user_id: number) {
-        return this.userService.updateProfile(data, user_id)
+    async updateProfile(@Body() data: UserUpdateDto, @CurrentUser() user_id: number) {
+
+        //debug
+        console.log(user_id)
+        console.log(data)
+        //
+
+        return this.userService.updateProfile(user_id, data)
     }
 
 }

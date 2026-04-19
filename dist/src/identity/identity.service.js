@@ -19,26 +19,26 @@ let IdentityService = class IdentityService {
         this.prisma = prisma;
     }
     async registerIdentity(data, user_id) {
-        if (!user_id)
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user id!", false);
+        if (user_id == undefined || user_id == null)
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to get the user id!", false);
         const identity_data = await this.prisma.identity.findUnique({
             where: {
                 Full_Name: data.Full_Name
             },
         });
-        if (identity_data)
+        if (identity_data != undefined || identity_data != null)
             return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Name has been already exists!", false);
         try {
             const data_identity = await this.prisma.identity.create({
                 data: {
                     User_Id: user_id,
                     Full_Name: data.Full_Name,
-                    Age: data.Age,
                     Rt: data.Rt,
-                    Adress: data.Adress,
+                    Age: data.Age,
+                    Address: data.Address
                 }
             });
-            if (!data_identity)
+            if (data_identity == undefined || data_identity == null)
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to create new identity!", false);
             return (0, response_status_1.ResponseSuccess)(data_identity, common_1.HttpStatus.OK, "Successfully to create the new identity!", true);
         }
@@ -47,15 +47,15 @@ let IdentityService = class IdentityService {
         }
     }
     async deleteIdentity(id) {
-        if (id == null)
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to detect the id identity!", false);
+        if (id == undefined || id == null)
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the id identity!", false);
         try {
             const data = await this.prisma.identity.findUnique({
                 where: {
                     id: id
                 }
             });
-            if (!data)
+            if (data == undefined || data == null)
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
             return (0, response_status_1.ResponseSuccess)(data, common_1.HttpStatus.OK, "Successfully to get the data!", true);
         }
@@ -64,8 +64,8 @@ let IdentityService = class IdentityService {
         }
     }
     async getIdentity(id) {
-        if (!id)
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to detect the id!", false);
+        if (id == undefined || id == null)
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the id!", false);
         try {
             const find_identity = await this.prisma.identity.findUnique({
                 where: {
@@ -75,7 +75,7 @@ let IdentityService = class IdentityService {
                     User: true
                 }
             });
-            if (!find_identity)
+            if (find_identity == undefined || find_identity == null)
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the find identity!", false);
             return (0, response_status_1.ResponseSuccess)(find_identity, common_1.HttpStatus.OK, "Successfully to get the identity!", true);
         }
@@ -84,15 +84,25 @@ let IdentityService = class IdentityService {
         }
     }
     async updateIdentity(data, user_id) {
-        if (!user_id)
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to detect the user id!", false);
+        if (user_id == undefined || user_id == null)
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the user id!", false);
         const update_data = {};
-        if (data.Full_Name)
+        if (data.Full_Name != undefined || data.Full_Name != null)
             update_data.Full_Name = data.Full_Name;
-        if (data.Age)
-            update_data.Age = data.Age;
-        if (data.Adress)
-            update_data.Adress = data.Adress;
+        if (data.Rt != undefined || data.Rt != null) {
+            const parsingIntoInt = parseInt(data.Rt);
+            if (typeof parsingIntoInt != "number")
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Invalid type of Rt!", false);
+            update_data.Rt = parsingIntoInt;
+        }
+        if (data.Age) {
+            const parsingIntoInt = parseInt(data.Age);
+            if (typeof parsingIntoInt != "number")
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Invalid type of age!", false);
+            update_data.Age = parsingIntoInt;
+        }
+        if (data.Address)
+            update_data.Adress = data.Address;
         try {
             const update_identity = await this.prisma.identity.update({
                 where: {
@@ -100,7 +110,7 @@ let IdentityService = class IdentityService {
                 },
                 data: update_data
             });
-            if (!update_identity)
+            if (update_identity == undefined || update_identity == null)
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the identity data!", false);
             return (0, response_status_1.ResponseSuccess)(update_identity, common_1.HttpStatus.OK, "Successfully to update the identity data!", false);
         }

@@ -1,3 +1,8 @@
+export type UserUpdateDto = {
+    Username?: string;
+    Email?: string;
+    Password?: string;
+};
 export declare class CreateUserDto {
     Email: string;
     Password: string;

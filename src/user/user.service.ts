@@ -136,32 +136,32 @@ export class UserService {
 
     async updateProfile(user_id: number, data: any) {
 
-        if (!user_id) return ResponseError(
+        if (user_id == undefined || user_id == null) return ResponseError(
             null,
             HttpStatus.BAD_REQUEST,
             "Failed to get the user id!",
             false
         )
 
-        const update_data: any = {}
-        if (update_data.Username) update_data.Username = data.Username
-        if (update_data.Email) update_data.Email = data.Email
-        if (update_data.Password) {
-
-            const password_hash = await bcrypt.hash(data.Password, 10)
-
-            if (!password_hash) return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to hashing the password!",
-                false
-            )
-
-            update_data.Password = password_hash
-
-        }
-
         try {
+
+            const update_data: any = {}
+            if (data.Username != null) update_data.Username = data.Username
+            if (data.Email != null) update_data.Email = data.Email
+            if (data.Password != null) {
+
+                const password_hash = await bcrypt.hash(data.Password, 10)
+
+                if (password_hash == undefined || password_hash == null) return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to hashing the password!",
+                    false
+                )
+
+                update_data.Password = password_hash
+
+            }
 
             const update_users = await this.prisma.user.update({
                 where: {
@@ -170,8 +170,7 @@ export class UserService {
                 data: update_data
             })
 
-
-            if (!update_users) return ResponseError(
+            if (update_users == undefined || update_users == null) return ResponseError(
                 null,
                 HttpStatus.BAD_REQUEST,
                 "Failed to update the users!",
@@ -179,7 +178,7 @@ export class UserService {
             )
 
             return ResponseSuccess(
-                update_users,
+                true,
                 HttpStatus.OK,
                 "Success to get the user profile!",
                 true

@@ -119,29 +119,29 @@ let UserService = class UserService {
         }
     }
     async updateProfile(user_id, data) {
-        if (!user_id)
+        if (user_id == undefined || user_id == null)
             return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user id!", false);
-        const update_data = {};
-        if (update_data.Username)
-            update_data.Username = data.Username;
-        if (update_data.Email)
-            update_data.Email = data.Email;
-        if (update_data.Password) {
-            const password_hash = await bcrypt.hash(data.Password, 10);
-            if (!password_hash)
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to hashing the password!", false);
-            update_data.Password = password_hash;
-        }
         try {
+            const update_data = {};
+            if (data.Username != null)
+                update_data.Username = data.Username;
+            if (data.Email != null)
+                update_data.Email = data.Email;
+            if (data.Password != null) {
+                const password_hash = await bcrypt.hash(data.Password, 10);
+                if (password_hash == undefined || password_hash == null)
+                    return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to hashing the password!", false);
+                update_data.Password = password_hash;
+            }
             const update_users = await this.prisma.user.update({
                 where: {
                     id: user_id
                 },
                 data: update_data
             });
-            if (!update_users)
+            if (update_users == undefined || update_users == null)
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the users!", false);
-            return (0, response_status_1.ResponseSuccess)(update_users, common_1.HttpStatus.OK, "Success to get the user profile!", true);
+            return (0, response_status_1.ResponseSuccess)(true, common_1.HttpStatus.OK, "Success to get the user profile!", true);
         }
         catch (error) {
             return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update the users data!", false);

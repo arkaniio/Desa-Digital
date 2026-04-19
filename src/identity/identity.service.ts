@@ -1,5 +1,6 @@
 import { BadRequestException, HttpStatus, Injectable, Res, UnauthorizedException } from '@nestjs/common';
 import { throwDeprecation } from 'node:process';
+import { useReducer } from 'react';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { ResponseError, ResponseSuccess } from 'src/utils/response_status';
@@ -12,12 +13,13 @@ export class IdentityService {
     async registerIdentity(data: any, user_id: number) {
 
 
-        if (!user_id) return ResponseError(
-            null,
-            HttpStatus.BAD_REQUEST,
-            "Failed to get the user id!",
-            false
-        )
+        if (user_id == undefined || user_id == null)
+            return ResponseError(
+                null,
+                HttpStatus.UNAUTHORIZED,
+                "Failed to get the user id!",
+                false
+            )
 
         const identity_data = await this.prisma.identity.findUnique({
             where: {
@@ -25,32 +27,32 @@ export class IdentityService {
             },
         })
 
-        if (identity_data) return ResponseError(
-            null,
-            HttpStatus.BAD_REQUEST,
-            "Name has been already exists!",
-            false
-        )
+        if (identity_data != undefined || identity_data != null)
+            return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Name has been already exists!",
+                false
+            )
 
         try {
 
-            const data_identity = await this.prisma.identity.create(
-                {
-                    data: {
-                        User_Id: user_id,
-                        Full_Name: data.Full_Name,
-                        Age: data.Age,
-                        Rt: data.Rt,
-                        Adress: data.Adress,
-                    }
+            const data_identity = await this.prisma.identity.create({
+                data: {
+                    User_Id: user_id,
+                    Full_Name: data.Full_Name,
+                    Rt: data.Rt,
+                    Age: data.Age,
+                    Address: data.Address
                 }
-            )
-            if (!data_identity) return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to create new identity!",
-                false
-            )
+            })
+            if (data_identity == undefined || data_identity == null)
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to create new identity!",
+                    false
+                )
 
             return ResponseSuccess(
                 data_identity,
@@ -72,12 +74,13 @@ export class IdentityService {
 
     async deleteIdentity(id: number) {
 
-        if (id == null) return ResponseError(
-            null,
-            HttpStatus.BAD_REQUEST,
-            "Failed to detect the id identity!",
-            false
-        )
+        if (id == undefined || id == null)
+            return ResponseError(
+                null,
+                HttpStatus.UNAUTHORIZED,
+                "Failed to detect the id identity!",
+                false
+            )
 
         try {
 
@@ -89,12 +92,13 @@ export class IdentityService {
                 }
             )
 
-            if (!data) return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the data identity!",
-                false
-            )
+            if (data == undefined || data == null)
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to get the data identity!",
+                    false
+                )
 
             return ResponseSuccess(
                 data,
@@ -117,12 +121,13 @@ export class IdentityService {
 
     async getIdentity(id: number) {
 
-        if (!id) return ResponseError(
-            null,
-            HttpStatus.BAD_REQUEST,
-            "Failed to detect the id!",
-            false
-        )
+        if (id == undefined || id == null)
+            return ResponseError(
+                null,
+                HttpStatus.UNAUTHORIZED,
+                "Failed to detect the id!",
+                false
+            )
 
         try {
 
@@ -135,12 +140,13 @@ export class IdentityService {
                 }
             })
 
-            if (!find_identity) return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the find identity!",
-                false
-            )
+            if (find_identity == undefined || find_identity == null)
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to get the find identity!",
+                    false
+                )
 
             return ResponseSuccess(
                 find_identity,
@@ -163,17 +169,51 @@ export class IdentityService {
 
     async updateIdentity(data: any, user_id: number) {
 
-        if (!user_id) return ResponseError(
-            null,
-            HttpStatus.BAD_REQUEST,
-            "Failed to detect the user id!",
-            false
-        )
+        if (user_id == undefined || user_id == null)
+            return ResponseError(
+                null,
+                HttpStatus.UNAUTHORIZED,
+                "Failed to detect the user id!",
+                false
+            )
 
         const update_data: any = {}
-        if (data.Full_Name) update_data.Full_Name = data.Full_Name
-        if (data.Age) update_data.Age = data.Age
-        if (data.Adress) update_data.Adress = data.Adress
+        if (data.Full_Name != undefined || data.Full_Name != null)
+            update_data.Full_Name = data.Full_Name
+
+        if (data.Rt != undefined || data.Rt != null) {
+
+            const parsingIntoInt = parseInt(data.Rt)
+
+            if (typeof parsingIntoInt != "number")
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid type of Rt!",
+                    false
+                )
+
+            update_data.Rt = parsingIntoInt
+
+        }
+
+        if (data.Age) {
+
+            const parsingIntoInt = parseInt(data.Age)
+
+            if (typeof parsingIntoInt != "number")
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Invalid type of age!",
+                    false
+                )
+
+            update_data.Age = parsingIntoInt
+
+        }
+
+        if (data.Address) update_data.Adress = data.Address
 
         try {
 
@@ -183,12 +223,13 @@ export class IdentityService {
                 },
                 data: update_data
             })
-            if (!update_identity) return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to update the identity data!",
-                false
-            )
+            if (update_identity == undefined || update_identity == null)
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to update the identity data!",
+                    false
+                )
 
             return ResponseSuccess(
                 update_identity,

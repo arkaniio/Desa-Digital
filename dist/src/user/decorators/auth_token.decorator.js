@@ -5,7 +5,6 @@ const common_1 = require("@nestjs/common");
 exports.CurrentUser = (0, common_1.createParamDecorator)((data, ctx) => {
     const requestUser = ctx.switchToHttp().getRequest();
     const user = requestUser.user;
-    console.log(user);
     if (user.userId == undefined || user.userId == null)
         return null;
     return Number(user.userId);

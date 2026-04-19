@@ -3,7 +3,7 @@ import { IdentityDto } from "../validator/identity_dto";
 export declare class IdentityController {
     private readonly identityService;
     constructor(identityService: IdentityService);
-    registerIdentity(data: IdentityDto, req: any): Promise<{
+    registerIdentity(data: IdentityDto, user_id: number): Promise<{
         status_code: import("@nestjs/common").HttpStatus;
         message: string;
         data: any;

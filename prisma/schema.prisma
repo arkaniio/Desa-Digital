@@ -35,7 +35,7 @@ model Identity {
   Full_Name  String   @unique
   Rt         Int
   Age        Int
-  Adress     String
+  Address    String
   Created_at DateTime @default(now())
   Updated_at DateTime @default(now())
 }
