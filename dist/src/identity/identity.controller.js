@@ -26,8 +26,6 @@ let IdentityController = class IdentityController {
         this.identityService = identityService;
     }
     async registerIdentity(data, user_id) {
-        console.log(user_id);
-        console.log(data);
         return this.identityService.registerIdentity(data, user_id);
     }
     async deleteIdentity(id) {
@@ -37,6 +35,7 @@ let IdentityController = class IdentityController {
         return this.identityService.updateIdentity(data, id);
     }
     async getIdentity(id) {
+        console.log(id);
         return this.identityService.getIdentity(id);
     }
 };
@@ -54,7 +53,7 @@ __decorate([
     (0, common_1.Delete)(":id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
     (0, role_decorator_1.Roles)("ADMIN"),
-    __param(0, (0, common_1.Param)()),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
@@ -63,7 +62,7 @@ __decorate([
     (0, common_1.Put)(":id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
     (0, role_decorator_1.Roles)("ADMIN"),
-    __param(0, (0, common_1.Param)()),
+    __param(0, (0, common_1.Param)('id')),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Object]),
@@ -72,7 +71,7 @@ __decorate([
 __decorate([
     (0, common_1.Get)(":id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __param(0, (0, common_1.Param)()),
+    __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)

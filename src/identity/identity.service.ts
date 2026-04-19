@@ -84,7 +84,7 @@ export class IdentityService {
 
         try {
 
-            const data = await this.prisma.identity.findUnique(
+            const data = await this.prisma.identity.delete(
                 {
                     where: {
                         id: id
@@ -92,18 +92,10 @@ export class IdentityService {
                 }
             )
 
-            if (data == undefined || data == null)
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to get the data identity!",
-                    false
-                )
-
             return ResponseSuccess(
                 data,
                 HttpStatus.OK,
-                "Successfully to get the data!",
+                "Successfully to delete the data!",
                 true
             )
 

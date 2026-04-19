@@ -50,14 +50,12 @@ let IdentityService = class IdentityService {
         if (id == undefined || id == null)
             return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the id identity!", false);
         try {
-            const data = await this.prisma.identity.findUnique({
+            const data = await this.prisma.identity.delete({
                 where: {
                     id: id
                 }
             });
-            if (data == undefined || data == null)
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
-            return (0, response_status_1.ResponseSuccess)(data, common_1.HttpStatus.OK, "Successfully to get the data!", true);
+            return (0, response_status_1.ResponseSuccess)(data, common_1.HttpStatus.OK, "Successfully to delete the data!", true);
         }
         catch (error) {
             return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);

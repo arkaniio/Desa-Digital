@@ -1,5 +1,6 @@
 import { IdentityService } from './identity.service';
 import { IdentityDto } from "../validator/identity_dto";
+import type { updateIdentitDto } from "../validator/identity_dto";
 export declare class IdentityController {
     private readonly identityService;
     constructor(identityService: IdentityService);
@@ -15,7 +16,7 @@ export declare class IdentityController {
         data: any;
         success: boolean;
     }>;
-    updateIdentity(id: number, data: any): Promise<{
+    updateIdentity(id: number, data: updateIdentitDto): Promise<{
         status_code: import("@nestjs/common").HttpStatus;
         message: string;
         data: any;

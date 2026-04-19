@@ -1,5 +1,14 @@
 import { IsString, MinLength, IsInt, IsPositive, IsIn } from "class-validator";
 
+export type updateIdentitDto = {
+
+    Full_Name?: string
+    Rt?: number
+    Age?: number
+    Address?: string
+
+}
+
 export class IdentityDto {
 
     @IsString()

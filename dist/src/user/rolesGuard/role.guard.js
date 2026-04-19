@@ -18,15 +18,15 @@ let RolesGuard = class RolesGuard {
         this.reflector = reflector;
     }
     canActivate(context) {
-        const requiredRoles = this.reflector.get("roles", context.getHandler());
+        const requiredRoles = this.reflector.get("Role", context.getHandler());
         if (!requiredRoles)
             return true;
         const request = context.switchToHttp();
         const user = request.getRequest();
         const result = requiredRoles.includes(user.role);
-        if (result)
-            throw new common_1.ForbiddenException("Failed to access this method!");
-        return result;
+        if (!result)
+            throw new common_1.UnauthorizedException("Failed to access this method!");
+        return true;
     }
 };
 exports.RolesGuard = RolesGuard;

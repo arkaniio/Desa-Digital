@@ -1,6 +1,7 @@
-import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, Injectable } from "@nestjs/common";
+import { BadRequestException, CanActivate, ExecutionContext, ForbiddenException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { Observable } from "rxjs";
+import { ResponseError } from "src/utils/response_status";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -9,7 +10,7 @@ export class RolesGuard implements CanActivate {
 
     canActivate(context: ExecutionContext): boolean {
 
-        const requiredRoles = this.reflector.get<string[]>("roles", context.getHandler())
+        const requiredRoles = this.reflector.get<string[]>("Role", context.getHandler())
 
         if (!requiredRoles) return true
 
@@ -17,9 +18,10 @@ export class RolesGuard implements CanActivate {
         const user = request.getRequest()
 
         const result = requiredRoles.includes(user.role)
-        if (result) throw new ForbiddenException("Failed to access this method!")
 
-        return result
+        if (!result) throw new UnauthorizedException("Failed to access this method!")
+
+        return true
 
     }
 
