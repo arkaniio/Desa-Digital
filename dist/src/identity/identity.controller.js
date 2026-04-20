@@ -31,11 +31,10 @@ let IdentityController = class IdentityController {
     async deleteIdentity(id) {
         return this.identityService.deleteIdentity(id);
     }
-    async updateIdentity(id, data) {
-        return this.identityService.updateIdentity(data, id);
+    async updateIdentity(data, user_id, identity_id) {
+        return this.identityService.updateIdentity(data, identity_id, user_id);
     }
     async getIdentity(id) {
-        console.log(id);
         return this.identityService.getIdentity(id);
     }
 };
@@ -60,12 +59,12 @@ __decorate([
 ], IdentityController.prototype, "deleteIdentity", null);
 __decorate([
     (0, common_1.Put)(":id"),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
-    (0, role_decorator_1.Roles)("ADMIN"),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, auth_token_decorator_1.CurrentUser)()),
+    __param(2, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, Object]),
+    __metadata("design:paramtypes", [Object, Number, Number]),
     __metadata("design:returntype", Promise)
 ], IdentityController.prototype, "updateIdentity", null);
 __decorate([

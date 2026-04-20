@@ -106,6 +106,9 @@ export class UserService {
             const data_user = await this.prisma.user.findUnique({
                 where: {
                     id: Number(user_id)
+                },
+                include: {
+                    identities: true
                 }
             })
 
@@ -138,7 +141,7 @@ export class UserService {
 
         if (user_id == undefined || user_id == null) return ResponseError(
             null,
-            HttpStatus.BAD_REQUEST,
+            HttpStatus.UNAUTHORIZED,
             "Failed to get the user id!",
             false
         )
@@ -146,9 +149,11 @@ export class UserService {
         try {
 
             const update_data: any = {}
-            if (data.Username != null) update_data.Username = data.Username
-            if (data.Email != null) update_data.Email = data.Email
-            if (data.Password != null) {
+            if (data.Username != undefined || data.Username != null)
+                update_data.Username = data.Username
+            if (data.Email != undefined || data.Email != null)
+                update_data.Email = data.Email
+            if (data.Password != undefined || data.Password != null) {
 
                 const password_hash = await bcrypt.hash(data.Password, 10)
 

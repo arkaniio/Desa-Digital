@@ -55,6 +55,8 @@ let IdentityService = class IdentityService {
                     id: id
                 }
             });
+            if (!data)
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to delete data identity!", false);
             return (0, response_status_1.ResponseSuccess)(data, common_1.HttpStatus.OK, "Successfully to delete the data!", true);
         }
         catch (error) {
@@ -81,7 +83,7 @@ let IdentityService = class IdentityService {
             return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the identity!", false);
         }
     }
-    async updateIdentity(data, user_id) {
+    async updateIdentity(data, identity_id, user_id) {
         if (user_id == undefined || user_id == null)
             return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the user id!", false);
         const update_data = {};
@@ -93,24 +95,24 @@ let IdentityService = class IdentityService {
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Invalid type of Rt!", false);
             update_data.Rt = parsingIntoInt;
         }
-        if (data.Age) {
+        if (data.Age != undefined || data.Age != null) {
             const parsingIntoInt = parseInt(data.Age);
             if (typeof parsingIntoInt != "number")
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Invalid type of age!", false);
             update_data.Age = parsingIntoInt;
         }
-        if (data.Address)
+        if (data.Address != undefined || data.Address != null)
             update_data.Adress = data.Address;
         try {
             const update_identity = await this.prisma.identity.update({
                 where: {
-                    id: user_id
+                    id: identity_id
                 },
                 data: update_data
             });
             if (update_identity == undefined || update_identity == null)
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the identity data!", false);
-            return (0, response_status_1.ResponseSuccess)(update_identity, common_1.HttpStatus.OK, "Successfully to update the identity data!", false);
+            return (0, response_status_1.ResponseSuccess)(true, common_1.HttpStatus.OK, "Successfully to update the identity data!", true);
         }
         catch (error) {
             return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update data!", false);

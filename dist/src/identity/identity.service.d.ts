@@ -21,7 +21,7 @@ export declare class IdentityService {
         data: any;
         success: boolean;
     }>;
-    updateIdentity(data: any, user_id: number): Promise<{
+    updateIdentity(data: any, identity_id: number, user_id: number): Promise<{
         status_code: HttpStatus;
         message: string;
         data: any;

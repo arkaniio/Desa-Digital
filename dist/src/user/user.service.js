@@ -108,6 +108,9 @@ let UserService = class UserService {
             const data_user = await this.prisma.user.findUnique({
                 where: {
                     id: Number(user_id)
+                },
+                include: {
+                    identities: true
                 }
             });
             if (data_user == undefined || data_user == null)
@@ -120,14 +123,14 @@ let UserService = class UserService {
     }
     async updateProfile(user_id, data) {
         if (user_id == undefined || user_id == null)
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user id!", false);
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to get the user id!", false);
         try {
             const update_data = {};
-            if (data.Username != null)
+            if (data.Username != undefined || data.Username != null)
                 update_data.Username = data.Username;
-            if (data.Email != null)
+            if (data.Email != undefined || data.Email != null)
                 update_data.Email = data.Email;
-            if (data.Password != null) {
+            if (data.Password != undefined || data.Password != null) {
                 const password_hash = await bcrypt.hash(data.Password, 10);
                 if (password_hash == undefined || password_hash == null)
                     return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to hashing the password!", false);

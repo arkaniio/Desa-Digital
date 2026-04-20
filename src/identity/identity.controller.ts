@@ -27,20 +27,14 @@ export class IdentityController {
     }
 
     @Put(":id")
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
-    async updateIdentity(@Param('id') id: number, @Body() data: updateIdentitDto) {
-        return this.identityService.updateIdentity(data, id)
+    @UseGuards(JwtAuthGuard)
+    async updateIdentity(@Body() data: updateIdentitDto, @CurrentUser() user_id: number, @Param('id') identity_id: number) {
+        return this.identityService.updateIdentity(data, identity_id, user_id)
     }
 
     @Get(":id")
     @UseGuards(JwtAuthGuard)
     async getIdentity(@Param('id') id: number) {
-
-        //debug
-        console.log(id)
-        //
-
         return this.identityService.getIdentity(id)
     }
 

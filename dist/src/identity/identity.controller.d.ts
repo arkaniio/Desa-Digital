@@ -16,7 +16,7 @@ export declare class IdentityController {
         data: any;
         success: boolean;
     }>;
-    updateIdentity(id: number, data: updateIdentitDto): Promise<{
+    updateIdentity(data: updateIdentitDto, user_id: number, identity_id: number): Promise<{
         status_code: import("@nestjs/common").HttpStatus;
         message: string;
         data: any;

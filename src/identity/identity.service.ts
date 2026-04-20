@@ -92,6 +92,13 @@ export class IdentityService {
                 }
             )
 
+            if (!data) return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Failed to delete data identity!",
+                false
+            )
+
             return ResponseSuccess(
                 data,
                 HttpStatus.OK,
@@ -159,7 +166,7 @@ export class IdentityService {
 
     }
 
-    async updateIdentity(data: any, user_id: number) {
+    async updateIdentity(data: any, identity_id: number, user_id: number) {
 
         if (user_id == undefined || user_id == null)
             return ResponseError(
@@ -189,7 +196,7 @@ export class IdentityService {
 
         }
 
-        if (data.Age) {
+        if (data.Age != undefined || data.Age != null) {
 
             const parsingIntoInt = parseInt(data.Age)
 
@@ -205,16 +212,18 @@ export class IdentityService {
 
         }
 
-        if (data.Address) update_data.Adress = data.Address
+        if (data.Address != undefined || data.Address != null)
+            update_data.Adress = data.Address
 
         try {
 
             const update_identity = await this.prisma.identity.update({
                 where: {
-                    id: user_id
+                    id: identity_id
                 },
                 data: update_data
             })
+
             if (update_identity == undefined || update_identity == null)
                 return ResponseError(
                     null,
@@ -224,10 +233,10 @@ export class IdentityService {
                 )
 
             return ResponseSuccess(
-                update_identity,
+                true,
                 HttpStatus.OK,
                 "Successfully to update the identity data!",
-                false
+                true
             )
 
         } catch (error) {
@@ -238,6 +247,52 @@ export class IdentityService {
                 false
             )
         }
+
+    }
+
+    async getAllIdentity(query: any) {
+
+        const { page, limit } = query
+
+        const skip = (page - 1) * limit
+
+        const [data, total] = await Promise.all([
+            this.prisma.identity.findMany({
+                skip: skip,
+                take: limit,
+                orderBy: {
+                    id: "asc"
+                },
+                include: {
+                    User: true
+                }
+            }),
+            this.prisma.identity.count()
+        ])
+
+        if (data && total == undefined || data && total == null)
+            return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Failed to get the full identity!",
+                false
+            )
+
+        return ResponseSuccess(
+            [{
+                data: data,
+                meta: {
+                    total: total,
+                    page: page,
+                    limit: limit,
+                    skip: skip,
+                    last_page: Math.ceil(page / limit)
+                }
+            }],
+            HttpStatus.OK,
+            "Successfully to get all data identity!",
+            true
+        )
 
     }
 
