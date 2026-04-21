@@ -43,7 +43,7 @@ export class IdentityService {
                 data: {
                     User_Id: user_id,
                     Full_Name: data.Full_Name,
-                    Rt: data.Rt,
+                    RtId: data.RtId,
                     Age: data.Age,
                     Address: data.Address
                 }
@@ -142,6 +142,12 @@ export class IdentityService {
                             Username: true,
                             Email: true
                         }
+                    },
+                    Rt: {
+                        select: {
+                            RwId: true,
+                            Number: true
+                        }
                     }
                 }
             })
@@ -187,9 +193,9 @@ export class IdentityService {
         if (data.Full_Name != undefined || data.Full_Name != null)
             update_data.Full_Name = data.Full_Name
 
-        if (data.Rt != undefined || data.Rt != null) {
+        if (data.RtId != undefined || data.RtId != null) {
 
-            const parsingIntoInt = parseInt(data.Rt)
+            const parsingIntoInt = parseInt(data.RtId)
 
             if (typeof parsingIntoInt != "number")
                 return ResponseError(
@@ -199,7 +205,7 @@ export class IdentityService {
                     false
                 )
 
-            update_data.Rt = parsingIntoInt
+            update_data.RtId = parsingIntoInt
 
         }
 
@@ -285,7 +291,8 @@ export class IdentityService {
                         },
                         ...(isValidNumber ? [
                             { Age: { equals: parsedNumber } },
-                            { Rt: { equals: parsedNumber } }
+                            { Rt: { equals: parsedNumber } },
+                            { RtId: { equals: parsedNumber } }
                         ] : [])
                     ]
                 }
@@ -304,10 +311,11 @@ export class IdentityService {
                         where: where,
                         select: {
                             Full_Name: true,
+                            RtId: true,
                             Rt: true,
                             Age: true,
                             Address: true
-                        }
+                        },
                     }),
                     this.prisma.identity.count({ where: where })
                 ])
@@ -338,8 +346,6 @@ export class IdentityService {
                 )
 
             } catch (error) {
-                console.error("FULL ERROR:", JSON.stringify(error, null, 2))
-                console.error("ERROR MESSAGE:", error.message)
                 return ResponseError(
                     error,
                     HttpStatus.BAD_REQUEST,
@@ -360,6 +366,7 @@ export class IdentityService {
                     },
                     select: {
                         Full_Name: true,
+                        RtId: true,
                         Rt: true,
                         Age: true,
                         Address: true
@@ -395,8 +402,6 @@ export class IdentityService {
 
 
         } catch (error) {
-            console.error("FULL ERROR:", JSON.stringify(error, null, 2))
-            console.error("ERROR MESSAGE:", error.message)
             return ResponseError(
                 error,
                 HttpStatus.BAD_REQUEST,

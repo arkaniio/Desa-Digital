@@ -24,8 +24,10 @@ model User {
 }
 
 enum Role {
-  ADMIN_RT
-  USER
+  ADMIN
+  RT
+  RW
+  WARGA
 }
 
 model Identity {
@@ -33,9 +35,24 @@ model Identity {
   User_Id    Int
   User       User     @relation(fields: [User_Id], references: [id])
   Full_Name  String   @unique
-  Rt         Int
+  RtId       Int
+  Rt         Rt       @relation(fields: [RtId], references: [Id])
   Age        Int
   Address    String
   Created_at DateTime @default(now())
   Updated_at DateTime @default(now())
+}
+
+model Rw {
+  Id   Int    @id @default(autoincrement())
+  Name String
+  rts  Rt[]
+}
+
+model Rt {
+  Id         Int        @id @default(autoincrement())
+  Number     Int
+  RwId       Int
+  Rw         Rw         @relation(fields: [RwId], references: [Id])
+  identities Identity[]
 }
