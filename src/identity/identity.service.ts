@@ -4,6 +4,8 @@ import { useReducer } from 'react';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
 import { ResponseError, ResponseSuccess } from 'src/utils/response_status';
+import { PaginationDto } from 'src/validator/pagination_dto&search';
+import Undici from 'undici-types';
 
 @Injectable()
 export class IdentityService {
@@ -135,7 +137,12 @@ export class IdentityService {
                     id: id
                 },
                 include: {
-                    User: true
+                    User: {
+                        select: {
+                            Username: true,
+                            Email: true
+                        }
+                    }
                 }
             })
 
@@ -250,49 +257,153 @@ export class IdentityService {
 
     }
 
-    async getAllIdentity(query: any) {
+    async getAllIdentity(query: PaginationDto) {
 
-        const { page, limit } = query
+        const { page, limit, search_query } = query
 
         const skip = (page - 1) * limit
 
-        const [data, total] = await Promise.all([
-            this.prisma.identity.findMany({
-                skip: skip,
-                take: limit,
-                orderBy: {
-                    id: "asc"
-                },
-                include: {
-                    User: true
-                }
-            }),
-            this.prisma.identity.count()
-        ])
+        if (search_query) {
 
-        if (data && total == undefined || data && total == null)
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the full identity!",
-                false
+            const isValidNumber = search_query?.trim() !== "" && !isNaN(Number(search_query))
+            const parsedNumber = isValidNumber ? Number(search_query) : null
+
+            const where: any = search_query
+                ? {
+                    OR: [
+                        {
+                            Full_Name: {
+                                contains: search_query,
+                                mode: "insensitive"
+                            }
+                        },
+                        {
+                            Address: {
+                                contains: search_query,
+                                mode: "insensitive"
+                            }
+                        },
+                        ...(isValidNumber ? [
+                            { Age: { equals: parsedNumber } },
+                            { Rt: { equals: parsedNumber } }
+                        ] : [])
+                    ]
+                }
+                : {}
+
+            //debug
+            console.log("WHERE:", JSON.stringify(where, null, 2))
+            //
+
+            try {
+
+                const [data, total_data] = await Promise.all([
+                    this.prisma.identity.findMany({
+                        skip: skip,
+                        take: limit,
+                        where: where,
+                        select: {
+                            Full_Name: true,
+                            Rt: true,
+                            Age: true,
+                            Address: true
+                        }
+                    }),
+                    this.prisma.identity.count({ where: where })
+                ])
+
+                if (!data || total_data == undefined || total_data == null) {
+                    return ResponseError(
+                        null,
+                        HttpStatus.BAD_REQUEST,
+                        "Failed to get the data and total data!",
+                        false
+                    )
+                }
+
+                return ResponseSuccess(
+                    [{
+                        data: data,
+                        meta: {
+                            total: total_data,
+                            page: page,
+                            limit: limit,
+                            skip: skip,
+                            last_page: Math.ceil(total_data / limit)
+                        }
+                    }],
+                    HttpStatus.OK,
+                    "Successfully to get all data identity!",
+                    true
+                )
+
+            } catch (error) {
+                console.error("FULL ERROR:", JSON.stringify(error, null, 2))
+                console.error("ERROR MESSAGE:", error.message)
+                return ResponseError(
+                    error,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to get the data identity!",
+                    false
+                )
+            }
+        }
+
+        try {
+
+            const [data, total_data] = await Promise.all([
+                this.prisma.identity.findMany({
+                    skip: skip,
+                    take: limit,
+                    orderBy: {
+                        id: "asc"
+                    },
+                    select: {
+                        Full_Name: true,
+                        Rt: true,
+                        Age: true,
+                        Address: true
+                    }
+                }),
+                this.prisma.identity.count()
+            ])
+
+            if (!data || total_data == undefined || total_data == null) {
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to get the data and total data!",
+                    false
+                )
+            }
+
+            return ResponseSuccess(
+                [{
+                    data: data,
+                    meta: {
+                        total: total_data,
+                        page: page,
+                        limit: limit,
+                        skip: skip,
+                        last_page: Math.ceil(total_data / limit)
+                    }
+                }],
+                HttpStatus.OK,
+                "Successfully to get all data identity!",
+                true
             )
 
-        return ResponseSuccess(
-            [{
-                data: data,
-                meta: {
-                    total: total,
-                    page: page,
-                    limit: limit,
-                    skip: skip,
-                    last_page: Math.ceil(page / limit)
-                }
-            }],
-            HttpStatus.OK,
-            "Successfully to get all data identity!",
-            true
-        )
+
+        } catch (error) {
+            console.error("FULL ERROR:", JSON.stringify(error, null, 2))
+            console.error("ERROR MESSAGE:", error.message)
+            return ResponseError(
+                error,
+                HttpStatus.BAD_REQUEST,
+                "Failed to get the data identity!",
+                false
+            )
+        }
 
     }
 

@@ -110,7 +110,14 @@ let UserService = class UserService {
                     id: Number(user_id)
                 },
                 include: {
-                    identities: true
+                    identities: {
+                        select: {
+                            Full_Name: true,
+                            Rt: true,
+                            Age: true,
+                            Address: true
+                        }
+                    }
                 }
             });
             if (data_user == undefined || data_user == null)
@@ -148,6 +155,47 @@ let UserService = class UserService {
         }
         catch (error) {
             return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update the users data!", false);
+        }
+    }
+    async getAllUser(query) {
+        const { page, limit } = query;
+        const skip = (page - 1) * limit;
+        try {
+            const [data, total_data] = await Promise.all([
+                this.prisma.user.findMany({
+                    skip: skip,
+                    take: limit,
+                    orderBy: {
+                        id: "asc"
+                    },
+                    include: {
+                        identities: {
+                            select: {
+                                Full_Name: true,
+                                Rt: true,
+                                Age: true,
+                                Address: true
+                            }
+                        }
+                    },
+                }),
+                this.prisma.identity.count()
+            ]);
+            if (!data || total_data == undefined || total_data == null)
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the full identity!", false);
+            return (0, response_status_1.ResponseSuccess)([{
+                    data: data,
+                    meta: {
+                        total: total_data,
+                        page: page,
+                        limit: limit,
+                        skip: skip,
+                        last_page: Math.ceil(page / limit)
+                    }
+                }], common_1.HttpStatus.OK, "Successfully to get all data identity!", true);
+        }
+        catch (error) {
+            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
         }
     }
 };

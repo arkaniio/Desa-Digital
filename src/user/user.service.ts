@@ -108,7 +108,14 @@ export class UserService {
                     id: Number(user_id)
                 },
                 include: {
-                    identities: true
+                    identities: {
+                        select: {
+                            Full_Name: true,
+                            Rt: true,
+                            Age: true,
+                            Address: true
+                        }
+                    }
                 }
             })
 
@@ -197,6 +204,72 @@ export class UserService {
                 false
             )
         }
+    }
+
+    async getAllUser(query: any) {
+
+        const { page, limit } = query
+
+        const skip = (page - 1) * limit
+
+        try {
+
+            const [data, total_data] = await Promise.all([
+                this.prisma.user.findMany({
+                    skip: skip,
+                    take: limit,
+                    orderBy: {
+                        id: "asc"
+                    },
+                    include: {
+                        identities: {
+                            select: {
+                                Full_Name: true,
+                                Rt: true,
+                                Age: true,
+                                Address: true
+                            }
+                        }
+                    },
+                }),
+                this.prisma.identity.count()
+            ])
+
+            if (!data || total_data == undefined || total_data == null)
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to get the full identity!",
+                    false
+                )
+
+            return ResponseSuccess(
+                [{
+                    data: data,
+                    meta: {
+                        total: total_data,
+                        page: page,
+                        limit: limit,
+                        skip: skip,
+                        last_page: Math.ceil(page / limit)
+                    }
+                }],
+                HttpStatus.OK,
+                "Successfully to get all data identity!",
+                true
+            )
+
+
+        } catch (error) {
+            return ResponseError(
+                error,
+                HttpStatus.BAD_REQUEST,
+                "Failed to get the data identity!",
+                false
+            )
+        }
+
+
     }
 
 }

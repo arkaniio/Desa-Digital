@@ -11,8 +11,8 @@ async function bootstrap() {
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
         forbidNonWhitelisted: true,
-        errorHttpStatusCode: common_1.HttpStatus.BAD_REQUEST,
-        transform: true
+        transform: true,
+        enableDebugMessages: true
     }));
     app.useLogger(new common_2.Logger());
     await app.listen(process.env.PORT ?? 3000);

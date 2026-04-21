@@ -1,6 +1,7 @@
 import { UserService } from './user.service';
 import { CreateUserDto, LoginDto } from "../validator/user_dto";
 import type { UserUpdateDto } from "../validator/user_dto";
+import { PaginationDto } from "../validator/pagination_dto&search";
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
@@ -23,6 +24,12 @@ export declare class UserController {
         success: boolean;
     }>;
     updateProfile(data: UserUpdateDto, user_id: number): Promise<{
+        status_code: import("@nestjs/common").HttpStatus;
+        message: string;
+        data: any;
+        success: boolean;
+    }>;
+    getAllUser(query: PaginationDto): Promise<{
         status_code: import("@nestjs/common").HttpStatus;
         message: string;
         data: any;

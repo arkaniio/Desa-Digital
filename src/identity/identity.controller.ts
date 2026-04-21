@@ -1,12 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { IdentityService } from './identity.service';
 import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
 import { CurrentUser } from 'src/user/decorators/auth_token.decorator';
 import { RolesGuard } from 'src/user/rolesGuard/role.guard';
 import { Roles } from 'src/user/decorators/role_decorator';
 import { IdentityDto } from 'src/validator/identity_dto';
-import { NumberType } from 'libphonenumber-js/max';
 import type { updateIdentitDto } from 'src/validator/identity_dto';
+import { PaginationDto } from 'src/validator/pagination_dto&search';
 
 @Controller('identity')
 export class IdentityController {
@@ -21,7 +21,7 @@ export class IdentityController {
 
     @Delete(":id")
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    @Roles("ADMIN_RT")
     async deleteIdentity(@Param('id') id: number) {
         return this.identityService.deleteIdentity(id)
     }
@@ -36,6 +36,19 @@ export class IdentityController {
     @UseGuards(JwtAuthGuard)
     async getIdentity(@Param('id') id: number) {
         return this.identityService.getIdentity(id)
+    }
+
+    @Get("full_identity")
+    @UseGuards(JwtAuthGuard)
+    async getAllIdentity(@Query() query: PaginationDto) {
+
+        //debug
+        console.log(query)
+        console.log(typeof query.page)
+        console.log(typeof query.limit)
+        //
+
+        return this.identityService.getAllIdentity(query)
     }
 
 }

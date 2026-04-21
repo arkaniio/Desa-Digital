@@ -20,6 +20,7 @@ const auth_token_decorator_1 = require("../user/decorators/auth_token.decorator"
 const role_guard_1 = require("../user/rolesGuard/role.guard");
 const role_decorator_1 = require("../user/decorators/role_decorator");
 const identity_dto_1 = require("../validator/identity_dto");
+const pagination_dto_search_1 = require("../validator/pagination_dto&search");
 let IdentityController = class IdentityController {
     identityService;
     constructor(identityService) {
@@ -37,6 +38,12 @@ let IdentityController = class IdentityController {
     async getIdentity(id) {
         return this.identityService.getIdentity(id);
     }
+    async getAllIdentity(query) {
+        console.log(query);
+        console.log(typeof query.page);
+        console.log(typeof query.limit);
+        return this.identityService.getAllIdentity(query);
+    }
 };
 exports.IdentityController = IdentityController;
 __decorate([
@@ -51,7 +58,7 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(":id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
-    (0, role_decorator_1.Roles)("ADMIN"),
+    (0, role_decorator_1.Roles)("ADMIN_RT"),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -75,6 +82,14 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], IdentityController.prototype, "getIdentity", null);
+__decorate([
+    (0, common_1.Get)("full_identity"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [pagination_dto_search_1.PaginationDto]),
+    __metadata("design:returntype", Promise)
+], IdentityController.prototype, "getAllIdentity", null);
 exports.IdentityController = IdentityController = __decorate([
     (0, common_1.Controller)('identity'),
     __metadata("design:paramtypes", [identity_service_1.IdentityService])

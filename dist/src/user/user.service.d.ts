@@ -29,4 +29,10 @@ export declare class UserService {
         data: any;
         success: boolean;
     }>;
+    getAllUser(query: any): Promise<{
+        status_code: HttpStatus;
+        message: string;
+        data: any;
+        success: boolean;
+    }>;
 }

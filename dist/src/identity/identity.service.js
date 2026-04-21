@@ -72,7 +72,12 @@ let IdentityService = class IdentityService {
                     id: id
                 },
                 include: {
-                    User: true
+                    User: {
+                        select: {
+                            Username: true,
+                            Email: true
+                        }
+                    }
                 }
             });
             if (find_identity == undefined || find_identity == null)
@@ -116,6 +121,107 @@ let IdentityService = class IdentityService {
         }
         catch (error) {
             return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update data!", false);
+        }
+    }
+    async getAllIdentity(query) {
+        const { page, limit, search_query } = query;
+        const skip = (page - 1) * limit;
+        if (search_query) {
+            const isValidNumber = search_query?.trim() !== "" && !isNaN(Number(search_query));
+            const parsedNumber = isValidNumber ? Number(search_query) : null;
+            const where = search_query
+                ? {
+                    OR: [
+                        {
+                            Full_Name: {
+                                contains: search_query,
+                                mode: "insensitive"
+                            }
+                        },
+                        {
+                            Address: {
+                                contains: search_query,
+                                mode: "insensitive"
+                            }
+                        },
+                        ...(isValidNumber ? [
+                            { Age: { equals: parsedNumber } },
+                            { Rt: { equals: parsedNumber } }
+                        ] : [])
+                    ]
+                }
+                : {};
+            console.log("WHERE:", JSON.stringify(where, null, 2));
+            try {
+                const [data, total_data] = await Promise.all([
+                    this.prisma.identity.findMany({
+                        skip: skip,
+                        take: limit,
+                        where: where,
+                        select: {
+                            Full_Name: true,
+                            Rt: true,
+                            Age: true,
+                            Address: true
+                        }
+                    }),
+                    this.prisma.identity.count({ where: where })
+                ]);
+                if (!data || total_data == undefined || total_data == null) {
+                    return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data and total data!", false);
+                }
+                return (0, response_status_1.ResponseSuccess)([{
+                        data: data,
+                        meta: {
+                            total: total_data,
+                            page: page,
+                            limit: limit,
+                            skip: skip,
+                            last_page: Math.ceil(total_data / limit)
+                        }
+                    }], common_1.HttpStatus.OK, "Successfully to get all data identity!", true);
+            }
+            catch (error) {
+                console.error("FULL ERROR:", JSON.stringify(error, null, 2));
+                console.error("ERROR MESSAGE:", error.message);
+                return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
+            }
+        }
+        try {
+            const [data, total_data] = await Promise.all([
+                this.prisma.identity.findMany({
+                    skip: skip,
+                    take: limit,
+                    orderBy: {
+                        id: "asc"
+                    },
+                    select: {
+                        Full_Name: true,
+                        Rt: true,
+                        Age: true,
+                        Address: true
+                    }
+                }),
+                this.prisma.identity.count()
+            ]);
+            if (!data || total_data == undefined || total_data == null) {
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data and total data!", false);
+            }
+            return (0, response_status_1.ResponseSuccess)([{
+                    data: data,
+                    meta: {
+                        total: total_data,
+                        page: page,
+                        limit: limit,
+                        skip: skip,
+                        last_page: Math.ceil(total_data / limit)
+                    }
+                }], common_1.HttpStatus.OK, "Successfully to get all data identity!", true);
+        }
+        catch (error) {
+            console.error("FULL ERROR:", JSON.stringify(error, null, 2));
+            console.error("ERROR MESSAGE:", error.message);
+            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
         }
     }
 };

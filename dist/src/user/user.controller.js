@@ -18,6 +18,9 @@ const user_service_1 = require("./user.service");
 const jwt_auth_guard_1 = require("./jwt-auth.guard");
 const auth_token_decorator_1 = require("./decorators/auth_token.decorator");
 const user_dto_1 = require("../validator/user_dto");
+const role_guard_1 = require("./rolesGuard/role.guard");
+const role_decorator_1 = require("./decorators/role_decorator");
+const pagination_dto_search_1 = require("../validator/pagination_dto&search");
 let UserController = class UserController {
     userService;
     constructor(userService) {
@@ -33,9 +36,10 @@ let UserController = class UserController {
         return this.userService.getProfile(user_id);
     }
     async updateProfile(data, user_id) {
-        console.log(user_id);
-        console.log(data);
         return this.userService.updateProfile(user_id, data);
+    }
+    async getAllUser(query) {
+        return this.userService.getAllUser(query);
     }
 };
 exports.UserController = UserController;
@@ -70,6 +74,15 @@ __decorate([
     __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateProfile", null);
+__decorate([
+    (0, common_1.Get)("all"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
+    (0, role_decorator_1.Roles)("ADMIN_RT"),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [pagination_dto_search_1.PaginationDto]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getAllUser", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('user'),
     __metadata("design:paramtypes", [user_service_1.UserService])
