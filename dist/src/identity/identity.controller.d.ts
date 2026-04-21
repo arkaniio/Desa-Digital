@@ -5,6 +5,12 @@ import { PaginationDto } from "../validator/pagination_dto&search";
 export declare class IdentityController {
     private readonly identityService;
     constructor(identityService: IdentityService);
+    getAllIdentity(query: PaginationDto): Promise<{
+        status_code: import("@nestjs/common").HttpStatus;
+        message: string;
+        data: any;
+        success: boolean;
+    }>;
     registerIdentity(data: IdentityDto, user_id: number): Promise<{
         status_code: import("@nestjs/common").HttpStatus;
         message: string;
@@ -24,12 +30,6 @@ export declare class IdentityController {
         success: boolean;
     }>;
     getIdentity(id: number): Promise<{
-        status_code: import("@nestjs/common").HttpStatus;
-        message: string;
-        data: any;
-        success: boolean;
-    }>;
-    getAllIdentity(query: PaginationDto): Promise<{
         status_code: import("@nestjs/common").HttpStatus;
         message: string;
         data: any;

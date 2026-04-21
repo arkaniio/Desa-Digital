@@ -7,11 +7,19 @@ import { Roles } from 'src/user/decorators/role_decorator';
 import { IdentityDto } from 'src/validator/identity_dto';
 import type { updateIdentitDto } from 'src/validator/identity_dto';
 import { PaginationDto } from 'src/validator/pagination_dto&search';
+import { Role } from '@prisma/client';
 
 @Controller('identity')
 export class IdentityController {
 
     constructor(private readonly identityService: IdentityService) { }
+
+    @Get("full")
+    @Roles()
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    async getAllIdentity(@Query() query: PaginationDto) {
+        return this.identityService.getAllIdentity(query)
+    }
 
     @Post("registerIdentity")
     @UseGuards(JwtAuthGuard)
@@ -36,19 +44,6 @@ export class IdentityController {
     @UseGuards(JwtAuthGuard)
     async getIdentity(@Param('id') id: number) {
         return this.identityService.getIdentity(id)
-    }
-
-    @Get("full_identity")
-    @UseGuards(JwtAuthGuard)
-    async getAllIdentity(@Query() query: PaginationDto) {
-
-        //debug
-        console.log(query)
-        console.log(typeof query.page)
-        console.log(typeof query.limit)
-        //
-
-        return this.identityService.getAllIdentity(query)
     }
 
 }

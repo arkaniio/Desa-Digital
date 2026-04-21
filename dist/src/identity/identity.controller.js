@@ -26,6 +26,9 @@ let IdentityController = class IdentityController {
     constructor(identityService) {
         this.identityService = identityService;
     }
+    async getAllIdentity(query) {
+        return this.identityService.getAllIdentity(query);
+    }
     async registerIdentity(data, user_id) {
         return this.identityService.registerIdentity(data, user_id);
     }
@@ -38,14 +41,16 @@ let IdentityController = class IdentityController {
     async getIdentity(id) {
         return this.identityService.getIdentity(id);
     }
-    async getAllIdentity(query) {
-        console.log(query);
-        console.log(typeof query.page);
-        console.log(typeof query.limit);
-        return this.identityService.getAllIdentity(query);
-    }
 };
 exports.IdentityController = IdentityController;
+__decorate([
+    (0, common_1.Get)("full"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [pagination_dto_search_1.PaginationDto]),
+    __metadata("design:returntype", Promise)
+], IdentityController.prototype, "getAllIdentity", null);
 __decorate([
     (0, common_1.Post)("registerIdentity"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
@@ -82,14 +87,6 @@ __decorate([
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], IdentityController.prototype, "getIdentity", null);
-__decorate([
-    (0, common_1.Get)("full_identity"),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __param(0, (0, common_1.Query)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [pagination_dto_search_1.PaginationDto]),
-    __metadata("design:returntype", Promise)
-], IdentityController.prototype, "getAllIdentity", null);
 exports.IdentityController = IdentityController = __decorate([
     (0, common_1.Controller)('identity'),
     __metadata("design:paramtypes", [identity_service_1.IdentityService])
