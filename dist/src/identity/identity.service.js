@@ -33,7 +33,7 @@ let IdentityService = class IdentityService {
                 data: {
                     User_Id: user_id,
                     Full_Name: data.Full_Name,
-                    Rt: data.Rt,
+                    RtId: data.RtId,
                     Age: data.Age,
                     Address: data.Address
                 }
@@ -77,6 +77,12 @@ let IdentityService = class IdentityService {
                             Username: true,
                             Email: true
                         }
+                    },
+                    Rt: {
+                        select: {
+                            RwId: true,
+                            Number: true
+                        }
                     }
                 }
             });
@@ -94,11 +100,11 @@ let IdentityService = class IdentityService {
         const update_data = {};
         if (data.Full_Name != undefined || data.Full_Name != null)
             update_data.Full_Name = data.Full_Name;
-        if (data.Rt != undefined || data.Rt != null) {
-            const parsingIntoInt = parseInt(data.Rt);
+        if (data.RtId != undefined || data.RtId != null) {
+            const parsingIntoInt = parseInt(data.RtId);
             if (typeof parsingIntoInt != "number")
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Invalid type of Rt!", false);
-            update_data.Rt = parsingIntoInt;
+            update_data.RtId = parsingIntoInt;
         }
         if (data.Age != undefined || data.Age != null) {
             const parsingIntoInt = parseInt(data.Age);
@@ -146,7 +152,8 @@ let IdentityService = class IdentityService {
                         },
                         ...(isValidNumber ? [
                             { Age: { equals: parsedNumber } },
-                            { Rt: { equals: parsedNumber } }
+                            { Rt: { equals: parsedNumber } },
+                            { RtId: { equals: parsedNumber } }
                         ] : [])
                     ]
                 }
@@ -160,10 +167,11 @@ let IdentityService = class IdentityService {
                         where: where,
                         select: {
                             Full_Name: true,
+                            RtId: true,
                             Rt: true,
                             Age: true,
                             Address: true
-                        }
+                        },
                     }),
                     this.prisma.identity.count({ where: where })
                 ]);
@@ -182,8 +190,6 @@ let IdentityService = class IdentityService {
                     }], common_1.HttpStatus.OK, "Successfully to get all data identity!", true);
             }
             catch (error) {
-                console.error("FULL ERROR:", JSON.stringify(error, null, 2));
-                console.error("ERROR MESSAGE:", error.message);
                 return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
             }
         }
@@ -197,6 +203,7 @@ let IdentityService = class IdentityService {
                     },
                     select: {
                         Full_Name: true,
+                        RtId: true,
                         Rt: true,
                         Age: true,
                         Address: true
@@ -219,8 +226,6 @@ let IdentityService = class IdentityService {
                 }], common_1.HttpStatus.OK, "Successfully to get all data identity!", true);
         }
         catch (error) {
-            console.error("FULL ERROR:", JSON.stringify(error, null, 2));
-            console.error("ERROR MESSAGE:", error.message);
             return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
         }
     }

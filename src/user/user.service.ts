@@ -20,12 +20,14 @@ export class UserService {
                 Email: data.Email
             }
         })
-        if (user_data) return ResponseError(
-            null,
-            HttpStatus.BAD_REQUEST,
-            "Email has been already exists!",
-            false
-        )
+        if (user_data) {
+            return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Email has been already exists!",
+                false
+            )
+        }
 
         const password_hash = await bcrypt.hash(data.Password, 10)
         if (!password_hash) throw Error("Failed to hash the password!")
@@ -66,16 +68,24 @@ export class UserService {
             }
         })
 
-        if (user_data == undefined || user_data == null) return ResponseError(
-            normalizeEmail,
-            HttpStatus.BAD_REQUEST,
-            "Failed to get the user data using email user!",
-            false
-        )
+        if (user_data == undefined || user_data == null) {
+            return ResponseError(
+                normalizeEmail,
+                HttpStatus.BAD_REQUEST,
+                "Failed to get the user data using email user!",
+                false
+            )
+        }
 
         const isPasswordValid = await bcrypt.compare(data.Password, user_data?.Password)
-        if (!isPasswordValid) throw Error("Invalid password!")
-
+        if (isPasswordValid == undefined || !isPasswordValid) {
+            return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Failed to compare the data password!",
+                false
+            )
+        }
         const token = this.jwtService.sign({
             id: user_data.id,
             email: user_data.Email,
@@ -94,12 +104,14 @@ export class UserService {
 
     async getProfile(user_id: number) {
 
-        if (user_id == undefined || user_id == null) return ResponseError(
-            null,
-            HttpStatus.BAD_REQUEST,
-            "Failed to get the id number!",
-            false
-        )
+        if (user_id == undefined || user_id == null) {
+            return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Failed to get the id number!",
+                false
+            )
+        }
 
         try {
 
@@ -119,12 +131,14 @@ export class UserService {
                 }
             })
 
-            if (data_user == undefined || data_user == null) return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the user data!",
-                false
-            )
+            if (data_user == undefined || data_user == null) {
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to get the user data!",
+                    false
+                )
+            }
 
             return ResponseSuccess(
                 data_user,
@@ -146,34 +160,38 @@ export class UserService {
 
     async updateProfile(user_id: number, data: any) {
 
-        if (user_id == undefined || user_id == null) return ResponseError(
-            null,
-            HttpStatus.UNAUTHORIZED,
-            "Failed to get the user id!",
-            false
-        )
+        if (user_id == undefined || user_id == null) {
+            return ResponseError(
+                null,
+                HttpStatus.UNAUTHORIZED,
+                "Failed to get the user id!",
+                false
+            )
+        }
 
-        try {
+        const update_data: any = {}
+        if (data.Username != undefined || data.Username != null)
+            update_data.Username = data.Username
+        if (data.Email != undefined || data.Email != null)
+            update_data.Email = data.Email
+        if (data.Password != undefined || data.Password != null) {
 
-            const update_data: any = {}
-            if (data.Username != undefined || data.Username != null)
-                update_data.Username = data.Username
-            if (data.Email != undefined || data.Email != null)
-                update_data.Email = data.Email
-            if (data.Password != undefined || data.Password != null) {
+            const password_hash = await bcrypt.hash(data.Password, 10)
 
-                const password_hash = await bcrypt.hash(data.Password, 10)
-
-                if (password_hash == undefined || password_hash == null) return ResponseError(
+            if (password_hash == undefined || password_hash == null) {
+                return ResponseError(
                     null,
                     HttpStatus.BAD_REQUEST,
                     "Failed to hashing the password!",
                     false
                 )
 
-                update_data.Password = password_hash
-
             }
+            update_data.Password = password_hash
+
+        }
+
+        try {
 
             const update_users = await this.prisma.user.update({
                 where: {
@@ -182,12 +200,14 @@ export class UserService {
                 data: update_data
             })
 
-            if (update_users == undefined || update_users == null) return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to update the users!",
-                false
-            )
+            if (update_users == undefined || update_users == null) {
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to update the users!",
+                    false
+                )
+            }
 
             return ResponseSuccess(
                 true,
@@ -235,13 +255,14 @@ export class UserService {
                 this.prisma.identity.count()
             ])
 
-            if (!data || total_data == undefined || total_data == null)
+            if (!data || total_data == undefined || total_data == null) {
                 return ResponseError(
                     null,
                     HttpStatus.BAD_REQUEST,
                     "Failed to get the full identity!",
                     false
                 )
+            }
 
             return ResponseSuccess(
                 [{

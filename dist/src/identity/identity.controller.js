@@ -45,7 +45,8 @@ let IdentityController = class IdentityController {
 exports.IdentityController = IdentityController;
 __decorate([
     (0, common_1.Get)("full"),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, role_decorator_1.Roles)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [pagination_dto_search_1.PaginationDto]),

@@ -15,13 +15,14 @@ export class IdentityService {
     async registerIdentity(data: any, user_id: number) {
 
 
-        if (user_id == undefined || user_id == null)
+        if (user_id == undefined || user_id == null) {
             return ResponseError(
                 null,
                 HttpStatus.UNAUTHORIZED,
                 "Failed to get the user id!",
                 false
             )
+        }
 
         const identity_data = await this.prisma.identity.findUnique({
             where: {
@@ -29,13 +30,14 @@ export class IdentityService {
             },
         })
 
-        if (identity_data != undefined || identity_data != null)
+        if (identity_data != undefined || identity_data != null) {
             return ResponseError(
                 null,
                 HttpStatus.BAD_REQUEST,
                 "Name has been already exists!",
                 false
             )
+        }
 
         try {
 
@@ -48,13 +50,14 @@ export class IdentityService {
                     Address: data.Address
                 }
             })
-            if (data_identity == undefined || data_identity == null)
+            if (data_identity == undefined || data_identity == null) {
                 return ResponseError(
                     null,
                     HttpStatus.BAD_REQUEST,
                     "Failed to create new identity!",
                     false
                 )
+            }
 
             return ResponseSuccess(
                 data_identity,
@@ -76,13 +79,14 @@ export class IdentityService {
 
     async deleteIdentity(id: number) {
 
-        if (id == undefined || id == null)
+        if (id == undefined || id == null) {
             return ResponseError(
                 null,
                 HttpStatus.UNAUTHORIZED,
                 "Failed to detect the id identity!",
                 false
             )
+        }
 
         try {
 
@@ -94,12 +98,14 @@ export class IdentityService {
                 }
             )
 
-            if (!data) return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to delete data identity!",
-                false
-            )
+            if (data == undefined || data == null) {
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to delete data identity!",
+                    false
+                )
+            }
 
             return ResponseSuccess(
                 data,
@@ -122,13 +128,14 @@ export class IdentityService {
 
     async getIdentity(id: number) {
 
-        if (id == undefined || id == null)
+        if (id == undefined || id == null) {
             return ResponseError(
                 null,
                 HttpStatus.UNAUTHORIZED,
                 "Failed to detect the id!",
                 false
             )
+        }
 
         try {
 
@@ -152,13 +159,14 @@ export class IdentityService {
                 }
             })
 
-            if (find_identity == undefined || find_identity == null)
+            if (find_identity == undefined || find_identity == null) {
                 return ResponseError(
                     null,
                     HttpStatus.BAD_REQUEST,
                     "Failed to get the find identity!",
                     false
                 )
+            }
 
             return ResponseSuccess(
                 find_identity,
@@ -181,13 +189,14 @@ export class IdentityService {
 
     async updateIdentity(data: any, identity_id: number, user_id: number) {
 
-        if (user_id == undefined || user_id == null)
+        if (user_id == undefined || user_id == null) {
             return ResponseError(
                 null,
                 HttpStatus.UNAUTHORIZED,
                 "Failed to detect the user id!",
                 false
             )
+        }
 
         const update_data: any = {}
         if (data.Full_Name != undefined || data.Full_Name != null)
@@ -197,13 +206,14 @@ export class IdentityService {
 
             const parsingIntoInt = parseInt(data.RtId)
 
-            if (typeof parsingIntoInt != "number")
+            if (typeof parsingIntoInt != "number") {
                 return ResponseError(
                     null,
                     HttpStatus.BAD_REQUEST,
                     "Invalid type of Rt!",
                     false
                 )
+            }
 
             update_data.RtId = parsingIntoInt
 
@@ -213,20 +223,20 @@ export class IdentityService {
 
             const parsingIntoInt = parseInt(data.Age)
 
-            if (typeof parsingIntoInt != "number")
+            if (typeof parsingIntoInt != "number") {
                 return ResponseError(
                     null,
                     HttpStatus.BAD_REQUEST,
                     "Invalid type of age!",
                     false
                 )
+            }
 
             update_data.Age = parsingIntoInt
 
         }
 
-        if (data.Address != undefined || data.Address != null)
-            update_data.Adress = data.Address
+        if (data.Address != undefined || data.Address != null) update_data.Adress = data.Address
 
         try {
 
@@ -237,13 +247,14 @@ export class IdentityService {
                 data: update_data
             })
 
-            if (update_identity == undefined || update_identity == null)
+            if (update_identity == undefined || update_identity == null) {
                 return ResponseError(
                     null,
                     HttpStatus.BAD_REQUEST,
                     "Failed to update the identity data!",
                     false
                 )
+            }
 
             return ResponseSuccess(
                 true,
@@ -297,10 +308,6 @@ export class IdentityService {
                     ]
                 }
                 : {}
-
-            //debug
-            console.log("WHERE:", JSON.stringify(where, null, 2))
-            //
 
             try {
 
