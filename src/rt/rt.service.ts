@@ -48,7 +48,7 @@ export class RtService {
 
             return ResponseSuccess(
                 data,
-                HttpStatus.OK,
+                HttpStatus.CREATED,
                 "Successfully to create new rt!",
                 true
             )

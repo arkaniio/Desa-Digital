@@ -47,7 +47,7 @@ export class RwService {
 
             return ResponseSuccess(
                 data_create,
-                HttpStatus.OK,
+                HttpStatus.CREATED,
                 "Successfully to register data!",
                 true
             )

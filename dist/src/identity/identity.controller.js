@@ -64,7 +64,7 @@ __decorate([
 __decorate([
     (0, common_1.Delete)(":id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
-    (0, role_decorator_1.Roles)("ADMIN_RT"),
+    (0, role_decorator_1.Roles)("ADMIN"),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),

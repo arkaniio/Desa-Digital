@@ -19,15 +19,17 @@ let IdentityService = class IdentityService {
         this.prisma = prisma;
     }
     async registerIdentity(data, user_id) {
-        if (user_id == undefined || user_id == null)
+        if (user_id == undefined || user_id == null) {
             return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to get the user id!", false);
+        }
         const identity_data = await this.prisma.identity.findUnique({
             where: {
                 Full_Name: data.Full_Name
             },
         });
-        if (identity_data != undefined || identity_data != null)
+        if (identity_data != undefined || identity_data != null) {
             return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Name has been already exists!", false);
+        }
         try {
             const data_identity = await this.prisma.identity.create({
                 data: {
@@ -38,8 +40,9 @@ let IdentityService = class IdentityService {
                     Address: data.Address
                 }
             });
-            if (data_identity == undefined || data_identity == null)
+            if (data_identity == undefined || data_identity == null) {
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to create new identity!", false);
+            }
             return (0, response_status_1.ResponseSuccess)(data_identity, common_1.HttpStatus.OK, "Successfully to create the new identity!", true);
         }
         catch (error) {
@@ -47,16 +50,18 @@ let IdentityService = class IdentityService {
         }
     }
     async deleteIdentity(id) {
-        if (id == undefined || id == null)
+        if (id == undefined || id == null) {
             return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the id identity!", false);
+        }
         try {
             const data = await this.prisma.identity.delete({
                 where: {
                     id: id
                 }
             });
-            if (!data)
+            if (data == undefined || data == null) {
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to delete data identity!", false);
+            }
             return (0, response_status_1.ResponseSuccess)(data, common_1.HttpStatus.OK, "Successfully to delete the data!", true);
         }
         catch (error) {
@@ -64,8 +69,9 @@ let IdentityService = class IdentityService {
         }
     }
     async getIdentity(id) {
-        if (id == undefined || id == null)
+        if (id == undefined || id == null) {
             return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the id!", false);
+        }
         try {
             const find_identity = await this.prisma.identity.findUnique({
                 where: {
@@ -86,8 +92,9 @@ let IdentityService = class IdentityService {
                     }
                 }
             });
-            if (find_identity == undefined || find_identity == null)
+            if (find_identity == undefined || find_identity == null) {
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the find identity!", false);
+            }
             return (0, response_status_1.ResponseSuccess)(find_identity, common_1.HttpStatus.OK, "Successfully to get the identity!", true);
         }
         catch (error) {
@@ -95,21 +102,24 @@ let IdentityService = class IdentityService {
         }
     }
     async updateIdentity(data, identity_id, user_id) {
-        if (user_id == undefined || user_id == null)
+        if (user_id == undefined || user_id == null) {
             return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the user id!", false);
+        }
         const update_data = {};
         if (data.Full_Name != undefined || data.Full_Name != null)
             update_data.Full_Name = data.Full_Name;
         if (data.RtId != undefined || data.RtId != null) {
             const parsingIntoInt = parseInt(data.RtId);
-            if (typeof parsingIntoInt != "number")
+            if (typeof parsingIntoInt != "number") {
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Invalid type of Rt!", false);
+            }
             update_data.RtId = parsingIntoInt;
         }
         if (data.Age != undefined || data.Age != null) {
             const parsingIntoInt = parseInt(data.Age);
-            if (typeof parsingIntoInt != "number")
+            if (typeof parsingIntoInt != "number") {
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Invalid type of age!", false);
+            }
             update_data.Age = parsingIntoInt;
         }
         if (data.Address != undefined || data.Address != null)
@@ -121,8 +131,9 @@ let IdentityService = class IdentityService {
                 },
                 data: update_data
             });
-            if (update_identity == undefined || update_identity == null)
+            if (update_identity == undefined || update_identity == null) {
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the identity data!", false);
+            }
             return (0, response_status_1.ResponseSuccess)(true, common_1.HttpStatus.OK, "Successfully to update the identity data!", true);
         }
         catch (error) {
@@ -158,7 +169,6 @@ let IdentityService = class IdentityService {
                     ]
                 }
                 : {};
-            console.log("WHERE:", JSON.stringify(where, null, 2));
             try {
                 const [data, total_data] = await Promise.all([
                     this.prisma.identity.findMany({

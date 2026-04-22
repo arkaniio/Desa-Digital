@@ -15,14 +15,16 @@ const user_module_1 = require("./user/user.module");
 const identity_module_1 = require("./identity/identity.module");
 const rt_controller_1 = require("./rt/rt.controller");
 const rt_service_1 = require("./rt/rt.service");
+const rw_controller_1 = require("./rw/rw.controller");
+const rw_service_1 = require("./rw/rw.service");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [prisma_module_1.PrismaModule, user_module_1.UserModule, identity_module_1.IdentityModule],
-        controllers: [app_controller_1.AppController, rt_controller_1.RtController],
-        providers: [app_service_1.AppService, rt_service_1.RtService],
+        controllers: [app_controller_1.AppController, rt_controller_1.RtController, rw_controller_1.RwController],
+        providers: [app_service_1.AppService, rt_service_1.RtService, rw_service_1.RwService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map

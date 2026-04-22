@@ -22,8 +22,9 @@ let RolesGuard = class RolesGuard {
         if (!requiredRoles)
             return true;
         const request = context.switchToHttp();
-        const user = request.getRequest();
-        const result = requiredRoles.includes(user.role);
+        const user_data = request.getRequest();
+        const req = user_data.user;
+        const result = requiredRoles.includes(req.role);
         if (!result)
             throw new common_1.UnauthorizedException("Failed to access this method!");
         return true;

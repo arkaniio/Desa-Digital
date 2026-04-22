@@ -1,11 +1,12 @@
+import * as dotenv from 'dotenv';
+dotenv.config()
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
-import { App } from 'supertest/types';
+import { HttpStatus, INestApplication } from '@nestjs/common';
+import request from "supertest";
 import { AppModule } from './../src/app.module';
 
 describe('AppController (e2e)', () => {
-  let app: INestApplication<App>;
+  let app: INestApplication;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -16,11 +17,37 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  const payload_to_send = {
+    Name: "Rukun Warga 05"
+  }
+
+  const payload_to_send_email = {
+    Email: "lalufirdausmuhardika@gmail.com",
+    Password: "dika123"
+  }
+
+  it('/rw/register (POST)', async () => {
+
+    const loginResp = await request(app.getHttpServer())
+      .post('/user/login')
+      .send(payload_to_send_email)
+
+    expect(loginResp.status).toBe(HttpStatus.CREATED)
+    expect(loginResp.body).toHaveProperty("data")
+
+    console.log('STATUS:', loginResp.status);
+    console.log('BODY:', loginResp.body);
+
+    const res = await request(app.getHttpServer())
+      .post('/rw/register')
+      .send(payload_to_send)
+      .set("Authorization", `Bearer ${loginResp.body.data}`)
+
+    console.log('STATUS:', res.status);
+    console.log('BODY:', res.body);
+
+    expect(res.body).toHaveProperty("data")
+    expect(res.status).toBe(HttpStatus.CREATED);
   });
 
   afterEach(async () => {

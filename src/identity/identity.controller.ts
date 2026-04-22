@@ -29,7 +29,7 @@ export class IdentityController {
 
     @Delete(":id")
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN_RT")
+    @Roles("ADMIN")
     async deleteIdentity(@Param('id') id: number) {
         return this.identityService.deleteIdentity(id)
     }

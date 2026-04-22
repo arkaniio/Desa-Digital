@@ -12,8 +12,8 @@ export class RwController {
     constructor(private readonly rwService: RwService) { }
 
     @Post('register')
-    @Roles("ADMIN")
     @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles("ADMIN")
     async regsiterRw(@Body() data: RwDto, @CurrentUser() user_id: number) {
 
         //debug

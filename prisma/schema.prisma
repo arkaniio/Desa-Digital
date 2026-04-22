@@ -12,22 +12,22 @@ datasource db {
   provider = "postgresql"
 }
 
+enum role {
+  ADMIN
+  RT
+  RW
+  WARGA
+}
+
 model User {
   id         Int        @id @default(autoincrement())
   Username   String     @unique
   Email      String     @unique
   Password   String
-  Role       String     @default("USER")
+  Role       role       @default(WARGA)
   Created_at DateTime   @default(now())
   Updated_at DateTime   @updatedAt
   identities Identity[]
-}
-
-enum Role {
-  ADMIN
-  RT
-  RW
-  WARGA
 }
 
 model Identity {
