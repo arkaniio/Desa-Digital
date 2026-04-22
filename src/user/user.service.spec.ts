@@ -10,7 +10,9 @@ describe('UserService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
-        { provide: PrismaService, useValue: {} },
+        {
+          provide: PrismaService, useValue: {}
+        },
         { provide: JwtService, useValue: { sign: jest.fn() } }
       ],
     }).compile();

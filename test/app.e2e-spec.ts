@@ -17,17 +17,13 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  const payload_to_send = {
-    Number: 5,
-    RwId: 1
-  }
-
   const payload_to_send_email = {
     Email: "lalufirdausmuhardika@gmail.com",
     Password: "dika123"
   }
 
-  it('/rt/register (POST)', async () => {
+
+  it('/rt/delete/:id (DELETE)', async () => {
 
     const loginResp = await request(app.getHttpServer())
       .post('/user/login')
@@ -40,15 +36,14 @@ describe('AppController (e2e)', () => {
     console.log('BODY:', loginResp.body);
 
     const res = await request(app.getHttpServer())
-      .post('/rt/register')
-      .send(payload_to_send)
+      .delete('/rt/delete/1')
       .set("Authorization", `Bearer ${loginResp.body.data}`)
 
     console.log('STATUS:', res.status);
     console.log('BODY:', res.body);
 
     expect(res.body).toHaveProperty("data")
-    expect(res.status).toBe(HttpStatus.CREATED);
+    expect(res.status).toBe(HttpStatus.OK);
   });
 
   afterEach(async () => {
