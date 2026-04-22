@@ -18,7 +18,8 @@ describe('AppController (e2e)', () => {
   });
 
   const payload_to_send = {
-    Name: "Rukun Warga 05"
+    Number: 5,
+    RwId: 1
   }
 
   const payload_to_send_email = {
@@ -26,7 +27,7 @@ describe('AppController (e2e)', () => {
     Password: "dika123"
   }
 
-  it('/rw/register (POST)', async () => {
+  it('/rt/register (POST)', async () => {
 
     const loginResp = await request(app.getHttpServer())
       .post('/user/login')
@@ -39,7 +40,7 @@ describe('AppController (e2e)', () => {
     console.log('BODY:', loginResp.body);
 
     const res = await request(app.getHttpServer())
-      .post('/rw/register')
+      .post('/rt/register')
       .send(payload_to_send)
       .set("Authorization", `Bearer ${loginResp.body.data}`)
 
