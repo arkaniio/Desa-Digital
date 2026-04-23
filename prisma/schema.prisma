@@ -36,6 +36,8 @@ model Identity {
   User       User     @relation(fields: [User_Id], references: [id])
   Full_Name  String   @unique
   RtId       Int
+  RwId       Int
+  Rw         Rw       @relation(fields: [RwId], references: [Id])
   Rt         Rt       @relation(fields: [RtId], references: [Id])
   Age        Int
   Address    String
@@ -44,9 +46,10 @@ model Identity {
 }
 
 model Rw {
-  Id   Int    @id @default(autoincrement())
-  Name String
-  rts  Rt[]
+  Id         Int        @id @default(autoincrement())
+  Name       String
+  rts        Rt[]
+  identities Identity[]
 }
 
 model Rt {

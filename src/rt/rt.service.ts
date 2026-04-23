@@ -110,6 +110,23 @@ export class RtService {
 
         }
 
+        if (data.RwId != undefined || data.RwId != null) {
+
+            const parsing_dataRwId = parseInt(data.RwId)
+
+            if (!parsing_dataRwId || parsing_dataRwId == undefined) {
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to parsing the number into an integer type!",
+                    false
+                )
+            }
+
+            data.RwId = update_data.RwId
+
+        }
+
         try {
 
             const update = await this.prisma.rt.update({

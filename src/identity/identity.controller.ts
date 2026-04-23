@@ -7,7 +7,6 @@ import { Roles } from 'src/user/decorators/role_decorator';
 import { IdentityDto } from 'src/validator/identity_dto';
 import type { updateIdentitDto } from 'src/validator/identity_dto';
 import { PaginationDto } from 'src/validator/pagination_dto&search';
-import { Role } from '@prisma/client';
 
 @Controller('identity')
 export class IdentityController {

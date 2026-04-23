@@ -46,6 +46,7 @@ export class IdentityService {
                     User_Id: user_id,
                     Full_Name: data.Full_Name,
                     RtId: data.RtId,
+                    RwId: data.RwId,
                     Age: data.Age,
                     Address: data.Address
                 }
@@ -155,6 +156,11 @@ export class IdentityService {
                             RwId: true,
                             Number: true
                         }
+                    },
+                    Rw: {
+                        select: {
+                            Name: true
+                        }
                     }
                 }
             })
@@ -216,6 +222,23 @@ export class IdentityService {
             }
 
             update_data.RtId = parsingIntoInt
+
+        }
+
+        if (data.RwId != undefined || data.RwId != null) {
+
+            const parsing_dataRwId = parseInt(data.RwId)
+
+            if (!parsing_dataRwId || parsing_dataRwId == undefined) {
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to parsing the data!",
+                    false
+                )
+            }
+
+            data.RwId = update_data.RwId
 
         }
 
