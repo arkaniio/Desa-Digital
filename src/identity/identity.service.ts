@@ -24,7 +24,7 @@ export class IdentityService {
             )
         }
 
-        const identity_data = await this.prisma.identity.findUnique({
+        const identity_data = await this.prisma.identityMember.findUnique({
             where: {
                 Full_Name: data.Full_Name
             },
@@ -41,13 +41,14 @@ export class IdentityService {
 
         try {
 
-            const data_identity = await this.prisma.identity.create({
+            const data_identity = await this.prisma.identityMember.create({
                 data: {
+                    VillageId: Number(data.VillageId),
                     User_Id: user_id,
                     Full_Name: data.Full_Name,
-                    RtId: data.RtId,
-                    RwId: data.RwId,
-                    Age: data.Age,
+                    RtId: Number(data.RtId),
+                    RwId: Number(data.RwId),
+                    Age: Number(data.Age),
                     Address: data.Address
                 }
             })
@@ -91,10 +92,10 @@ export class IdentityService {
 
         try {
 
-            const data = await this.prisma.identity.delete(
+            const data = await this.prisma.identityMember.delete(
                 {
                     where: {
-                        id: id
+                        id: Number(id),
                     }
                 }
             )
@@ -140,15 +141,15 @@ export class IdentityService {
 
         try {
 
-            const find_identity = await this.prisma.identity.findUnique({
+            const find_identity = await this.prisma.identityMember.findUnique({
                 where: {
                     id: id
                 },
                 include: {
-                    User: {
+                    Village: {
                         select: {
-                            Username: true,
-                            Email: true
+                            Name: true,
+                            Address: true
                         }
                     },
                     Rt: {
@@ -242,6 +243,23 @@ export class IdentityService {
 
         }
 
+        if (data.VillageId != undefined || data.VillageId != null) {
+
+            const parsing_dataVillageId = parseInt(data.VillageId)
+
+            if (!parsing_dataVillageId || parsing_dataVillageId == undefined) {
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to parsing the data!",
+                    false
+                )
+            }
+
+            data.RwId = update_data.RwId
+
+        }
+
         if (data.Age != undefined || data.Age != null) {
 
             const parsingIntoInt = parseInt(data.Age)
@@ -263,7 +281,7 @@ export class IdentityService {
 
         try {
 
-            const update_identity = await this.prisma.identity.update({
+            const update_identity = await this.prisma.identityMember.update({
                 where: {
                     id: identity_id
                 },
@@ -335,7 +353,7 @@ export class IdentityService {
             try {
 
                 const [data, total_data] = await Promise.all([
-                    this.prisma.identity.findMany({
+                    this.prisma.identityMember.findMany({
                         skip: skip,
                         take: limit,
                         where: where,
@@ -347,7 +365,7 @@ export class IdentityService {
                             Address: true
                         },
                     }),
-                    this.prisma.identity.count({ where: where })
+                    this.prisma.identityMember.count({ where: where })
                 ])
 
                 if (!data || total_data == undefined || total_data == null) {
@@ -388,7 +406,7 @@ export class IdentityService {
         try {
 
             const [data, total_data] = await Promise.all([
-                this.prisma.identity.findMany({
+                this.prisma.identityMember.findMany({
                     skip: skip,
                     take: limit,
                     orderBy: {
@@ -402,7 +420,7 @@ export class IdentityService {
                         Address: true
                     }
                 }),
-                this.prisma.identity.count()
+                this.prisma.identityMember.count()
             ])
 
             if (!data || total_data == undefined || total_data == null) {

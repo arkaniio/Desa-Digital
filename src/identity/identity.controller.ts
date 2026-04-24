@@ -26,20 +26,20 @@ export class IdentityController {
         return this.identityService.registerIdentity(data, user_id)
     }
 
-    @Delete(":id")
+    @Delete("delete/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     async deleteIdentity(@Param('id') id: number) {
         return this.identityService.deleteIdentity(id)
     }
 
-    @Put(":id")
+    @Put("update/:id")
     @UseGuards(JwtAuthGuard)
     async updateIdentity(@Body() data: updateIdentitDto, @CurrentUser() user_id: number, @Param('id') identity_id: number) {
         return this.identityService.updateIdentity(data, identity_id, user_id)
     }
 
-    @Get(":id")
+    @Get("get/:id")
     @UseGuards(JwtAuthGuard)
     async getIdentity(@Param('id') id: number) {
         return this.identityService.getIdentity(id)

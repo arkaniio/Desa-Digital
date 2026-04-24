@@ -9,4 +9,16 @@ export declare class RwService {
         data: any;
         success: boolean;
     }>;
+    updateRw(data: any, user_id: number, id: number): Promise<{
+        status_code: HttpStatus;
+        message: string;
+        data: any;
+        success: boolean;
+    }>;
+    deleteRw(user_id: number, id: number): Promise<{
+        status_code: HttpStatus;
+        message: string;
+        data: any;
+        success: boolean;
+    }>;
 }

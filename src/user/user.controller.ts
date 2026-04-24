@@ -1,12 +1,9 @@
-import { Controller, Post, Body, UseGuards, Get, Put, Query } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Put } from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { CurrentUser } from './decorators/auth_token.decorator';
 import { CreateUserDto, LoginDto } from 'src/validator/user_dto';
 import type { UserUpdateDto } from 'src/validator/user_dto';
-import { RolesGuard } from './rolesGuard/role.guard';
-import { Roles } from './decorators/role_decorator';
-import { PaginationDto } from 'src/validator/pagination_dto&search';
 
 @Controller('user')
 export class UserController {
@@ -33,13 +30,6 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     async updateProfile(@Body() data: UserUpdateDto, @CurrentUser() user_id: number) {
         return this.userService.updateProfile(user_id, data)
-    }
-
-    @Get("all")
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN_RT")
-    async getAllUser(@Query() query: PaginationDto) {
-        return this.userService.getAllUser(query)
     }
 
 }

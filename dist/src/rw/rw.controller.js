@@ -26,9 +26,13 @@ let RwController = class RwController {
         this.rwService = rwService;
     }
     async regsiterRw(data, user_id) {
-        console.log(data);
-        console.log(user_id);
         return this.rwService.registerRw(data, user_id);
+    }
+    async updateRw(data, user_id, id) {
+        return this.rwService.updateRw(data, user_id, id);
+    }
+    async deleteRw(user_id, id) {
+        return this.rwService.deleteRw(user_id, id);
     }
 };
 exports.RwController = RwController;
@@ -42,6 +46,27 @@ __decorate([
     __metadata("design:paramtypes", [rw_dto_1.RwDto, Number]),
     __metadata("design:returntype", Promise)
 ], RwController.prototype, "regsiterRw", null);
+__decorate([
+    (0, common_1.Put)('update/:id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
+    (0, role_decorator_1.Roles)("ADMIN"),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, auth_token_decorator_1.CurrentUser)()),
+    __param(2, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number, Number]),
+    __metadata("design:returntype", Promise)
+], RwController.prototype, "updateRw", null);
+__decorate([
+    (0, common_1.Delete)('delete/:id'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
+    (0, role_decorator_1.Roles)("ADMIN"),
+    __param(0, (0, auth_token_decorator_1.CurrentUser)()),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:returntype", Promise)
+], RwController.prototype, "deleteRw", null);
 exports.RwController = RwController = __decorate([
     (0, common_1.Controller)('rw'),
     __metadata("design:paramtypes", [rw_service_1.RwService])

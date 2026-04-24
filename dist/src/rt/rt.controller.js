@@ -26,9 +26,13 @@ let RtController = class RtController {
         this.RtService = RtService;
     }
     async registerRt(data, user_id) {
-        console.log(data);
-        console.log(user_id);
         return this.RtService.registerRt(data, user_id);
+    }
+    async updateRt(data, user_id, id) {
+        return this.RtService.updateRt(data, user_id, id);
+    }
+    async deleteRt(id, user_id) {
+        return this.RtService.deleteRt(user_id, id);
     }
 };
 exports.RtController = RtController;
@@ -42,6 +46,27 @@ __decorate([
     __metadata("design:paramtypes", [rt_dto_1.RtDto, Number]),
     __metadata("design:returntype", Promise)
 ], RtController.prototype, "registerRt", null);
+__decorate([
+    (0, common_1.Put)("update/:id"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
+    (0, role_decorator_1.Roles)("ADMIN"),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, auth_token_decorator_1.CurrentUser)()),
+    __param(2, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Number, Number]),
+    __metadata("design:returntype", Promise)
+], RtController.prototype, "updateRt", null);
+__decorate([
+    (0, common_1.Delete)("delete/:id"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
+    (0, role_decorator_1.Roles)("ADMIN"),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, auth_token_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, Number]),
+    __metadata("design:returntype", Promise)
+], RtController.prototype, "deleteRt", null);
 exports.RtController = RtController = __decorate([
     (0, common_1.Controller)('rt'),
     __metadata("design:paramtypes", [rt_service_1.RtService])

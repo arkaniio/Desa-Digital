@@ -8,10 +8,16 @@ import { RtController } from './rt/rt.controller';
 import { RtService } from './rt/rt.service';
 import { RwController } from './rw/rw.controller';
 import { RwService } from './rw/rw.service';
+import { AnnouncementController } from './announcement/announcement.controller';
+import { AnnouncementService } from './announcement/announcement.service';
+import { VillageController } from './village/village.controller';
+import { VillageService } from './village/village.service';
+import { ServiceService } from './service/service.service';
+import { VillageController } from './village/village.controller';
 
 @Module({
   imports: [PrismaModule, UserModule, IdentityModule],
-  controllers: [AppController, RtController, RwController],
-  providers: [AppService, RtService, RwService],
+  controllers: [AppController, RtController, RwController, AnnouncementController, VillageController],
+  providers: [AppService, RtService, RwService, AnnouncementService, ServiceService, VillageService],
 })
 export class AppModule { }

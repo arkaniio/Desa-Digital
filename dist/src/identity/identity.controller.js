@@ -62,7 +62,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], IdentityController.prototype, "registerIdentity", null);
 __decorate([
-    (0, common_1.Delete)(":id"),
+    (0, common_1.Delete)("delete/:id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
     (0, role_decorator_1.Roles)("ADMIN"),
     __param(0, (0, common_1.Param)('id')),
@@ -71,7 +71,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], IdentityController.prototype, "deleteIdentity", null);
 __decorate([
-    (0, common_1.Put)(":id"),
+    (0, common_1.Put)("update/:id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, auth_token_decorator_1.CurrentUser)()),
@@ -81,7 +81,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], IdentityController.prototype, "updateIdentity", null);
 __decorate([
-    (0, common_1.Get)(":id"),
+    (0, common_1.Get)("get/:id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),

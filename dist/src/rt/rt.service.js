@@ -41,6 +41,67 @@ let RtService = class RtService {
             return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to create new data rt!", false);
         }
     }
+    async updateRt(data, user_id, id) {
+        if (!user_id && id == undefined || !user_id && id == null) {
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to detect the user id or id!", false);
+        }
+        const update_data = {};
+        if (data.RwId != undefined || data.RwId == null) {
+            const parsing_data = parseInt(data.RwId);
+            if (!parsing_data || parsing_data == undefined) {
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to detect the type of data.RwId", false);
+            }
+            data.RwId = update_data.RwId;
+        }
+        if (data.Number != undefined || data.Number != null) {
+            const parsing_dataNumber = parseInt(data.Number);
+            if (!parsing_dataNumber || parsing_dataNumber == undefined) {
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to parsing the number into an integer type!", false);
+            }
+            data.Number = update_data.Number;
+        }
+        if (data.RwId != undefined || data.RwId != null) {
+            const parsing_dataRwId = parseInt(data.RwId);
+            if (!parsing_dataRwId || parsing_dataRwId == undefined) {
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to parsing the number into an integer type!", false);
+            }
+            data.RwId = update_data.RwId;
+        }
+        try {
+            const update = await this.prisma.rt.update({
+                where: {
+                    Id: Number(id)
+                },
+                data: update_data
+            });
+            if (!update || update == undefined) {
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the data because the value is undefined!", false);
+            }
+            return (0, response_status_1.ResponseSuccess)(true, common_1.HttpStatus.OK, "Successfully to update the data of rt!", true);
+        }
+        catch (error) {
+            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update the data Rt!", false);
+        }
+    }
+    async deleteRt(user_id, id) {
+        if (!user_id && id == undefined || !user_id && id == null) {
+            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user_id and id from the request!", false);
+        }
+        try {
+            const delete_data = await this.prisma.rt.delete({
+                where: {
+                    Id: Number(id)
+                }
+            });
+            if (!delete_data && delete_data == undefined || delete_data == null) {
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to delete data because the data that you want to delete it is nill or undefined!", false);
+            }
+            return (0, response_status_1.ResponseSuccess)(true, common_1.HttpStatus.OK, "Successfully to delete the data rw!", true);
+        }
+        catch (error) {
+            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to delete the rt data!", false);
+        }
+    }
 };
 exports.RtService = RtService;
 exports.RtService = RtService = __decorate([

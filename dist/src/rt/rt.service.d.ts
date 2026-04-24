@@ -9,4 +9,16 @@ export declare class RtService {
         data: any;
         success: boolean;
     }>;
+    updateRt(data: any, user_id: number, id: number): Promise<{
+        status_code: HttpStatus;
+        message: string;
+        data: any;
+        success: boolean;
+    }>;
+    deleteRt(user_id: number, id: number): Promise<{
+        status_code: HttpStatus;
+        message: string;
+        data: any;
+        success: boolean;
+    }>;
 }

@@ -36,6 +36,7 @@ let IdentityService = class IdentityService {
                     User_Id: user_id,
                     Full_Name: data.Full_Name,
                     RtId: data.RtId,
+                    RwId: data.RwId,
                     Age: data.Age,
                     Address: data.Address
                 }
@@ -89,6 +90,11 @@ let IdentityService = class IdentityService {
                             RwId: true,
                             Number: true
                         }
+                    },
+                    Rw: {
+                        select: {
+                            Name: true
+                        }
                     }
                 }
             });
@@ -114,6 +120,13 @@ let IdentityService = class IdentityService {
                 return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Invalid type of Rt!", false);
             }
             update_data.RtId = parsingIntoInt;
+        }
+        if (data.RwId != undefined || data.RwId != null) {
+            const parsing_dataRwId = parseInt(data.RwId);
+            if (!parsing_dataRwId || parsing_dataRwId == undefined) {
+                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to parsing the data!", false);
+            }
+            data.RwId = update_data.RwId;
         }
         if (data.Age != undefined || data.Age != null) {
             const parsingIntoInt = parseInt(data.Age);

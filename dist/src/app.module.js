@@ -17,14 +17,16 @@ const rt_controller_1 = require("./rt/rt.controller");
 const rt_service_1 = require("./rt/rt.service");
 const rw_controller_1 = require("./rw/rw.controller");
 const rw_service_1 = require("./rw/rw.service");
+const announcement_controller_1 = require("./announcement/announcement.controller");
+const announcement_service_1 = require("./announcement/announcement.service");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [prisma_module_1.PrismaModule, user_module_1.UserModule, identity_module_1.IdentityModule],
-        controllers: [app_controller_1.AppController, rt_controller_1.RtController, rw_controller_1.RwController],
-        providers: [app_service_1.AppService, rt_service_1.RtService, rw_service_1.RwService],
+        controllers: [app_controller_1.AppController, rt_controller_1.RtController, rw_controller_1.RwController, announcement_controller_1.AnnouncementController],
+        providers: [app_service_1.AppService, rt_service_1.RtService, rw_service_1.RwService, announcement_service_1.AnnouncementService],
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
