@@ -3,6 +3,7 @@ import { throwDeprecation } from 'node:process';
 import { useReducer } from 'react';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from 'src/user/user.service';
+import { CheckIsNullWithNumber } from 'src/utils/checking_null_update';
 import { ResponseError, ResponseSuccess } from 'src/utils/response_status';
 import { PaginationDto } from 'src/validator/pagination_dto&search';
 import Undici from 'undici-types';
@@ -205,85 +206,13 @@ export class IdentityService {
             )
         }
 
-        const update_data: any = {}
-        if (data.Full_Name != undefined || data.Full_Name != null)
-            update_data.Full_Name = data.Full_Name
-
-        if (data.RtId != undefined || data.RtId != null) {
-
-            const parsingIntoInt = parseInt(data.RtId)
-
-            if (typeof parsingIntoInt != "number") {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Invalid type of Rt!",
-                    false
-                )
-            }
-
-            update_data.RtId = parsingIntoInt
-
-        }
-
-        if (data.RwId != undefined || data.RwId != null) {
-
-            const parsing_dataRwId = parseInt(data.RwId)
-
-            if (!parsing_dataRwId || parsing_dataRwId == undefined) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to parsing the data!",
-                    false
-                )
-            }
-
-            data.RwId = update_data.RwId
-
-        }
-
-        if (data.VillageId != undefined || data.VillageId != null) {
-
-            const parsing_dataVillageId = parseInt(data.VillageId)
-
-            if (!parsing_dataVillageId || parsing_dataVillageId == undefined) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to parsing the data!",
-                    false
-                )
-            }
-
-            data.RwId = update_data.RwId
-
-        }
-
-        if (data.Age != undefined || data.Age != null) {
-
-            const parsingIntoInt = parseInt(data.Age)
-
-            if (typeof parsingIntoInt != "number") {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Invalid type of age!",
-                    false
-                )
-            }
-
-            update_data.Age = parsingIntoInt
-
-        }
-
-        if (data.Address != undefined || data.Address != null) update_data.Adress = data.Address
+        const update_data = CheckIsNullWithNumber(data)
 
         try {
 
             const update_identity = await this.prisma.identityMember.update({
                 where: {
-                    id: identity_id
+                    id: Number(identity_id)
                 },
                 data: update_data
             })
@@ -315,7 +244,7 @@ export class IdentityService {
 
     }
 
-    async getAllIdentity(query: PaginationDto) {
+    async getAllIdentity(query: any) {
 
         const { page, limit, search_query } = query
 

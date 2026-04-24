@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { ResponseError, ResponseSuccess } from 'src/utils/response_status';
 import { normalizeEmail } from 'validator';
+import { CheckIsNullWithNumber } from 'src/utils/checking_null_update';
 
 @Injectable()
 export class UserService {
@@ -175,33 +176,13 @@ export class UserService {
             )
         }
 
-        const update_data: any = {}
-        if (data.Username != undefined || data.Username != null)
-            update_data.Username = data.Username
-        if (data.Email != undefined || data.Email != null)
-            update_data.Email = data.Email
-        if (data.Password != undefined || data.Password != null) {
-
-            const password_hash = await bcrypt.hash(data.Password, 10)
-
-            if (password_hash == undefined || password_hash == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to hashing the password!",
-                    false
-                )
-
-            }
-            update_data.Password = password_hash
-
-        }
+        const update_data = CheckIsNullWithNumber(data)
 
         try {
 
             const update_users = await this.prisma.user.update({
                 where: {
-                    id: user_id
+                    id: Number(user_id)
                 },
                 data: update_data
             })

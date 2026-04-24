@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CheckIsNullWithNumber } from 'src/utils/checking_null_update';
 import { ResponseError, ResponseSuccess } from 'src/utils/response_status';
 import Undici from 'undici-types';
 
@@ -75,57 +76,7 @@ export class RtService {
             )
         }
 
-        const update_data: any = {}
-        if (data.RwId != undefined || data.RwId == null) {
-
-            const parsing_data = parseInt(data.RwId)
-
-            if (!parsing_data || parsing_data == undefined) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to detect the type of data.RwId",
-                    false
-                )
-            }
-
-            data.RwId = update_data.RwId
-
-        }
-
-        if (data.Number != undefined || data.Number != null) {
-
-            const parsing_dataNumber = parseInt(data.Number)
-
-            if (!parsing_dataNumber || parsing_dataNumber == undefined) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to parsing the number into an integer type!",
-                    false
-                )
-            }
-
-            data.Number = update_data.Number
-
-        }
-
-        if (data.RwId != undefined || data.RwId != null) {
-
-            const parsing_dataRwId = parseInt(data.RwId)
-
-            if (!parsing_dataRwId || parsing_dataRwId == undefined) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to parsing the number into an integer type!",
-                    false
-                )
-            }
-
-            data.RwId = update_data.RwId
-
-        }
+        const update_data = CheckIsNullWithNumber(data)
 
         try {
 

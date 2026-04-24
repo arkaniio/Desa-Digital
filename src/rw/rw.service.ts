@@ -1,5 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CheckIsNullWithNumber } from 'src/utils/checking_null_update';
 import { ResponseError, ResponseSuccess } from 'src/utils/response_status';
 import Undici from 'undici-types';
 
@@ -83,11 +84,7 @@ export class RwService {
             )
         }
 
-        const data_update: any = {}
-
-        if (data.Name != null || data.Name != undefined) {
-            data_update.Name = data.Name
-        }
+        const update_data_Rw = CheckIsNullWithNumber(data)
 
         try {
 
@@ -95,7 +92,7 @@ export class RwService {
                 where: {
                     Id: Number(id)
                 },
-                data: data
+                data: update_data_Rw
             })
 
             if (!update_data || update_data == undefined) {
