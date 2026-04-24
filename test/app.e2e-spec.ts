@@ -22,20 +22,16 @@ describe('AppController (e2e)', () => {
     Password: "dika123"
   }
 
-  const payload_announcement = {
-    Tittle: "shshshsh",
-    Content: "shshshshshshshs",
-    RwId: 1,
-    RtId: 2
-  }
-
-  const payload_create_Rt = {
-    Number: 5,
-    RwId: 1
+  const payload_create_village = {
+    Name: "Desa Karang Asem",
+    Address: "Jalan Tawak Tawak",
+    Total_Population: 1000,
+    Village_Age: 20,
+    Leader_VillageId: 9
   }
 
 
-  it(' /announcement/create (POST)', async () => {
+  it(' /village/create (POST)', async () => {
 
     const loginResp = await request(app.getHttpServer())
       .post('/user/login')
@@ -47,24 +43,16 @@ describe('AppController (e2e)', () => {
     console.log('STATUS:', loginResp.status);
     console.log('BODY:', loginResp.body);
 
-    const rt_res = await request(app.getHttpServer())
-      .post("/register")
-      .send(payload_create_Rt)
+    const village_res = await request(app.getHttpServer())
+      .post('/village/create')
+      .send(payload_create_village)
       .set("Authorization", `Bearer ${loginResp.body.data}`)
 
-    console.log("STATUS:", rt_res.status)
-    console.log("BODY:", rt_res.body)
+    console.log('STATUS:', village_res.status);
+    console.log('BODY:', village_res.body);
 
-    const announcement_res = await request(app.getHttpServer())
-      .post('/announcement/create')
-      .send(payload_announcement)
-      .set("Authorization", `Bearer ${loginResp.body.data}`)
-
-    console.log('STATUS:', announcement_res.status);
-    console.log('BODY:', announcement_res.body);
-
-    expect(announcement_res.body).toHaveProperty("data")
-    expect(announcement_res.status).toBe(HttpStatus.OK);
+    expect(village_res.body).toHaveProperty("data")
+    expect(village_res.status).toBe(HttpStatus.CREATED);
   });
 
   afterEach(async () => {
