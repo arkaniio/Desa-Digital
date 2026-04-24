@@ -1,5 +1,14 @@
 import { IsIn, IsInt, IsString, MinLength } from "class-validator";
 
+export type UpdateVillage = {
+
+    Name?: string,
+    Address?: string,
+    Total_Population?: number,
+    Village_Age?: number,
+
+}
+
 export class VillageDto {
 
     @IsString()

@@ -1,5 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
+import { act } from 'react';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { CheckIsNull } from 'src/utils/checking_null_update';
 import { ResponseError, ResponseSuccess } from 'src/utils/response_status';
 
 @Injectable()
@@ -66,6 +68,103 @@ export class VillageService {
                 error,
                 HttpStatus.BAD_REQUEST,
                 "Failed to create new vilage as a leader of village!",
+                false
+            )
+        }
+
+    }
+
+    async deleteVillage(id: number, user_id: number) {
+
+        if (!id == undefined && user_id == undefined || id == null && user_id == null) {
+            return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Failed to delete the village using id and user_id!",
+                false
+            )
+        }
+
+        try {
+
+            const delete_data = await this.prisma.village.delete({
+                where: {
+                    id: Number(id)
+                }
+            })
+
+            if (!delete_data == undefined || delete_data == null) {
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to delete data because the data that you want to delete is null!",
+                    false
+                )
+            }
+
+            return ResponseSuccess(
+                true,
+                HttpStatus.OK,
+                "Successfully to delete the data!",
+                true
+            )
+
+        } catch (error) {
+            return ResponseError(
+                error,
+                HttpStatus.BAD_REQUEST,
+                "Failed to delete the data village!",
+                false
+            )
+        }
+
+    }
+
+    async updateVillage(data: any, user_id: number, id: number) {
+
+        if (!id == undefined && user_id == undefined || id == null && user_id == null) {
+            return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Failed to update the village using id and user_id!",
+                false
+            )
+        }
+
+        //tools
+        const update_data = CheckIsNull(data)
+        //
+
+        try {
+
+            const update = await this.prisma.village.update({
+                where: {
+                    id: Number(id)
+                },
+                data: update_data
+            })
+
+            if (!update == undefined || update == null) {
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Failed to update because the result is nill!",
+                    false
+                )
+            }
+
+            return ResponseSuccess(
+                null,
+                HttpStatus.OK,
+                "Success to update the village data!",
+                true
+            )
+
+        } catch (error) {
+            return ResponseError(
+                error,
+                HttpStatus.BAD_REQUEST,
+                "Failed to update the data!",
                 false
             )
         }

@@ -23,15 +23,15 @@ describe('AppController (e2e)', () => {
   }
 
   const payload_create_village = {
-    Name: "Desa Karang Asem",
-    Address: "Jalan Tawak Tawak",
-    Total_Population: 1000,
-    Village_Age: 20,
+    Name: "Desa Karang Anyar",
+    Address: "Jalan Tawak Tawak No 3",
+    Total_Population: 1003,
+    Village_Age: 24,
     Leader_VillageId: 9
   }
 
 
-  it(' /village/create (POST)', async () => {
+  it(' /village/update/:id (PUT)', async () => {
 
     const loginResp = await request(app.getHttpServer())
       .post('/user/login')
@@ -44,7 +44,7 @@ describe('AppController (e2e)', () => {
     console.log('BODY:', loginResp.body);
 
     const village_res = await request(app.getHttpServer())
-      .post('/village/create')
+      .put('/village/update/2')
       .send(payload_create_village)
       .set("Authorization", `Bearer ${loginResp.body.data}`)
 
@@ -52,7 +52,7 @@ describe('AppController (e2e)', () => {
     console.log('BODY:', village_res.body);
 
     expect(village_res.body).toHaveProperty("data")
-    expect(village_res.status).toBe(HttpStatus.CREATED);
+    expect(village_res.status).toBe(HttpStatus.OK);
   });
 
   afterEach(async () => {
