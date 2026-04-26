@@ -1,12 +1,7 @@
-import { BadRequestException, HttpStatus, Injectable, Res, UnauthorizedException } from '@nestjs/common';
-import { throwDeprecation } from 'node:process';
-import { useReducer } from 'react';
+import { BadRequestException, HttpStatus, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { UserService } from 'src/user/user.service';
 import { CheckIsNullWithNumber } from 'src/utils/checking_null_update';
 import { ResponseError, ResponseSuccess } from 'src/utils/response_status';
-import { PaginationDto } from 'src/validator/pagination_dto&search';
-import Undici from 'undici-types';
 
 @Injectable()
 export class IdentityService {
@@ -291,7 +286,8 @@ export class IdentityService {
                             RtId: true,
                             Rt: true,
                             Age: true,
-                            Address: true
+                            Address: true,
+                            Village: true
                         },
                     }),
                     this.prisma.identityMember.count({ where: where })

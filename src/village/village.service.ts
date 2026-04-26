@@ -171,4 +171,59 @@ export class VillageService {
 
     }
 
+    async getAllVillage(user_id: number) {
+
+        if (!user_id == undefined || user_id == null) {
+            return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Failed to get the user id from token jwt!",
+                false
+            )
+        }
+
+        try {
+
+            const getAll_village = await this.prisma.village.findMany({
+                include: {
+                    identityVilages: {
+                        select: {
+                            Full_Name: true,
+                            Age: true,
+                            Address: true,
+                            Village: true,
+                            Rt: true,
+                            Rw: true
+                        }
+                    }
+                }
+            })
+
+            if (getAll_village == undefined || getAll_village == null) {
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Not Found!",
+                    false
+                )
+            }
+
+            return ResponseSuccess(
+                getAll_village,
+                HttpStatus.OK,
+                "Successfully to get all data of village!",
+                true
+            )
+
+        } catch (error) {
+            return ResponseError(
+                error,
+                HttpStatus.BAD_REQUEST,
+                "Failed to get all data of village!",
+                false
+            )
+        }
+
+    }
+
 }

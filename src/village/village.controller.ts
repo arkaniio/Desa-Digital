@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Body, Delete, Param, Put } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, Delete, Param, Put, Get } from '@nestjs/common';
 import { VillageService } from './village.service';
 import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
 import { RolesGuard } from 'src/user/rolesGuard/role.guard';
@@ -23,12 +23,6 @@ export class VillageController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     async deleteVillage(@Param('id') id: number, @CurrentUser() user_id: number) {
-
-        //debug
-        console.log(typeof id)
-        console.log(id)
-        //
-
         return this.villageService.deleteVillage(id, user_id)
     }
 
@@ -36,17 +30,14 @@ export class VillageController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     async updateVillage(@Body() data: UpdateVillage, @Param('id') id: number, @CurrentUser() user_id: number) {
-
-        //debug
-        console.log(data)
-        console.log(user_id)
-        console.log(id)
-        console.log(typeof data)
-        console.log(typeof user_id)
-        console.log(typeof id)
-        //
-
         return this.villageService.updateVillage(data, user_id, id)
+    }
+
+    @Get("allVillage")
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles()
+    async getAllVillage(@CurrentUser() user_id: number) {
+        return this.villageService.getAllVillage(user_id)
     }
 
 }

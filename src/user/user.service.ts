@@ -31,7 +31,14 @@ export class UserService {
         }
 
         const password_hash = await bcrypt.hash(data.Password, 10)
-        if (!password_hash) throw Error("Failed to hash the password!")
+        if (!password_hash == undefined || password_hash == null) {
+            return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Failed to hashing the data password!",
+                false
+            )
+        }
 
         try {
             const user = await this.prisma.user.create({
