@@ -1,11 +1,11 @@
 import { Controller, Post, UseGuards, Body, Put, Param, Delete } from '@nestjs/common';
-import { RwService } from './rw.service';
-import { Roles } from 'src/user/decorators/role_decorator';
-import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
-import { RolesGuard } from 'src/user/rolesGuard/role.guard';
-import { RwDto } from 'src/validator/rw_dto';
-import { CurrentUser } from 'src/user/decorators/auth_token.decorator';
-import type { UpdateRwDto } from 'src/validator/rw_dto';
+import { RwService } from './rw.service.js';
+import { Roles } from '../common/auth/decorators/roles.decorator.js';
+import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from '../common/auth/guards/roles.guard.js';
+import { CreateRwDto } from './dto/create-rw.dto.js';
+import { CurrentUser } from '../common/auth/decorators/current-user.decorator.js';
+import type { UpdateRwDto } from './dto/update-rw.dto.js';
 
 @Controller('rw')
 export class RwController {
@@ -15,7 +15,7 @@ export class RwController {
     @Post('register')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
-    async regsiterRw(@Body() data: RwDto, @CurrentUser() user_id: number) {
+    async regsiterRw(@Body() data: CreateRwDto, @CurrentUser() user_id: number) {
         return this.rwService.registerRw(data, user_id)
     }
 

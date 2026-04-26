@@ -1,4 +1,4 @@
-import { AnnouncementService } from './announcement.service';
+import { AnnouncementService } from './announcement.service.js';
 export declare class AnnouncementController {
     private readonly announcementService;
     constructor(announcementService: AnnouncementService);

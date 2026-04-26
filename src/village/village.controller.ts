@@ -1,11 +1,11 @@
 import { Controller, Post, UseGuards, Body, Delete, Param, Put, Get } from '@nestjs/common';
-import { VillageService } from './village.service';
-import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
-import { RolesGuard } from 'src/user/rolesGuard/role.guard';
-import { Roles } from 'src/user/decorators/role_decorator';
-import { VillageDto } from 'src/validator/village_dto';
-import { CurrentUser } from 'src/user/decorators/auth_token.decorator';
-import type { UpdateVillage } from 'src/validator/village_dto';
+import { VillageService } from './village.service.js';
+import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from '../common/auth/guards/roles.guard.js';
+import { Roles } from '../common/auth/decorators/roles.decorator.js';
+import { CreateVillageDto } from './dto/create-village.dto.js';
+import { CurrentUser } from '../common/auth/decorators/current-user.decorator.js';
+import type { UpdateVillageDto } from './dto/update-village.dto.js';
 
 @Controller('village')
 export class VillageController {
@@ -15,7 +15,7 @@ export class VillageController {
     @Post("create")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
-    async createNewVillage(@Body() data: VillageDto, @CurrentUser() user_id: number) {
+    async createNewVillage(@Body() data: CreateVillageDto, @CurrentUser() user_id: number) {
         return this.villageService.createNewVillage(data, user_id)
     }
 
@@ -29,7 +29,7 @@ export class VillageController {
     @Put("update/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
-    async updateVillage(@Body() data: UpdateVillage, @Param('id') id: number, @CurrentUser() user_id: number) {
+    async updateVillage(@Body() data: UpdateVillageDto, @Param('id') id: number, @CurrentUser() user_id: number) {
         return this.villageService.updateVillage(data, user_id, id)
     }
 

@@ -1,8 +1,7 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { act } from 'react';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { CheckIsNull } from 'src/utils/checking_null_update';
-import { ResponseError, ResponseSuccess } from 'src/utils/response_status';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { CheckIsNull } from '../common/helpers/null-check.helper.js';
+import { ResponseError, ResponseSuccess } from '../common/helpers/response.helper.js';
 
 @Injectable()
 export class VillageService {

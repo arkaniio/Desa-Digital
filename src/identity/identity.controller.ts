@@ -1,12 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { IdentityService } from './identity.service';
-import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
-import { CurrentUser } from 'src/user/decorators/auth_token.decorator';
-import { RolesGuard } from 'src/user/rolesGuard/role.guard';
-import { Roles } from 'src/user/decorators/role_decorator';
-import { IdentityDto } from 'src/validator/identity_dto';
-import type { updateIdentitDto } from 'src/validator/identity_dto';
-import { PaginationDto } from 'src/validator/pagination_dto&search';
+import { IdentityService } from './identity.service.js';
+import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard.js';
+import { CurrentUser } from '../common/auth/decorators/current-user.decorator.js';
+import { RolesGuard } from '../common/auth/guards/roles.guard.js';
+import { Roles } from '../common/auth/decorators/roles.decorator.js';
+import { CreateIdentityDto } from './dto/create-identity.dto.js';
+import type { UpdateIdentityDto } from './dto/update-identity.dto.js';
+import { PaginationDto } from '../common/dto/pagination-query.dto.js';
 
 @Controller('identity')
 export class IdentityController {
@@ -22,7 +22,7 @@ export class IdentityController {
 
     @Post("registerIdentity")
     @UseGuards(JwtAuthGuard)
-    async registerIdentity(@Body() data: IdentityDto, @CurrentUser() user_id: number) {
+    async registerIdentity(@Body() data: CreateIdentityDto, @CurrentUser() user_id: number) {
         return this.identityService.registerIdentity(data, user_id)
     }
 
@@ -35,7 +35,7 @@ export class IdentityController {
 
     @Put("update/:id")
     @UseGuards(JwtAuthGuard)
-    async updateIdentity(@Body() data: updateIdentitDto, @CurrentUser() user_id: number, @Param('id') identity_id: number) {
+    async updateIdentity(@Body() data: UpdateIdentityDto, @CurrentUser() user_id: number, @Param('id') identity_id: number) {
         return this.identityService.updateIdentity(data, identity_id, user_id)
     }
 

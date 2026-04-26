@@ -1,11 +1,11 @@
 import { Controller, Post, UseGuards, Body, Put, Param, Delete } from '@nestjs/common';
-import { CurrentUser } from 'src/user/decorators/auth_token.decorator';
-import { Roles } from 'src/user/decorators/role_decorator';
-import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
-import { RolesGuard } from 'src/user/rolesGuard/role.guard';
-import { RtDto } from 'src/validator/rt_dto';
-import { RtService } from './rt.service';
-import type { UpdateRtDto } from 'src/validator/rt_dto';
+import { CurrentUser } from '../common/auth/decorators/current-user.decorator.js';
+import { Roles } from '../common/auth/decorators/roles.decorator.js';
+import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from '../common/auth/guards/roles.guard.js';
+import { CreateRtDto } from './dto/create-rt.dto.js';
+import { RtService } from './rt.service.js';
+import type { UpdateRtDto } from './dto/update-rt.dto.js';
 
 @Controller('rt')
 export class RtController {
@@ -15,7 +15,7 @@ export class RtController {
     @Post('register')
     @Roles("ADMIN")
     @UseGuards(JwtAuthGuard, RolesGuard)
-    async registerRt(@Body() data: RtDto, @CurrentUser() user_id: number) {
+    async registerRt(@Body() data: CreateRtDto, @CurrentUser() user_id: number) {
         return this.RtService.registerRt(data, user_id)
     }
 

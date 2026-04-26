@@ -14,12 +14,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RtController = void 0;
 const common_1 = require("@nestjs/common");
-const auth_token_decorator_1 = require("../user/decorators/auth_token.decorator");
-const role_decorator_1 = require("../user/decorators/role_decorator");
-const jwt_auth_guard_1 = require("../user/jwt-auth.guard");
-const role_guard_1 = require("../user/rolesGuard/role.guard");
-const rt_dto_1 = require("../validator/rt_dto");
-const rt_service_1 = require("./rt.service");
+const current_user_decorator_js_1 = require("../common/auth/decorators/current-user.decorator.js");
+const roles_decorator_js_1 = require("../common/auth/decorators/roles.decorator.js");
+const jwt_auth_guard_js_1 = require("../common/auth/guards/jwt-auth.guard.js");
+const roles_guard_js_1 = require("../common/auth/guards/roles.guard.js");
+const create_rt_dto_js_1 = require("./dto/create-rt.dto.js");
+const rt_service_js_1 = require("./rt.service.js");
 let RtController = class RtController {
     RtService;
     constructor(RtService) {
@@ -38,20 +38,20 @@ let RtController = class RtController {
 exports.RtController = RtController;
 __decorate([
     (0, common_1.Post)('register'),
-    (0, role_decorator_1.Roles)("ADMIN"),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
+    (0, roles_decorator_js_1.Roles)("ADMIN"),
+    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard, roles_guard_js_1.RolesGuard),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, auth_token_decorator_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_js_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [rt_dto_1.RtDto, Number]),
+    __metadata("design:paramtypes", [create_rt_dto_js_1.CreateRtDto, Number]),
     __metadata("design:returntype", Promise)
 ], RtController.prototype, "registerRt", null);
 __decorate([
     (0, common_1.Put)("update/:id"),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
-    (0, role_decorator_1.Roles)("ADMIN"),
+    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard, roles_guard_js_1.RolesGuard),
+    (0, roles_decorator_js_1.Roles)("ADMIN"),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, auth_token_decorator_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_js_1.CurrentUser)()),
     __param(2, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number, Number]),
@@ -59,16 +59,16 @@ __decorate([
 ], RtController.prototype, "updateRt", null);
 __decorate([
     (0, common_1.Delete)("delete/:id"),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
-    (0, role_decorator_1.Roles)("ADMIN"),
+    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard, roles_guard_js_1.RolesGuard),
+    (0, roles_decorator_js_1.Roles)("ADMIN"),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, auth_token_decorator_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_js_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], RtController.prototype, "deleteRt", null);
 exports.RtController = RtController = __decorate([
     (0, common_1.Controller)('rt'),
-    __metadata("design:paramtypes", [rt_service_1.RtService])
+    __metadata("design:paramtypes", [rt_service_js_1.RtService])
 ], RtController);
 //# sourceMappingURL=rt.controller.js.map

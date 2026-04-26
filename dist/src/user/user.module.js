@@ -8,27 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserModule = void 0;
 const common_1 = require("@nestjs/common");
-const user_service_1 = require("./user.service");
-const user_controller_1 = require("./user.controller");
-const passport_1 = require("@nestjs/passport");
-const prisma_module_1 = require("../prisma/prisma.module");
-const jwt_1 = require("@nestjs/jwt");
-const jwt_strategy_1 = require("./jwt.strategy");
+const user_service_js_1 = require("./user.service.js");
+const user_controller_js_1 = require("./user.controller.js");
+const prisma_module_js_1 = require("../prisma/prisma.module.js");
 let UserModule = class UserModule {
 };
 exports.UserModule = UserModule;
 exports.UserModule = UserModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            prisma_module_1.PrismaModule,
-            passport_1.PassportModule,
-            jwt_1.JwtModule.register({
-                secret: process.env.JWT_AUTH,
-                signOptions: { expiresIn: '1d' }
-            })
+            prisma_module_js_1.PrismaModule,
         ],
-        providers: [user_service_1.UserService, jwt_strategy_1.JwtStrategy],
-        controllers: [user_controller_1.UserController]
+        providers: [user_service_js_1.UserService],
+        controllers: [user_controller_js_1.UserController],
     })
 ], UserModule);
 //# sourceMappingURL=user.module.js.map

@@ -25,10 +25,11 @@ model User {
   Email      String           @unique
   Password   String
   Role       role             @default(WARGA)
-  Created_at DateTime         @default(now())
-  Updated_at DateTime         @updatedAt
+  Avatar     String?
   identities IdentityMember[]
   villages   Village[]
+  Created_at DateTime         @default(now())
+  Updated_at DateTime         @updatedAt
 }
 
 model Announcement {
@@ -68,9 +69,9 @@ model IdentityMember {
   Rt            Rt             @relation(fields: [RtId], references: [Id])
   Age           Int
   Address       String
+  Announcements Announcement[]
   Created_at    DateTime       @default(now())
   Updated_at    DateTime       @default(now())
-  announcements Announcement[]
 }
 
 model Rw {

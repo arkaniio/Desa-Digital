@@ -1,6 +1,6 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { ResponseError, ResponseSuccess } from 'src/utils/response_status';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { ResponseError, ResponseSuccess } from '../common/helpers/response.helper.js';
 
 @Injectable()
 export class AnnouncementService {
@@ -60,6 +60,52 @@ export class AnnouncementService {
                 error,
                 HttpStatus.BAD_REQUEST,
                 "Failed to create new announcement!",
+                false
+            )
+        }
+
+    }
+
+    async deletAnnouncement(user_id: number, id: number) {
+
+        if (!user_id && id == undefined || user_id && id == null) {
+            return ResponseError(
+                null,
+                HttpStatus.BAD_REQUEST,
+                "Failed to get the user id and id for the request!",
+                false
+            )
+        }
+
+        try {
+
+            const deleteData = await this.prisma.announcement.delete({
+                where: {
+                    id: Number(id)
+                }
+            })
+
+            if (!deleteData == undefined || deleteData == null) {
+                return ResponseError(
+                    null,
+                    HttpStatus.BAD_REQUEST,
+                    "Not found!",
+                    false
+                )
+            }
+
+            return ResponseSuccess(
+                true,
+                HttpStatus.OK,
+                "Successfully to delete the announcement!",
+                false
+            )
+
+        } catch (error) {
+            return ResponseError(
+                error,
+                HttpStatus.BAD_REQUEST,
+                "Failed to delete the data of announcement!",
                 false
             )
         }

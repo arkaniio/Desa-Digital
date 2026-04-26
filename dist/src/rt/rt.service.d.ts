@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { PrismaService } from "../prisma/prisma.service";
+import { PrismaService } from '../prisma/prisma.service.js';
 export declare class RtService {
     private prisma;
     constructor(prisma: PrismaService);

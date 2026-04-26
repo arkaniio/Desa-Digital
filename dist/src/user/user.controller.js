@@ -14,13 +14,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
-const user_service_1 = require("./user.service");
-const jwt_auth_guard_1 = require("./jwt-auth.guard");
-const auth_token_decorator_1 = require("./decorators/auth_token.decorator");
-const user_dto_1 = require("../validator/user_dto");
-const role_guard_1 = require("./rolesGuard/role.guard");
-const role_decorator_1 = require("./decorators/role_decorator");
-const pagination_dto_search_1 = require("../validator/pagination_dto&search");
+const user_service_js_1 = require("./user.service.js");
+const jwt_auth_guard_js_1 = require("../common/auth/guards/jwt-auth.guard.js");
+const current_user_decorator_js_1 = require("../common/auth/decorators/current-user.decorator.js");
+const create_user_dto_js_1 = require("./dto/create-user.dto.js");
+const login_dto_js_1 = require("./dto/login.dto.js");
 let UserController = class UserController {
     userService;
     constructor(userService) {
@@ -38,53 +36,41 @@ let UserController = class UserController {
     async updateProfile(data, user_id) {
         return this.userService.updateProfile(user_id, data);
     }
-    async getAllUser(query) {
-        return this.userService.getAllUser(query);
-    }
 };
 exports.UserController = UserController;
 __decorate([
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.CreateUserDto]),
+    __metadata("design:paramtypes", [create_user_dto_js_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "registerUser", null);
 __decorate([
     (0, common_1.Post)('login'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [user_dto_1.LoginDto]),
+    __metadata("design:paramtypes", [login_dto_js_1.LoginDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "loginUser", null);
 __decorate([
     (0, common_1.Get)('profile'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __param(0, (0, auth_token_decorator_1.CurrentUser)()),
+    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard),
+    __param(0, (0, current_user_decorator_js_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getProfile", null);
 __decorate([
     (0, common_1.Put)("update"),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, auth_token_decorator_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_js_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateProfile", null);
-__decorate([
-    (0, common_1.Get)("all"),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, role_guard_1.RolesGuard),
-    (0, role_decorator_1.Roles)("ADMIN_RT"),
-    __param(0, (0, common_1.Query)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [pagination_dto_search_1.PaginationDto]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "getAllUser", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('user'),
-    __metadata("design:paramtypes", [user_service_1.UserService])
+    __metadata("design:paramtypes", [user_service_js_1.UserService])
 ], UserController);
 //# sourceMappingURL=user.controller.js.map

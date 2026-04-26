@@ -44,11 +44,12 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("../prisma/prisma.service");
+const prisma_service_js_1 = require("../prisma/prisma.service.js");
 const bcrypt = __importStar(require("bcrypt"));
 const jwt_1 = require("@nestjs/jwt");
-const response_status_1 = require("../utils/response_status");
+const response_helper_js_1 = require("../common/helpers/response.helper.js");
 const validator_1 = require("validator");
+const null_check_helper_js_1 = require("../common/helpers/null-check.helper.js");
 let UserService = class UserService {
     prisma;
     jwtService;
@@ -63,11 +64,12 @@ let UserService = class UserService {
             }
         });
         if (user_data) {
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Email has been already exists!", false);
+            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Email has been already exists!", false);
         }
         const password_hash = await bcrypt.hash(data.Password, 10);
-        if (!password_hash)
-            throw Error("Failed to hash the password!");
+        if (!password_hash == undefined || password_hash == null) {
+            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to hashing the data password!", false);
+        }
         try {
             const user = await this.prisma.user.create({
                 data: {
@@ -77,10 +79,10 @@ let UserService = class UserService {
                     Role: data.Role
                 }
             });
-            return (0, response_status_1.ResponseSuccess)(user, common_1.HttpStatus.OK, "Successfully to create new user!", true);
+            return (0, response_helper_js_1.ResponseSuccess)(user, common_1.HttpStatus.OK, "Successfully to create new user!", true);
         }
         catch (error) {
-            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to create new user!", false);
+            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to create new user!", false);
         }
     }
     async loginUser(data) {
@@ -90,11 +92,11 @@ let UserService = class UserService {
             }
         });
         if (user_data == undefined || user_data == null) {
-            return (0, response_status_1.ResponseError)(validator_1.normalizeEmail, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user data using email user!", false);
+            return (0, response_helper_js_1.ResponseError)(validator_1.normalizeEmail, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user data using email user!", false);
         }
         const isPasswordValid = await bcrypt.compare(data.Password, user_data?.Password);
         if (isPasswordValid == undefined || !isPasswordValid) {
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to compare the data password!", false);
+            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to compare the data password!", false);
         }
         const token = this.jwtService.sign({
             id: user_data.id,
@@ -102,11 +104,11 @@ let UserService = class UserService {
             role: user_data.Role,
             username: user_data.Username
         });
-        return (0, response_status_1.ResponseSuccess)(token, common_1.HttpStatus.OK, "Success to login as a user!", true);
+        return (0, response_helper_js_1.ResponseSuccess)(token, common_1.HttpStatus.OK, "Success to login as a user!", true);
     }
     async getProfile(user_id) {
         if (user_id == undefined || user_id == null) {
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the id number!", false);
+            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the id number!", false);
         }
         try {
             const data_user = await this.prisma.user.findUnique({
@@ -121,97 +123,50 @@ let UserService = class UserService {
                             Age: true,
                             Address: true
                         }
+                    },
+                    villages: {
+                        select: {
+                            Name: true,
+                            Address: true
+                        }
                     }
                 }
             });
             if (data_user == undefined || data_user == null) {
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user data!", false);
+                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user data!", false);
             }
-            return (0, response_status_1.ResponseSuccess)(data_user, common_1.HttpStatus.OK, "Success to get the profile!", true);
+            return (0, response_helper_js_1.ResponseSuccess)(data_user, common_1.HttpStatus.OK, "Success to get the profile!", true);
         }
         catch (error) {
-            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the profile!", false);
+            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the profile!", false);
         }
     }
     async updateProfile(user_id, data) {
         if (user_id == undefined || user_id == null) {
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to get the user id!", false);
+            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to get the user id!", false);
         }
-        const update_data = {};
-        if (data.Username != undefined || data.Username != null)
-            update_data.Username = data.Username;
-        if (data.Email != undefined || data.Email != null)
-            update_data.Email = data.Email;
-        if (data.Password != undefined || data.Password != null) {
-            const password_hash = await bcrypt.hash(data.Password, 10);
-            if (password_hash == undefined || password_hash == null) {
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to hashing the password!", false);
-            }
-            update_data.Password = password_hash;
-        }
+        const update_data = (0, null_check_helper_js_1.CheckIsNullWithNumber)(data);
         try {
             const update_users = await this.prisma.user.update({
                 where: {
-                    id: user_id
+                    id: Number(user_id)
                 },
                 data: update_data
             });
             if (update_users == undefined || update_users == null) {
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the users!", false);
+                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the users!", false);
             }
-            return (0, response_status_1.ResponseSuccess)(true, common_1.HttpStatus.OK, "Success to get the user profile!", true);
+            return (0, response_helper_js_1.ResponseSuccess)(true, common_1.HttpStatus.OK, "Success to get the user profile!", true);
         }
         catch (error) {
-            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update the users data!", false);
-        }
-    }
-    async getAllUser(query) {
-        const { page, limit } = query;
-        const skip = (page - 1) * limit;
-        try {
-            const [data, total_data] = await Promise.all([
-                this.prisma.user.findMany({
-                    skip: skip,
-                    take: limit,
-                    orderBy: {
-                        id: "asc"
-                    },
-                    include: {
-                        identities: {
-                            select: {
-                                Full_Name: true,
-                                Rt: true,
-                                Age: true,
-                                Address: true
-                            }
-                        }
-                    },
-                }),
-                this.prisma.identity.count()
-            ]);
-            if (!data || total_data == undefined || total_data == null) {
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the full identity!", false);
-            }
-            return (0, response_status_1.ResponseSuccess)([{
-                    data: data,
-                    meta: {
-                        total: total_data,
-                        page: page,
-                        limit: limit,
-                        skip: skip,
-                        last_page: Math.ceil(page / limit)
-                    }
-                }], common_1.HttpStatus.OK, "Successfully to get all data identity!", true);
-        }
-        catch (error) {
-            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
+            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update the users data!", false);
         }
     }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService,
+    __metadata("design:paramtypes", [prisma_service_js_1.PrismaService,
         jwt_1.JwtService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

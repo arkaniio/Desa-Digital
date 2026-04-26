@@ -1,10 +1,10 @@
-import { RwService } from './rw.service';
-import { RwDto } from "../validator/rw_dto";
-import type { UpdateRwDto } from "../validator/rw_dto";
+import { RwService } from './rw.service.js';
+import { CreateRwDto } from './dto/create-rw.dto.js';
+import type { UpdateRwDto } from './dto/update-rw.dto.js';
 export declare class RwController {
     private readonly rwService;
     constructor(rwService: RwService);
-    regsiterRw(data: RwDto, user_id: number): Promise<{
+    regsiterRw(data: CreateRwDto, user_id: number): Promise<{
         status_code: import("@nestjs/common").HttpStatus;
         message: string;
         data: any;

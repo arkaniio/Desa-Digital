@@ -1,21 +1,27 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { PrismaModule } from './prisma/prisma.module';
-import { UserModule } from './user/user.module';
-import { IdentityModule } from './identity/identity.module';
-import { RtController } from './rt/rt.controller';
-import { RtService } from './rt/rt.service';
-import { RwController } from './rw/rw.controller';
-import { RwService } from './rw/rw.service';
-import { AnnouncementController } from './announcement/announcement.controller';
-import { AnnouncementService } from './announcement/announcement.service';
-import { VillageService } from './village/village.service';
-import { VillageController } from './village/village.controller';
+import { AppController } from './app.controller.js';
+import { AppService } from './app.service.js';
+import { PrismaModule } from './prisma/prisma.module.js';
+import { AuthModule } from './common/auth/auth.module.js';
+import { UserModule } from './user/user.module.js';
+import { IdentityModule } from './identity/identity.module.js';
+import { RtModule } from './rt/rt.module.js';
+import { RwModule } from './rw/rw.module.js';
+import { AnnouncementModule } from './announcement/announcement.module.js';
+import { VillageModule } from './village/village.module.js';
 
 @Module({
-  imports: [PrismaModule, UserModule, IdentityModule],
-  controllers: [AppController, RtController, RwController, AnnouncementController, VillageController],
-  providers: [AppService, RtService, RwService, AnnouncementService, VillageService],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    UserModule,
+    IdentityModule,
+    RtModule,
+    RwModule,
+    AnnouncementModule,
+    VillageModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule { }

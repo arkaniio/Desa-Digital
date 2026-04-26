@@ -1,5 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { PrismaService } from "../prisma/prisma.service";
+import { PrismaService } from '../prisma/prisma.service.js';
 import { JwtService } from '@nestjs/jwt';
 export declare class UserService {
     private prisma;
@@ -24,12 +24,6 @@ export declare class UserService {
         success: boolean;
     }>;
     updateProfile(user_id: number, data: any): Promise<{
-        status_code: HttpStatus;
-        message: string;
-        data: any;
-        success: boolean;
-    }>;
-    getAllUser(query: any): Promise<{
         status_code: HttpStatus;
         message: string;
         data: any;

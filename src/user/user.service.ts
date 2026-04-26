@@ -1,10 +1,11 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service.js';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { ResponseError, ResponseSuccess } from 'src/utils/response_status';
+import { ResponseError, ResponseSuccess } from '../common/helpers/response.helper.js';
 import { normalizeEmail } from 'validator';
-import { CheckIsNullWithNumber } from 'src/utils/checking_null_update';
+import { CheckIsNullWithNumber, CheckIsNullWitMulter } from '../common/helpers/null-check.helper.js';
+import { ConfigureCloudinanry } from 'src/config/cloudinary.config.js';
 
 @Injectable()
 export class UserService {
@@ -172,7 +173,7 @@ export class UserService {
 
     }
 
-    async updateProfile(user_id: number, data: any) {
+    async updateProfile(file_path: Express.Multer.File, user_id: number, data: any) {
 
         if (user_id == undefined || user_id == null) {
             return ResponseError(
@@ -183,7 +184,7 @@ export class UserService {
             )
         }
 
-        const update_data = CheckIsNullWithNumber(data)
+        const update_data = CheckIsNullWitMulter(file_path, data)
 
         try {
 

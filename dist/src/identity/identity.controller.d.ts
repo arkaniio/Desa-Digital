@@ -1,7 +1,7 @@
-import { IdentityService } from './identity.service';
-import { IdentityDto } from "../validator/identity_dto";
-import type { updateIdentitDto } from "../validator/identity_dto";
-import { PaginationDto } from "../validator/pagination_dto&search";
+import { IdentityService } from './identity.service.js';
+import { CreateIdentityDto } from './dto/create-identity.dto.js';
+import type { UpdateIdentityDto } from './dto/update-identity.dto.js';
+import { PaginationDto } from '../common/dto/pagination-query.dto.js';
 export declare class IdentityController {
     private readonly identityService;
     constructor(identityService: IdentityService);
@@ -11,7 +11,7 @@ export declare class IdentityController {
         data: any;
         success: boolean;
     }>;
-    registerIdentity(data: IdentityDto, user_id: number): Promise<{
+    registerIdentity(data: CreateIdentityDto, user_id: number): Promise<{
         status_code: import("@nestjs/common").HttpStatus;
         message: string;
         data: any;
@@ -23,7 +23,7 @@ export declare class IdentityController {
         data: any;
         success: boolean;
     }>;
-    updateIdentity(data: updateIdentitDto, user_id: number, identity_id: number): Promise<{
+    updateIdentity(data: UpdateIdentityDto, user_id: number, identity_id: number): Promise<{
         status_code: import("@nestjs/common").HttpStatus;
         message: string;
         data: any;

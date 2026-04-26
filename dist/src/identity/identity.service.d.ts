@@ -1,6 +1,5 @@
 import { HttpStatus } from '@nestjs/common';
-import { PrismaService } from "../prisma/prisma.service";
-import { PaginationDto } from "../validator/pagination_dto&search";
+import { PrismaService } from '../prisma/prisma.service.js';
 export declare class IdentityService {
     private prisma;
     constructor(prisma: PrismaService);
@@ -28,7 +27,7 @@ export declare class IdentityService {
         data: any;
         success: boolean;
     }>;
-    getAllIdentity(query: PaginationDto): Promise<{
+    getAllIdentity(query: any): Promise<{
         status_code: HttpStatus;
         message: string;
         data: any;

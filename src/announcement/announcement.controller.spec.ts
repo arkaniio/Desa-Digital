@@ -1,12 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AnnouncementController } from './announcement.controller';
+import { AnnouncementController } from './announcement.controller.js';
+import { AnnouncementService } from './announcement.service.js';
 
 describe('AnnouncementController', () => {
   let controller: AnnouncementController;
 
+  const mockAnnouncementService = {
+    createNewAnnouncement: jest.fn(),
+    deletAnnouncement: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AnnouncementController],
+      providers: [
+        { provide: AnnouncementService, useValue: mockAnnouncementService },
+      ],
     }).compile();
 
     controller = module.get<AnnouncementController>(AnnouncementController);

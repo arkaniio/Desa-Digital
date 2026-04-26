@@ -1,9 +1,9 @@
 import { Body, Controller, Post, UseGuards } from '@nestjs/common';
-import { AnnouncementService } from './announcement.service';
-import { JwtAuthGuard } from 'src/user/jwt-auth.guard';
-import { RolesGuard } from 'src/user/rolesGuard/role.guard';
-import { Roles } from 'src/user/decorators/role_decorator';
-import { CurrentUser } from 'src/user/decorators/auth_token.decorator';
+import { AnnouncementService } from './announcement.service.js';
+import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard.js';
+import { RolesGuard } from '../common/auth/guards/roles.guard.js';
+import { Roles } from '../common/auth/decorators/roles.decorator.js';
+import { CurrentUser } from '../common/auth/decorators/current-user.decorator.js';
 
 @Controller('announcement')
 export class AnnouncementController {

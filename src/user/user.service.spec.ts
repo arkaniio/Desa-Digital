@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from './user.service';
-import { PrismaService } from '../prisma/prisma.service';
+import { UserService } from './user.service.js';
+import { PrismaService } from '../prisma/prisma.service.js';
 import { JwtService } from '@nestjs/jwt';
 
 describe('UserService', () => {
@@ -11,7 +11,13 @@ describe('UserService', () => {
       providers: [
         UserService,
         {
-          provide: PrismaService, useValue: {}
+          provide: PrismaService, useValue: {
+            user: {
+              findUnique: jest.fn(),
+              create: jest.fn(),
+              update: jest.fn(),
+            },
+          }
         },
         { provide: JwtService, useValue: { sign: jest.fn() } }
       ],

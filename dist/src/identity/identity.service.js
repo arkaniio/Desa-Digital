@@ -11,8 +11,9 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdentityService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_service_1 = require("../prisma/prisma.service");
-const response_status_1 = require("../utils/response_status");
+const prisma_service_js_1 = require("../prisma/prisma.service.js");
+const null_check_helper_js_1 = require("../common/helpers/null-check.helper.js");
+const response_helper_js_1 = require("../common/helpers/response.helper.js");
 let IdentityService = class IdentityService {
     prisma;
     constructor(prisma) {
@@ -20,69 +21,70 @@ let IdentityService = class IdentityService {
     }
     async registerIdentity(data, user_id) {
         if (user_id == undefined || user_id == null) {
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to get the user id!", false);
+            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to get the user id!", false);
         }
-        const identity_data = await this.prisma.identity.findUnique({
+        const identity_data = await this.prisma.identityMember.findUnique({
             where: {
                 Full_Name: data.Full_Name
             },
         });
         if (identity_data != undefined || identity_data != null) {
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Name has been already exists!", false);
+            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Name has been already exists!", false);
         }
         try {
-            const data_identity = await this.prisma.identity.create({
+            const data_identity = await this.prisma.identityMember.create({
                 data: {
+                    VillageId: Number(data.VillageId),
                     User_Id: user_id,
                     Full_Name: data.Full_Name,
-                    RtId: data.RtId,
-                    RwId: data.RwId,
-                    Age: data.Age,
+                    RtId: Number(data.RtId),
+                    RwId: Number(data.RwId),
+                    Age: Number(data.Age),
                     Address: data.Address
                 }
             });
             if (data_identity == undefined || data_identity == null) {
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to create new identity!", false);
+                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to create new identity!", false);
             }
-            return (0, response_status_1.ResponseSuccess)(data_identity, common_1.HttpStatus.OK, "Successfully to create the new identity!", true);
+            return (0, response_helper_js_1.ResponseSuccess)(data_identity, common_1.HttpStatus.OK, "Successfully to create the new identity!", true);
         }
         catch (error) {
-            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to create new data identity!", false);
+            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to create new data identity!", false);
         }
     }
     async deleteIdentity(id) {
         if (id == undefined || id == null) {
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the id identity!", false);
+            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the id identity!", false);
         }
         try {
-            const data = await this.prisma.identity.delete({
+            const data = await this.prisma.identityMember.delete({
                 where: {
-                    id: id
+                    id: Number(id),
                 }
             });
             if (data == undefined || data == null) {
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to delete data identity!", false);
+                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to delete data identity!", false);
             }
-            return (0, response_status_1.ResponseSuccess)(data, common_1.HttpStatus.OK, "Successfully to delete the data!", true);
+            return (0, response_helper_js_1.ResponseSuccess)(data, common_1.HttpStatus.OK, "Successfully to delete the data!", true);
         }
         catch (error) {
-            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
+            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
         }
     }
     async getIdentity(id) {
         if (id == undefined || id == null) {
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the id!", false);
+            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the id!", false);
         }
         try {
-            const find_identity = await this.prisma.identity.findUnique({
+            const find_identity = await this.prisma.identityMember.findUnique({
                 where: {
                     id: id
                 },
                 include: {
-                    User: {
+                    Village: {
                         select: {
-                            Username: true,
-                            Email: true
+                            Name: true,
+                            Address: true
                         }
                     },
                     Rt: {
@@ -99,58 +101,33 @@ let IdentityService = class IdentityService {
                 }
             });
             if (find_identity == undefined || find_identity == null) {
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the find identity!", false);
+                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the find identity!", false);
             }
-            return (0, response_status_1.ResponseSuccess)(find_identity, common_1.HttpStatus.OK, "Successfully to get the identity!", true);
+            return (0, response_helper_js_1.ResponseSuccess)(find_identity, common_1.HttpStatus.OK, "Successfully to get the identity!", true);
         }
         catch (error) {
-            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the identity!", false);
+            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the identity!", false);
         }
     }
     async updateIdentity(data, identity_id, user_id) {
         if (user_id == undefined || user_id == null) {
-            return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the user id!", false);
+            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to detect the user id!", false);
         }
-        const update_data = {};
-        if (data.Full_Name != undefined || data.Full_Name != null)
-            update_data.Full_Name = data.Full_Name;
-        if (data.RtId != undefined || data.RtId != null) {
-            const parsingIntoInt = parseInt(data.RtId);
-            if (typeof parsingIntoInt != "number") {
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Invalid type of Rt!", false);
-            }
-            update_data.RtId = parsingIntoInt;
-        }
-        if (data.RwId != undefined || data.RwId != null) {
-            const parsing_dataRwId = parseInt(data.RwId);
-            if (!parsing_dataRwId || parsing_dataRwId == undefined) {
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to parsing the data!", false);
-            }
-            data.RwId = update_data.RwId;
-        }
-        if (data.Age != undefined || data.Age != null) {
-            const parsingIntoInt = parseInt(data.Age);
-            if (typeof parsingIntoInt != "number") {
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Invalid type of age!", false);
-            }
-            update_data.Age = parsingIntoInt;
-        }
-        if (data.Address != undefined || data.Address != null)
-            update_data.Adress = data.Address;
+        const update_data = (0, null_check_helper_js_1.CheckIsNullWithNumber)(data);
         try {
-            const update_identity = await this.prisma.identity.update({
+            const update_identity = await this.prisma.identityMember.update({
                 where: {
-                    id: identity_id
+                    id: Number(identity_id)
                 },
                 data: update_data
             });
             if (update_identity == undefined || update_identity == null) {
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the identity data!", false);
+                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the identity data!", false);
             }
-            return (0, response_status_1.ResponseSuccess)(true, common_1.HttpStatus.OK, "Successfully to update the identity data!", true);
+            return (0, response_helper_js_1.ResponseSuccess)(true, common_1.HttpStatus.OK, "Successfully to update the identity data!", true);
         }
         catch (error) {
-            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update data!", false);
+            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update data!", false);
         }
     }
     async getAllIdentity(query) {
@@ -184,7 +161,7 @@ let IdentityService = class IdentityService {
                 : {};
             try {
                 const [data, total_data] = await Promise.all([
-                    this.prisma.identity.findMany({
+                    this.prisma.identityMember.findMany({
                         skip: skip,
                         take: limit,
                         where: where,
@@ -193,15 +170,16 @@ let IdentityService = class IdentityService {
                             RtId: true,
                             Rt: true,
                             Age: true,
-                            Address: true
+                            Address: true,
+                            Village: true
                         },
                     }),
-                    this.prisma.identity.count({ where: where })
+                    this.prisma.identityMember.count({ where: where })
                 ]);
                 if (!data || total_data == undefined || total_data == null) {
-                    return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data and total data!", false);
+                    return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data and total data!", false);
                 }
-                return (0, response_status_1.ResponseSuccess)([{
+                return (0, response_helper_js_1.ResponseSuccess)([{
                         data: data,
                         meta: {
                             total: total_data,
@@ -213,12 +191,12 @@ let IdentityService = class IdentityService {
                     }], common_1.HttpStatus.OK, "Successfully to get all data identity!", true);
             }
             catch (error) {
-                return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
+                return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
             }
         }
         try {
             const [data, total_data] = await Promise.all([
-                this.prisma.identity.findMany({
+                this.prisma.identityMember.findMany({
                     skip: skip,
                     take: limit,
                     orderBy: {
@@ -232,12 +210,12 @@ let IdentityService = class IdentityService {
                         Address: true
                     }
                 }),
-                this.prisma.identity.count()
+                this.prisma.identityMember.count()
             ]);
             if (!data || total_data == undefined || total_data == null) {
-                return (0, response_status_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data and total data!", false);
+                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data and total data!", false);
             }
-            return (0, response_status_1.ResponseSuccess)([{
+            return (0, response_helper_js_1.ResponseSuccess)([{
                     data: data,
                     meta: {
                         total: total_data,
@@ -249,13 +227,13 @@ let IdentityService = class IdentityService {
                 }], common_1.HttpStatus.OK, "Successfully to get all data identity!", true);
         }
         catch (error) {
-            return (0, response_status_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
+            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get the data identity!", false);
         }
     }
 };
 exports.IdentityService = IdentityService;
 exports.IdentityService = IdentityService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_js_1.PrismaService])
 ], IdentityService);
 //# sourceMappingURL=identity.service.js.map
