@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CheckIsNull } from '../common/helpers/null-check.helper.js';
 import { ResponseError, ResponseSuccess } from '../common/helpers/response.helper.js';
@@ -10,14 +10,7 @@ export class VillageService {
 
     async createNewVillage(data: any, user_id: number) {
 
-        if (user_id == undefined || user_id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the user id from token!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
 
         const find_unique_name = await this.prisma.village.findFirst({
             where: {
@@ -25,161 +18,92 @@ export class VillageService {
             }
         })
 
-        if (find_unique_name != undefined || find_unique_name != null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the same name when create new village!",
-                false
-            )
-        }
+        if (find_unique_name != undefined || find_unique_name != null) throw new BadRequestException("Name has been already exists!")
 
         try {
+
+            const isNumberValidate = data != "" && !isNaN(data)
+
+            const validateNumber = isNumberValidate ? Number(data) : 0
 
             const data_create = await this.prisma.village.create({
                 data: {
                     Name: data.Name,
                     Address: data.Address,
-                    Total_Population: Number(data.Total_Population),
-                    Village_Age: Number(data.Village_Age),
-                    Leader_VillageId: Number(data.Leader_VillageId)
+                    Total_Population: validateNumber,
+                    Village_Age: validateNumber,
+                    Leader_VillageId: validateNumber
                 }
             })
 
-            if (!data_create == undefined || data_create == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to create the data because the data is null or undefined!",
-                    false
-                )
-            }
+            if (!data_create && data_create == undefined || data_create == null) throw new BadRequestException("Failed to create because the data is nill!")
 
-            return ResponseSuccess(
-                data_create,
-                HttpStatus.CREATED,
-                "Successfully to create new village data!",
-                true
-            )
+            return data_create
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to create new vilage as a leader of village!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }
 
     async deleteVillage(id: number, user_id: number) {
 
-        if (!id == undefined && user_id == undefined || id == null && user_id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to delete the village using id and user_id!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
 
         try {
 
+            const isNumber = id != 0 ? Number(id) : undefined
+
             const delete_data = await this.prisma.village.delete({
                 where: {
-                    id: Number(id)
+                    id: isNumber
                 }
             })
 
-            if (!delete_data == undefined || delete_data == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to delete data because the data that you want to delete is null!",
-                    false
-                )
-            }
+            if (!delete_data && delete_data == undefined || delete_data == null) throw new BadRequestException("Not Found!")
 
-            return ResponseSuccess(
-                true,
-                HttpStatus.OK,
-                "Successfully to delete the data!",
-                true
-            )
+            return true
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to delete the data village!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }
 
     async updateVillage(data: any, user_id: number, id: number) {
 
-        if (!id == undefined && user_id == undefined || id == null && user_id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to update the village using id and user_id!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id data from token!")
 
         //tools
         const update_data = CheckIsNull(data)
         //
 
+        if (!update_data && update_data == undefined || update_data == null) throw new BadRequestException("Failed to get the payload of the update data!")
+
         try {
+
+            const isNumber = id != 0 ? Number(id) : undefined
 
             const update = await this.prisma.village.update({
                 where: {
-                    id: Number(id)
+                    id: isNumber
                 },
                 data: update_data
             })
 
-            if (!update == undefined || update == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to update because the result is nill!",
-                    false
-                )
-            }
+            if (!update && update == undefined || update == null) throw new BadRequestException("Failed to update data!")
 
-            return ResponseSuccess(
-                null,
-                HttpStatus.OK,
-                "Success to update the village data!",
-                true
-            )
+            return true
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to update the data!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }
 
     async getAllVillage(user_id: number) {
 
-        if (!user_id == undefined || user_id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the user id from token jwt!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id data from token!")
 
         try {
 
@@ -198,29 +122,12 @@ export class VillageService {
                 }
             })
 
-            if (getAll_village == undefined || getAll_village == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Not Found!",
-                    false
-                )
-            }
+            if (getAll_village == undefined || getAll_village == null) throw new BadRequestException("Failed to get village!")
 
-            return ResponseSuccess(
-                getAll_village,
-                HttpStatus.OK,
-                "Successfully to get all data of village!",
-                true
-            )
+            return getAll_village
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get all data of village!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }

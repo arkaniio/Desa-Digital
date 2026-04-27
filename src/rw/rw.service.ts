@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { BadGatewayException, BadRequestException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CheckIsNullWithNumber } from '../common/helpers/null-check.helper.js';
 import { ResponseError, ResponseSuccess } from '../common/helpers/response.helper.js';
@@ -10,23 +10,7 @@ export class RwService {
 
     async registerRw(data: any, user_id: number) {
 
-        if (user_id == undefined || user_id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to detect the user id!",
-                false
-            )
-        }
-
-        if (data == undefined || data == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to detect the data from rw data!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id data from token!")
 
         try {
 
@@ -36,133 +20,69 @@ export class RwService {
                 }
             })
 
-            if (data_create == undefined || data_create == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to create new data!",
-                    false
-                )
-            }
+            if (!data_create && data_create == undefined || data_create == null) throw new BadRequestException("Failed to create data because data is nill!")
 
-            return ResponseSuccess(
-                data_create,
-                HttpStatus.CREATED,
-                "Successfully to register data!",
-                true
-            )
+            return data_create
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to create new data of rw!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }
 
     async updateRw(data: any, user_id: number, id: number) {
 
-        if (user_id == undefined || user_id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the user id!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get user_id from token!")
 
-        if (!id && id == undefined || id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the id rw of the params!",
-                false
-            )
-        }
+        if (!id && id == undefined || id == null) throw new BadRequestException("Failed to get the param id!")
 
         const update_data_Rw = CheckIsNullWithNumber(data)
 
+        if (!update_data_Rw && update_data_Rw == undefined || update_data_Rw == null) throw new BadRequestException("Failed to get the update data payload!")
+
         try {
+
+            const isNumber = id != 0 ? Number(id) : undefined
 
             const update_data = await this.prisma.rw.update({
                 where: {
-                    Id: Number(id)
+                    Id: isNumber
                 },
                 data: update_data_Rw
             })
 
-            if (!update_data || update_data == undefined) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to update the rw data!",
-                    false
-                )
-            }
+            if (!update_data && update_data == undefined || update_data == undefined) throw new BadRequestException("Failed to get the data of update!")
 
-            return ResponseSuccess(
-                true,
-                HttpStatus.OK,
-                "Successfully to update data rw!",
-                true
-            )
+            return true
 
         } catch (error) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to update the data of rw!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }
 
     async deleteRw(user_id: number, id: number) {
 
-        if (!user_id && id || user_id && id == undefined || user_id && id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to detect the user id and id!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
+
+        if (!id && id == undefined || id == null) throw new BadRequestException("Failed to get the id from the param!")
 
         try {
 
+            const isNumber = id != 0 ? Number(id) : undefined
+
             const delete_data = await this.prisma.rw.delete({
                 where: {
-                    Id: Number(id)
+                    Id: isNumber
                 }
             })
 
-            if (!delete_data && delete_data == undefined || delete_data == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to delete the data because the params and token is null!",
-                    false
-                )
-            }
+            if (!delete_data && delete_data == undefined || delete_data == null) throw new BadRequestException("Not found!")
 
-            return ResponseSuccess(
-                true,
-                HttpStatus.OK,
-                "Successfully to delete the some data!",
-                true
-            )
+            return true
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to delete the data of rw!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }

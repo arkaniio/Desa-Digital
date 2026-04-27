@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CheckIsNullWithNumber } from '../common/helpers/null-check.helper.js';
 import { ResponseError, ResponseSuccess } from '../common/helpers/response.helper.js';
@@ -10,23 +10,7 @@ export class RtService {
 
     async registerRt(data: any, user_id: number) {
 
-        if (user_id == undefined || user_id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.UNAUTHORIZED,
-                "Failed to get the user id!",
-                false
-            )
-        }
-
-        if (data == undefined || data == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to initiate the data must be required!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get user_id from token!")
 
         try {
 
@@ -37,78 +21,43 @@ export class RtService {
                 }
             })
 
-            if (data_create == undefined || data_create == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to create data because the value is null!",
-                    false
-                )
-            }
+            if (!data_create && data_create == undefined || data_create == null) throw new BadRequestException("Failed to create and detect the data!")
 
-            return ResponseSuccess(
-                data,
-                HttpStatus.CREATED,
-                "Successfully to create new rt!",
-                true
-            )
+            return data_create
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to create new data rt!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }
 
     async updateRt(data: any, user_id: number, id: number) {
 
-        if (!user_id && id == undefined || !user_id && id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to detect the user id or id!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get data from token!")
+
+        if (!id && id == undefined || id == null) throw new BadRequestException("Failed to get the id from the param!")
 
         const update_data = CheckIsNullWithNumber(data)
 
+        if (!update_data && update_data == undefined || update_data == null) throw new BadRequestException("Failed to get the payload for update!")
+
         try {
+
+            const isNumber = id != 0 ? Number(id) : undefined
 
             const update = await this.prisma.rt.update({
                 where: {
-                    Id: Number(id)
+                    Id: isNumber
                 },
                 data: update_data
             })
 
-            if (!update || update == undefined) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to update the data because the value is undefined!",
-                    false
-                )
-            }
+            if (!update && update == undefined || update == null) throw new BadRequestException("Failed to update data!")
 
-            return ResponseSuccess(
-                true,
-                HttpStatus.OK,
-                "Successfully to update the data of rt!",
-                true
-            )
+            return true
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to update the data Rt!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
 
@@ -116,46 +65,26 @@ export class RtService {
 
     async deleteRt(user_id: number, id: number) {
 
-        if (!user_id && id == undefined || !user_id && id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the user_id and id from the request!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || !user_id == null) throw new UnauthorizedException("Failed to get the data user from token and id from param!")
+
+        if (!id && id == undefined || id == null) throw new BadRequestException("Failed to get the id from the param!")
 
         try {
 
+            const isNumber = id != 0 ? Number(id) : undefined
+
             const delete_data = await this.prisma.rt.delete({
                 where: {
-                    Id: Number(id)
+                    Id: isNumber
                 }
             })
 
-            if (!delete_data && delete_data == undefined || delete_data == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to delete data because the data that you want to delete it is nill or undefined!",
-                    false
-                )
-            }
+            if (!delete_data && delete_data == undefined || delete_data == null) throw new BadRequestException("Not found!")
 
-            return ResponseSuccess(
-                true,
-                HttpStatus.OK,
-                "Successfully to delete the data rw!",
-                true
-            )
+            return true
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to delete the rt data!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }

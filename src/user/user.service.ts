@@ -1,4 +1,4 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -22,24 +22,10 @@ export class UserService {
                 Email: data.Email
             }
         })
-        if (user_data) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Email has been already exists!",
-                false
-            )
-        }
+        if (user_data) throw new BadRequestException("Email has been already exists!")
 
         const password_hash = await bcrypt.hash(data.Password, 10)
-        if (!password_hash == undefined || password_hash == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to hashing the data password!",
-                false
-            )
-        }
+        if (!password_hash == undefined || password_hash == null) throw new BadRequestException("Failed to hashing password!")
 
         try {
             const user = await this.prisma.user.create({
@@ -51,20 +37,10 @@ export class UserService {
                 }
             })
 
-            return ResponseSuccess(
-                user,
-                HttpStatus.OK,
-                "Successfully to create new user!",
-                true
-            )
+            return user
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to create new user!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }
@@ -77,24 +53,11 @@ export class UserService {
             }
         })
 
-        if (user_data == undefined || user_data == null) {
-            return ResponseError(
-                normalizeEmail,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the user data using email user!",
-                false
-            )
-        }
+        if (user_data == undefined || user_data == null) throw new BadRequestException("Failed to get the data!")
 
         const isPasswordValid = await bcrypt.compare(data.Password, user_data?.Password)
-        if (isPasswordValid == undefined || !isPasswordValid) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to compare the data password!",
-                false
-            )
-        }
+        if (isPasswordValid == undefined || !isPasswordValid) throw new BadRequestException("Failed to compare the password!")
+
         const token = this.jwtService.sign({
             id: user_data.id,
             email: user_data.Email,
@@ -102,25 +65,13 @@ export class UserService {
             username: user_data.Username
         })
 
-        return ResponseSuccess(
-            token,
-            HttpStatus.OK,
-            "Success to login as a user!",
-            true
-        )
+        return token
 
     }
 
     async getProfile(user_id: number) {
 
-        if (user_id == undefined || user_id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the id number!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
 
         try {
 
@@ -146,45 +97,23 @@ export class UserService {
                 }
             })
 
-            if (data_user == undefined || data_user == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to get the user data!",
-                    false
-                )
-            }
+            if (!data_user && data_user == undefined || data_user == null) throw new BadRequestException("Failed to get the data user!")
 
-            return ResponseSuccess(
-                data_user,
-                HttpStatus.OK,
-                "Success to get the profile!",
-                true
-            )
+            return data_user
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the profile!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }
 
     async updateProfile(file_path: Express.Multer.File, user_id: number, data: any) {
 
-        if (user_id == undefined || user_id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.UNAUTHORIZED,
-                "Failed to get the user id!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
 
         const update_data = CheckIsNullWitMulter(file_path, data)
+
+        if (!update_data && update_data == undefined || update_data == null) throw new BadRequestException("Failed to get the payload of the request!")
 
         try {
 
@@ -195,29 +124,12 @@ export class UserService {
                 data: update_data
             })
 
-            if (update_users == undefined || update_users == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to update the users!",
-                    false
-                )
-            }
+            if (!update_users && update_users == undefined || update_users == null) throw new BadRequestException("Failed to get the data update!")
 
-            return ResponseSuccess(
-                true,
-                HttpStatus.OK,
-                "Success to get the user profile!",
-                true
-            )
+            return true
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to update the users data!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
     }
 }

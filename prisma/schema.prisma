@@ -24,7 +24,7 @@ model User {
   Username   String           @unique
   Email      String           @unique
   Password   String
-  Role       role             @default(WARGA)
+  Role       role?            @default(WARGA)
   Avatar     String?
   identities IdentityMember[]
   villages   Village[]
