@@ -9,6 +9,10 @@ import { RtModule } from './rt/rt.module';
 import { RwModule } from './rw/rw.module';
 import { AnnouncementModule } from './announcement/announcement.module';
 import { VillageModule } from './village/village.module';
+import { SubmissionsController } from './submissions/submissions.controller';
+import { SubmissionsService } from './submissions/submissions.service';
+import { DigitalSignatureController } from './digital_signature/digital_signature.controller';
+import { DigitalSignatureService } from './digital_signature/digital_signature.service';
 
 @Module({
   imports: [
@@ -21,7 +25,7 @@ import { VillageModule } from './village/village.module';
     AnnouncementModule,
     VillageModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, SubmissionsController, DigitalSignatureController],
+  providers: [AppService, SubmissionsService, DigitalSignatureService],
 })
 export class AppModule { }

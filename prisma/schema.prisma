@@ -32,6 +32,39 @@ model User {
   Updated_at DateTime         @updatedAt
 }
 
+model Digital_Signature {
+  id               Int         @id @default(autoincrement())
+  No_surat_desa    Int
+  SubmissionsId    Int
+  Submissions      Submissions @relation(fields: [SubmissionsId], references: [id])
+  Kepala_desa_sign Boolean
+}
+
+enum Tipe_Surat {
+  DOMISILI
+  KURANG_MAMPU
+  NIKAH
+  KEMATIAN
+  USAHA
+}
+
+model Submissions {
+  id                   Int                 @id @default(autoincrement())
+  Nomor_surat_rt       Int
+  RtId                 Int
+  Rt                   Rt                  @relation(fields: [RtId], references: [Id])
+  RwId                 Int
+  Rw                   Rw                  @relation(fields: [RwId], references: [Id])
+  Dokumen_pengajuan    String
+  Tipe_Surat           Tipe_Surat
+  Status               String?             @default("DIAJUKAN")
+  Keterangan_Penolakan String?
+  Keperluan            String
+  Tanggal_Pengajuan    DateTime
+  Tanggal_Selesai      DateTime?
+  digitalSignatures    Digital_Signature[]
+}
+
 model Announcement {
   id        Int            @id @default(autoincrement())
   Title     String
@@ -80,6 +113,7 @@ model Rw {
   rts           Rt[]
   identities    IdentityMember[]
   announcements Announcement[]
+  submissions   Submissions[]
 }
 
 model Rt {
@@ -89,4 +123,5 @@ model Rt {
   Rw            Rw               @relation(fields: [RwId], references: [Id])
   identities    IdentityMember[]
   announcements Announcement[]
+  submissions   Submissions[]
 }
