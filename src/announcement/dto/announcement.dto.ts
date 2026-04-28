@@ -1,5 +1,13 @@
 import { IsInt, IsString } from "class-validator";
 
+export type UpdateDataAnnouncement = {
+
+    Tittle?: string
+    Content?: string
+    Image?: string
+
+}
+
 export class AnnouncementDto {
 
     @IsString()
