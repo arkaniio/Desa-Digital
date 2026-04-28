@@ -13,23 +13,26 @@ datasource db {
 }
 
 enum role {
-  ADMIN
+  KEPALA_DESA
   RT
   RW
   WARGA
 }
 
 model User {
-  id         Int              @id @default(autoincrement())
-  Username   String           @unique
-  Email      String           @unique
-  Password   String
-  Role       role?            @default(WARGA)
-  Avatar     String?
-  identities IdentityMember[]
-  villages   Village[]
-  Created_at DateTime         @default(now())
-  Updated_at DateTime         @updatedAt
+  id            Int            @id @default(autoincrement())
+  Username      String         @unique
+  Email         String         @unique
+  Address       String
+  Password      String
+  Role          role?          @default(WARGA)
+  Avatar        String?
+  VillageId     Int
+  Village       Village        @relation(fields: [VillageId], references: [id])
+  Created_at    DateTime       @default(now())
+  Updated_at    DateTime       @updatedAt
+  announcements Announcement[]
+  submissions   Submissions[]
 }
 
 model Digital_Signature {
@@ -38,6 +41,7 @@ model Digital_Signature {
   SubmissionsId    Int
   Submissions      Submissions @relation(fields: [SubmissionsId], references: [id])
   Kepala_desa_sign Boolean
+  Rt_desa_sign     Boolean
 }
 
 enum Tipe_Surat {
@@ -51,6 +55,8 @@ enum Tipe_Surat {
 model Submissions {
   id                   Int                 @id @default(autoincrement())
   Nomor_surat_rt       Int
+  UserId               Int
+  User                 User                @relation(fields: [UserId], references: [id])
   RtId                 Int
   Rt                   Rt                  @relation(fields: [RtId], references: [Id])
   RwId                 Int
@@ -66,62 +72,42 @@ model Submissions {
 }
 
 model Announcement {
-  id        Int            @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   Title     String
   Content   String
+  Image     String
   AuthorId  Int
-  Author    IdentityMember @relation(fields: [AuthorId], references: [id])
+  Author    User     @relation(fields: [AuthorId], references: [id])
   RwId      Int
   RtId      Int
-  Rw        Rw             @relation(fields: [RwId], references: [Id])
-  Rt        Rt             @relation(fields: [RtId], references: [Id])
-  CreatedAt DateTime       @default(now())
+  Rw        Rw       @relation(fields: [RwId], references: [Id])
+  Rt        Rt       @relation(fields: [RtId], references: [Id])
+  CreatedAt DateTime @default(now())
 }
 
 model Village {
-  id               Int              @id @default(autoincrement())
+  id               Int    @id @default(autoincrement())
   Name             String
   Address          String
   Total_Population Int
   Village_Age      Int
   Leader_VillageId Int
-  Leader_Village   User             @relation(fields: [Leader_VillageId], references: [id])
-  identityVilages  IdentityMember[]
-}
-
-model IdentityMember {
-  id            Int            @id @default(autoincrement())
-  VillageId     Int
-  Village       Village        @relation(fields: [VillageId], references: [id])
-  User_Id       Int
-  User          User           @relation(fields: [User_Id], references: [id])
-  Full_Name     String         @unique
-  RtId          Int
-  RwId          Int
-  Rw            Rw             @relation(fields: [RwId], references: [Id])
-  Rt            Rt             @relation(fields: [RtId], references: [Id])
-  Age           Int
-  Address       String
-  Announcements Announcement[]
-  Created_at    DateTime       @default(now())
-  Updated_at    DateTime       @default(now())
+  users            User[]
 }
 
 model Rw {
-  Id            Int              @id @default(autoincrement())
+  Id            Int            @id @default(autoincrement())
   Name          String
   rts           Rt[]
-  identities    IdentityMember[]
   announcements Announcement[]
   submissions   Submissions[]
 }
 
 model Rt {
-  Id            Int              @id @default(autoincrement())
+  Id            Int            @id @default(autoincrement())
   Number        Int
   RwId          Int
-  Rw            Rw               @relation(fields: [RwId], references: [Id])
-  identities    IdentityMember[]
+  Rw            Rw             @relation(fields: [RwId], references: [Id])
   announcements Announcement[]
   submissions   Submissions[]
 }

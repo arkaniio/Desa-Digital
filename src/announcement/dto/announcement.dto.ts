@@ -1,6 +1,6 @@
 import { IsInt, IsString } from "class-validator";
 
-export class CreateAnnouncementDto {
+export class AnnouncementDto {
 
     @IsString()
     Tittle: string

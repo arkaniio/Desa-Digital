@@ -33,7 +33,7 @@ export const CheckIsNullWitMulter = async (data: Record<string, any>, file: Expr
 
     if (file) {
 
-        const result: any = await BufferUpload(file.buffer)
+        const result: any = await BufferUpload(file.buffer, "Avatar")
 
         update_data.Avatar = result.secure_url
 

@@ -31,8 +31,10 @@ export class UserService {
                 data: {
                     Username: data.Username,
                     Email: data.Email,
+                    Address: data.Address,
                     Password: password_hash,
-                    Role: data.Role
+                    Role: data.Role,
+                    VillageId: data.VillageId
                 }
             })
 
@@ -74,20 +76,14 @@ export class UserService {
 
         try {
 
+            const isNumber = user_id != 0 ? Number(user_id) : undefined
+
             const data_user = await this.prisma.user.findUnique({
                 where: {
-                    id: Number(user_id)
+                    id: isNumber
                 },
                 include: {
-                    identities: {
-                        select: {
-                            Full_Name: true,
-                            Rt: true,
-                            Age: true,
-                            Address: true
-                        }
-                    },
-                    villages: {
+                    Village: {
                         select: {
                             Name: true,
                             Address: true
