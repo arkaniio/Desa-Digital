@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { VillageController } from './village.controller.js';
-import { VillageService } from './village.service.js';
+import { VillageController } from './village.controller';
+import { VillageService } from './village.service';
 
 describe('VillageController', () => {
   let controller: VillageController;

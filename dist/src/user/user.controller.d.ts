@@ -1,32 +1,45 @@
-import { UserService } from './user.service.js';
-import { CreateUserDto } from './dto/create-user.dto.js';
-import { LoginDto } from './dto/login.dto.js';
-import type { UserUpdateDto } from './dto/update-user.dto.js';
+import { UserService } from './user.service';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDto } from './dto/login.dto';
+import type { UserUpdateDto } from './dto/update-user.dto';
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
     registerUser(data: CreateUserDto): Promise<{
-        status_code: import("@nestjs/common").HttpStatus;
-        message: string;
-        data: any;
-        success: boolean;
+        Username: string;
+        Email: string;
+        Password: string;
+        Role: import("@prisma/client").$Enums.role | null;
+        Avatar: string | null;
+        Created_at: Date;
+        Updated_at: Date;
+        id: number;
     }>;
-    loginUser(data: LoginDto): Promise<{
-        status_code: import("@nestjs/common").HttpStatus;
-        message: string;
-        data: any;
-        success: boolean;
-    }>;
+    loginUser(data: LoginDto): Promise<string>;
     getProfile(user_id: number): Promise<{
-        status_code: import("@nestjs/common").HttpStatus;
-        message: string;
-        data: any;
-        success: boolean;
+        identities: {
+            Full_Name: string;
+            Age: number;
+            Address: string;
+            Rt: {
+                RwId: number;
+                Id: number;
+                Number: number;
+            };
+        }[];
+        villages: {
+            Address: string;
+            Name: string;
+        }[];
+    } & {
+        Username: string;
+        Email: string;
+        Password: string;
+        Role: import("@prisma/client").$Enums.role | null;
+        Avatar: string | null;
+        Created_at: Date;
+        Updated_at: Date;
+        id: number;
     }>;
-    updateProfile(data: UserUpdateDto, user_id: number): Promise<{
-        status_code: import("@nestjs/common").HttpStatus;
-        message: string;
-        data: any;
-        success: boolean;
-    }>;
+    updateProfile(data: UserUpdateDto, user_id: number, file: Express.Multer.File): Promise<boolean>;
 }

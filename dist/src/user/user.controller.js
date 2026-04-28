@@ -14,17 +14,20 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
-const user_service_js_1 = require("./user.service.js");
-const jwt_auth_guard_js_1 = require("../common/auth/guards/jwt-auth.guard.js");
-const current_user_decorator_js_1 = require("../common/auth/decorators/current-user.decorator.js");
-const create_user_dto_js_1 = require("./dto/create-user.dto.js");
-const login_dto_js_1 = require("./dto/login.dto.js");
+const user_service_1 = require("./user.service");
+const jwt_auth_guard_1 = require("../common/auth/guards/jwt-auth.guard");
+const current_user_decorator_1 = require("../common/auth/decorators/current-user.decorator");
+const create_user_dto_1 = require("./dto/create-user.dto");
+const login_dto_1 = require("./dto/login.dto");
+const platform_express_1 = require("@nestjs/platform-express");
 let UserController = class UserController {
     userService;
     constructor(userService) {
         this.userService = userService;
     }
     async registerUser(data) {
+        console.log(data);
+        console.log(typeof data);
         return this.userService.registerUser(data);
     }
     async loginUser(data) {
@@ -33,8 +36,14 @@ let UserController = class UserController {
     async getProfile(user_id) {
         return this.userService.getProfile(user_id);
     }
-    async updateProfile(data, user_id) {
-        return this.userService.updateProfile(user_id, data);
+    async updateProfile(data, user_id, file) {
+        console.log(file);
+        console.log(data);
+        console.log(user_id);
+        console.log(typeof file);
+        console.log(typeof data);
+        console.log(typeof user_id);
+        return this.userService.updateProfile(file, user_id, data);
     }
 };
 exports.UserController = UserController;
@@ -42,35 +51,47 @@ __decorate([
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_js_1.CreateUserDto]),
+    __metadata("design:paramtypes", [create_user_dto_1.CreateUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "registerUser", null);
 __decorate([
     (0, common_1.Post)('login'),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [login_dto_js_1.LoginDto]),
+    __metadata("design:paramtypes", [login_dto_1.LoginDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "loginUser", null);
 __decorate([
     (0, common_1.Get)('profile'),
-    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard),
-    __param(0, (0, current_user_decorator_js_1.CurrentUser)()),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getProfile", null);
 __decorate([
     (0, common_1.Put)("update"),
-    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", {
+        limits: {
+            fileSize: 1024 * 1024 * 2
+        },
+        fileFilter: (req, file, cb) => {
+            if (!file.mimetype.includes("image")) {
+                return cb(new Error("Failed to detect the image file!"), false);
+            }
+            return cb(null, true);
+        },
+    })),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_js_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __param(2, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number]),
+    __metadata("design:paramtypes", [Object, Number, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateProfile", null);
 exports.UserController = UserController = __decorate([
     (0, common_1.Controller)('user'),
-    __metadata("design:paramtypes", [user_service_js_1.UserService])
+    __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
 //# sourceMappingURL=user.controller.js.map

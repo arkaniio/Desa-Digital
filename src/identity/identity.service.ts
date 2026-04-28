@@ -1,7 +1,6 @@
 import { BadRequestException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service.js';
-import { CheckIsNullWithNumber } from '../common/helpers/null-check.helper.js';
-import { ResponseError, ResponseSuccess } from '../common/helpers/response.helper.js';
+import { PrismaService } from '../prisma/prisma.service';
+import { CheckIsNullWithNumber } from '../common/helpers/null-check.helper';
 
 @Injectable()
 export class IdentityService {
@@ -22,14 +21,18 @@ export class IdentityService {
 
         try {
 
+            const isNumberValidate = data != "" && !isNaN(data)
+
+            const validateNumber = isNumberValidate ? Number(data) : 0
+
             const data_identity = await this.prisma.identityMember.create({
                 data: {
                     VillageId: Number(data.VillageId),
                     User_Id: user_id,
                     Full_Name: data.Full_Name,
-                    RtId: Number(data.RtId),
-                    RwId: Number(data.RwId),
-                    Age: Number(data.Age),
+                    RtId: validateNumber,
+                    RwId: validateNumber,
+                    Age: validateNumber,
                     Address: data.Address
                 }
             })

@@ -1,32 +1,44 @@
-import { HttpStatus } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { PrismaService } from '../prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 export declare class UserService {
     private prisma;
     private jwtService;
     constructor(prisma: PrismaService, jwtService: JwtService);
     registerUser(data: any): Promise<{
-        status_code: HttpStatus;
-        message: string;
-        data: any;
-        success: boolean;
+        Username: string;
+        Email: string;
+        Password: string;
+        Role: import("@prisma/client").$Enums.role | null;
+        Avatar: string | null;
+        Created_at: Date;
+        Updated_at: Date;
+        id: number;
     }>;
-    loginUser(data: any): Promise<{
-        status_code: HttpStatus;
-        message: string;
-        data: any;
-        success: boolean;
-    }>;
+    loginUser(data: any): Promise<string>;
     getProfile(user_id: number): Promise<{
-        status_code: HttpStatus;
-        message: string;
-        data: any;
-        success: boolean;
+        identities: {
+            Full_Name: string;
+            Age: number;
+            Address: string;
+            Rt: {
+                RwId: number;
+                Id: number;
+                Number: number;
+            };
+        }[];
+        villages: {
+            Address: string;
+            Name: string;
+        }[];
+    } & {
+        Username: string;
+        Email: string;
+        Password: string;
+        Role: import("@prisma/client").$Enums.role | null;
+        Avatar: string | null;
+        Created_at: Date;
+        Updated_at: Date;
+        id: number;
     }>;
-    updateProfile(user_id: number, data: any): Promise<{
-        status_code: HttpStatus;
-        message: string;
-        data: any;
-        success: boolean;
-    }>;
+    updateProfile(file_path: Express.Multer.File, user_id: number, data: any): Promise<boolean>;
 }

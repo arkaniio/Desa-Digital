@@ -1,6 +1,5 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service.js';
-import { ResponseError, ResponseSuccess } from '../common/helpers/response.helper.js';
+import { BadRequestException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AnnouncementService {
@@ -9,105 +8,54 @@ export class AnnouncementService {
 
     async createNewAnnouncement(data: any, user_id: number) {
 
-        if (user_id == undefined || user_id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the user id in auth!",
-                false
-            )
-        }
-
-        if (data == undefined || data == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the data in request body!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get data from token!")
 
         try {
+
+            const isNumberValidate = data != "" && !isNaN(data)
+
+            const validateNumber = isNumberValidate ? Number(data) : 0
 
             const data_create = await this.prisma.announcement.create({
                 data: {
                     Title: data.Tittle,
                     Content: data.Content,
                     AuthorId: user_id,
-                    RwId: Number(data.RwId),
-                    RtId: Number(data.RtId)
+                    RwId: validateNumber,
+                    RtId: validateNumber
                 }
             })
 
-            if (!data_create == undefined || data_create == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Failed to create new announcement because the data that you send is nil!",
-                    false
-                )
-            }
+            if (!data_create && data_create == undefined || data_create == null) throw new BadRequestException("Failed to create data!")
 
-            return ResponseSuccess(
-                data_create,
-                HttpStatus.OK,
-                "Successfully to create new data announcement!",
-                true
-            )
+            return data_create
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to create new announcement!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }
 
     async deletAnnouncement(user_id: number, id: number) {
 
-        if (!user_id && id == undefined || user_id && id == null) {
-            return ResponseError(
-                null,
-                HttpStatus.BAD_REQUEST,
-                "Failed to get the user id and id for the request!",
-                false
-            )
-        }
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the data user from the token!")
 
         try {
 
+            const isNumber = - id != 0 ? Number(id) : undefined
+
             const deleteData = await this.prisma.announcement.delete({
                 where: {
-                    id: Number(id)
+                    id: isNumber
                 }
             })
 
-            if (!deleteData == undefined || deleteData == null) {
-                return ResponseError(
-                    null,
-                    HttpStatus.BAD_REQUEST,
-                    "Not found!",
-                    false
-                )
-            }
+            if (!deleteData && deleteData == undefined || deleteData == null) throw new BadRequestException("Not found!")
 
-            return ResponseSuccess(
-                true,
-                HttpStatus.OK,
-                "Successfully to delete the announcement!",
-                false
-            )
+            return true
 
         } catch (error) {
-            return ResponseError(
-                error,
-                HttpStatus.BAD_REQUEST,
-                "Failed to delete the data of announcement!",
-                false
-            )
+            throw new BadRequestException(error.message)
         }
 
     }

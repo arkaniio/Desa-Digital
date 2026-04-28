@@ -14,13 +14,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdentityController = void 0;
 const common_1 = require("@nestjs/common");
-const identity_service_js_1 = require("./identity.service.js");
-const jwt_auth_guard_js_1 = require("../common/auth/guards/jwt-auth.guard.js");
-const current_user_decorator_js_1 = require("../common/auth/decorators/current-user.decorator.js");
-const roles_guard_js_1 = require("../common/auth/guards/roles.guard.js");
-const roles_decorator_js_1 = require("../common/auth/decorators/roles.decorator.js");
-const create_identity_dto_js_1 = require("./dto/create-identity.dto.js");
-const pagination_query_dto_js_1 = require("../common/dto/pagination-query.dto.js");
+const identity_service_1 = require("./identity.service");
+const jwt_auth_guard_1 = require("../common/auth/guards/jwt-auth.guard");
+const current_user_decorator_1 = require("../common/auth/decorators/current-user.decorator");
+const roles_guard_1 = require("../common/auth/guards/roles.guard");
+const roles_decorator_1 = require("../common/auth/decorators/roles.decorator");
+const create_identity_dto_1 = require("./dto/create-identity.dto");
+const pagination_query_dto_1 = require("../common/dto/pagination-query.dto");
 let IdentityController = class IdentityController {
     identityService;
     constructor(identityService) {
@@ -45,26 +45,26 @@ let IdentityController = class IdentityController {
 exports.IdentityController = IdentityController;
 __decorate([
     (0, common_1.Get)("full"),
-    (0, roles_decorator_js_1.Roles)(),
-    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard, roles_guard_js_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [pagination_query_dto_js_1.PaginationDto]),
+    __metadata("design:paramtypes", [pagination_query_dto_1.PaginationDto]),
     __metadata("design:returntype", Promise)
 ], IdentityController.prototype, "getAllIdentity", null);
 __decorate([
     (0, common_1.Post)("registerIdentity"),
-    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_js_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_identity_dto_js_1.CreateIdentityDto, Number]),
+    __metadata("design:paramtypes", [create_identity_dto_1.CreateIdentityDto, Number]),
     __metadata("design:returntype", Promise)
 ], IdentityController.prototype, "registerIdentity", null);
 __decorate([
     (0, common_1.Delete)("delete/:id"),
-    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard, roles_guard_js_1.RolesGuard),
-    (0, roles_decorator_js_1.Roles)("ADMIN"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("ADMIN"),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -72,9 +72,9 @@ __decorate([
 ], IdentityController.prototype, "deleteIdentity", null);
 __decorate([
     (0, common_1.Put)("update/:id"),
-    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_js_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
     __param(2, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number, Number]),
@@ -82,7 +82,7 @@ __decorate([
 ], IdentityController.prototype, "updateIdentity", null);
 __decorate([
     (0, common_1.Get)("get/:id"),
-    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
@@ -90,6 +90,6 @@ __decorate([
 ], IdentityController.prototype, "getIdentity", null);
 exports.IdentityController = IdentityController = __decorate([
     (0, common_1.Controller)('identity'),
-    __metadata("design:paramtypes", [identity_service_js_1.IdentityService])
+    __metadata("design:paramtypes", [identity_service_1.IdentityService])
 ], IdentityController);
 //# sourceMappingURL=identity.controller.js.map

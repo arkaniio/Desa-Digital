@@ -1,7 +1,6 @@
 import { BadRequestException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service.js';
-import { CheckIsNull } from '../common/helpers/null-check.helper.js';
-import { ResponseError, ResponseSuccess } from '../common/helpers/response.helper.js';
+import { PrismaService } from '../prisma/prisma.service';
+import { CheckIsNull } from '../common/helpers/null-check.helper';
 
 @Injectable()
 export class VillageService {

@@ -14,12 +14,12 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VillageController = void 0;
 const common_1 = require("@nestjs/common");
-const village_service_js_1 = require("./village.service.js");
-const jwt_auth_guard_js_1 = require("../common/auth/guards/jwt-auth.guard.js");
-const roles_guard_js_1 = require("../common/auth/guards/roles.guard.js");
-const roles_decorator_js_1 = require("../common/auth/decorators/roles.decorator.js");
-const create_village_dto_js_1 = require("./dto/create-village.dto.js");
-const current_user_decorator_js_1 = require("../common/auth/decorators/current-user.decorator.js");
+const village_service_1 = require("./village.service");
+const jwt_auth_guard_1 = require("../common/auth/guards/jwt-auth.guard");
+const roles_guard_1 = require("../common/auth/guards/roles.guard");
+const roles_decorator_1 = require("../common/auth/decorators/roles.decorator");
+const create_village_dto_1 = require("./dto/create-village.dto");
+const current_user_decorator_1 = require("../common/auth/decorators/current-user.decorator");
 let VillageController = class VillageController {
     villageService;
     constructor(villageService) {
@@ -41,46 +41,46 @@ let VillageController = class VillageController {
 exports.VillageController = VillageController;
 __decorate([
     (0, common_1.Post)("create"),
-    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard, roles_guard_js_1.RolesGuard),
-    (0, roles_decorator_js_1.Roles)("ADMIN"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("ADMIN"),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_js_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_village_dto_js_1.CreateVillageDto, Number]),
+    __metadata("design:paramtypes", [create_village_dto_1.CreateVillageDto, Number]),
     __metadata("design:returntype", Promise)
 ], VillageController.prototype, "createNewVillage", null);
 __decorate([
     (0, common_1.Delete)("delete/:id"),
-    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard, roles_guard_js_1.RolesGuard),
-    (0, roles_decorator_js_1.Roles)("ADMIN"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("ADMIN"),
     __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, current_user_decorator_js_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], VillageController.prototype, "deleteVillage", null);
 __decorate([
     (0, common_1.Put)("update/:id"),
-    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard, roles_guard_js_1.RolesGuard),
-    (0, roles_decorator_js_1.Roles)("ADMIN"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("ADMIN"),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)('id')),
-    __param(2, (0, current_user_decorator_js_1.CurrentUser)()),
+    __param(2, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object, Number, Number]),
     __metadata("design:returntype", Promise)
 ], VillageController.prototype, "updateVillage", null);
 __decorate([
     (0, common_1.Get)("allVillage"),
-    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard, roles_guard_js_1.RolesGuard),
-    (0, roles_decorator_js_1.Roles)(),
-    __param(0, (0, current_user_decorator_js_1.CurrentUser)()),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)(),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], VillageController.prototype, "getAllVillage", null);
 exports.VillageController = VillageController = __decorate([
     (0, common_1.Controller)('village'),
-    __metadata("design:paramtypes", [village_service_js_1.VillageService])
+    __metadata("design:paramtypes", [village_service_1.VillageService])
 ], VillageController);
 //# sourceMappingURL=village.controller.js.map

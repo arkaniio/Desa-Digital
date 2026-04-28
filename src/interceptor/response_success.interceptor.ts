@@ -16,15 +16,18 @@ export class TransformInterceptor implements NestInterceptor {
 
         return next.handle().pipe(
             map((data) => {
-                message: "success"
-                data: data
-                statusCode: response.statusCode
-                meta: {
-                    path_url: request.url
-                    timestamp: new Date().toISOString()
-                }
+                const data_response = {
+                    message: "success",
+                    data: data,
+                    statusCode: response.statusCode,
+                    meta: {
+                        path_url: request.url,
+                        timestamp: new Date().toISOString()
+                    }
+                };
+                return data_response;
             })
-        )
+        );
 
     }
 

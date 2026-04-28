@@ -8,19 +8,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IdentityModule = void 0;
 const common_1 = require("@nestjs/common");
-const identity_service_js_1 = require("./identity.service.js");
-const identity_controller_js_1 = require("./identity.controller.js");
-const prisma_module_js_1 = require("../prisma/prisma.module.js");
+const identity_service_1 = require("./identity.service");
+const identity_controller_1 = require("./identity.controller");
+const prisma_module_1 = require("../prisma/prisma.module");
 let IdentityModule = class IdentityModule {
 };
 exports.IdentityModule = IdentityModule;
 exports.IdentityModule = IdentityModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            prisma_module_js_1.PrismaModule,
+            prisma_module_1.PrismaModule,
         ],
-        providers: [identity_service_js_1.IdentityService],
-        controllers: [identity_controller_js_1.IdentityController],
+        providers: [identity_service_1.IdentityService],
+        controllers: [identity_controller_1.IdentityController],
     })
 ], IdentityModule);
 //# sourceMappingURL=identity.module.js.map

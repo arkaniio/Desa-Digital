@@ -14,11 +14,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AnnouncementController = void 0;
 const common_1 = require("@nestjs/common");
-const announcement_service_js_1 = require("./announcement.service.js");
-const jwt_auth_guard_js_1 = require("../common/auth/guards/jwt-auth.guard.js");
-const roles_guard_js_1 = require("../common/auth/guards/roles.guard.js");
-const roles_decorator_js_1 = require("../common/auth/decorators/roles.decorator.js");
-const current_user_decorator_js_1 = require("../common/auth/decorators/current-user.decorator.js");
+const announcement_service_1 = require("./announcement.service");
+const jwt_auth_guard_1 = require("../common/auth/guards/jwt-auth.guard");
+const roles_guard_1 = require("../common/auth/guards/roles.guard");
+const roles_decorator_1 = require("../common/auth/decorators/roles.decorator");
+const current_user_decorator_1 = require("../common/auth/decorators/current-user.decorator");
 let AnnouncementController = class AnnouncementController {
     announcementService;
     constructor(announcementService) {
@@ -33,17 +33,17 @@ let AnnouncementController = class AnnouncementController {
 exports.AnnouncementController = AnnouncementController;
 __decorate([
     (0, common_1.Post)("create"),
-    (0, common_1.UseGuards)(jwt_auth_guard_js_1.JwtAuthGuard, roles_guard_js_1.RolesGuard),
-    (0, roles_decorator_js_1.Roles)("RT"),
-    (0, roles_decorator_js_1.Roles)("RW"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("RT"),
+    (0, roles_decorator_1.Roles)("RW"),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_js_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [announcement_service_js_1.AnnouncementService, Number]),
+    __metadata("design:paramtypes", [announcement_service_1.AnnouncementService, Number]),
     __metadata("design:returntype", Promise)
 ], AnnouncementController.prototype, "createNewAnnouncement", null);
 exports.AnnouncementController = AnnouncementController = __decorate([
     (0, common_1.Controller)('announcement'),
-    __metadata("design:paramtypes", [announcement_service_js_1.AnnouncementService])
+    __metadata("design:paramtypes", [announcement_service_1.AnnouncementService])
 ], AnnouncementController);
 //# sourceMappingURL=announcement.controller.js.map

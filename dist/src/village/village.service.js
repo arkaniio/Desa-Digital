@@ -11,89 +11,86 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.VillageService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_service_js_1 = require("../prisma/prisma.service.js");
-const null_check_helper_js_1 = require("../common/helpers/null-check.helper.js");
-const response_helper_js_1 = require("../common/helpers/response.helper.js");
+const prisma_service_1 = require("../prisma/prisma.service");
+const null_check_helper_1 = require("../common/helpers/null-check.helper");
 let VillageService = class VillageService {
     prisma;
     constructor(prisma) {
         this.prisma = prisma;
     }
     async createNewVillage(data, user_id) {
-        if (user_id == undefined || user_id == null) {
-            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user id from token!", false);
-        }
+        if (!user_id && user_id == undefined || user_id == null)
+            throw new common_1.UnauthorizedException("Failed to get the user id from token!");
         const find_unique_name = await this.prisma.village.findFirst({
             where: {
                 Name: data.Name
             }
         });
-        if (find_unique_name != undefined || find_unique_name != null) {
-            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the same name when create new village!", false);
-        }
+        if (find_unique_name != undefined || find_unique_name != null)
+            throw new common_1.BadRequestException("Name has been already exists!");
         try {
+            const isNumberValidate = data != "" && !isNaN(data);
+            const validateNumber = isNumberValidate ? Number(data) : 0;
             const data_create = await this.prisma.village.create({
                 data: {
                     Name: data.Name,
                     Address: data.Address,
-                    Total_Population: Number(data.Total_Population),
-                    Village_Age: Number(data.Village_Age),
-                    Leader_VillageId: Number(data.Leader_VillageId)
+                    Total_Population: validateNumber,
+                    Village_Age: validateNumber,
+                    Leader_VillageId: validateNumber
                 }
             });
-            if (!data_create == undefined || data_create == null) {
-                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to create the data because the data is null or undefined!", false);
-            }
-            return (0, response_helper_js_1.ResponseSuccess)(data_create, common_1.HttpStatus.CREATED, "Successfully to create new village data!", true);
+            if (!data_create && data_create == undefined || data_create == null)
+                throw new common_1.BadRequestException("Failed to create because the data is nill!");
+            return data_create;
         }
         catch (error) {
-            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to create new vilage as a leader of village!", false);
+            throw new common_1.BadRequestException(error.message);
         }
     }
     async deleteVillage(id, user_id) {
-        if (!id == undefined && user_id == undefined || id == null && user_id == null) {
-            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to delete the village using id and user_id!", false);
-        }
+        if (!user_id && user_id == undefined || user_id == null)
+            throw new common_1.UnauthorizedException("Failed to get the user id from token!");
         try {
+            const isNumber = id != 0 ? Number(id) : undefined;
             const delete_data = await this.prisma.village.delete({
                 where: {
-                    id: Number(id)
+                    id: isNumber
                 }
             });
-            if (!delete_data == undefined || delete_data == null) {
-                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to delete data because the data that you want to delete is null!", false);
-            }
-            return (0, response_helper_js_1.ResponseSuccess)(true, common_1.HttpStatus.OK, "Successfully to delete the data!", true);
+            if (!delete_data && delete_data == undefined || delete_data == null)
+                throw new common_1.BadRequestException("Not Found!");
+            return true;
         }
         catch (error) {
-            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to delete the data village!", false);
+            throw new common_1.BadRequestException(error.message);
         }
     }
     async updateVillage(data, user_id, id) {
-        if (!id == undefined && user_id == undefined || id == null && user_id == null) {
-            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the village using id and user_id!", false);
-        }
-        const update_data = (0, null_check_helper_js_1.CheckIsNull)(data);
+        if (!user_id && user_id == undefined || user_id == null)
+            throw new common_1.UnauthorizedException("Failed to get the user id data from token!");
+        const update_data = (0, null_check_helper_1.CheckIsNull)(data);
+        if (!update_data && update_data == undefined || update_data == null)
+            throw new common_1.BadRequestException("Failed to get the payload of the update data!");
         try {
+            const isNumber = id != 0 ? Number(id) : undefined;
             const update = await this.prisma.village.update({
                 where: {
-                    id: Number(id)
+                    id: isNumber
                 },
                 data: update_data
             });
-            if (!update == undefined || update == null) {
-                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update because the result is nill!", false);
-            }
-            return (0, response_helper_js_1.ResponseSuccess)(null, common_1.HttpStatus.OK, "Success to update the village data!", true);
+            if (!update && update == undefined || update == null)
+                throw new common_1.BadRequestException("Failed to update data!");
+            return true;
         }
         catch (error) {
-            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update the data!", false);
+            throw new common_1.BadRequestException(error.message);
         }
     }
     async getAllVillage(user_id) {
-        if (!user_id == undefined || user_id == null) {
-            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user id from token jwt!", false);
-        }
+        if (!user_id && user_id == undefined || user_id == null)
+            throw new common_1.UnauthorizedException("Failed to get the user id data from token!");
         try {
             const getAll_village = await this.prisma.village.findMany({
                 include: {
@@ -109,19 +106,18 @@ let VillageService = class VillageService {
                     }
                 }
             });
-            if (getAll_village == undefined || getAll_village == null) {
-                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Not Found!", false);
-            }
-            return (0, response_helper_js_1.ResponseSuccess)(getAll_village, common_1.HttpStatus.OK, "Successfully to get all data of village!", true);
+            if (getAll_village == undefined || getAll_village == null)
+                throw new common_1.BadRequestException("Failed to get village!");
+            return getAll_village;
         }
         catch (error) {
-            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to get all data of village!", false);
+            throw new common_1.BadRequestException(error.message);
         }
     }
 };
 exports.VillageService = VillageService;
 exports.VillageService = VillageService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_js_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], VillageService);
 //# sourceMappingURL=village.service.js.map

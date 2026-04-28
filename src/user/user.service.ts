@@ -1,10 +1,9 @@
 import { BadRequestException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { ResponseError, ResponseSuccess } from '../common/helpers/response.helper.js';
 import { normalizeEmail } from 'validator';
-import { CheckIsNullWithNumber, CheckIsNullWitMulter } from '../common/helpers/null-check.helper.js';
+import { CheckIsNullWithNumber, CheckIsNullWitMulter } from '../common/helpers/null-check.helper';
 import { ConfigureCloudinanry } from 'src/config/cloudinary.config.js';
 
 @Injectable()
@@ -111,7 +110,11 @@ export class UserService {
 
         if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
 
-        const update_data = CheckIsNullWitMulter(file_path, data)
+        const update_data = await CheckIsNullWitMulter(data, file_path)
+
+        //debug
+        console.log(update_data)
+        //
 
         if (!update_data && update_data == undefined || update_data == null) throw new BadRequestException("Failed to get the payload of the request!")
 

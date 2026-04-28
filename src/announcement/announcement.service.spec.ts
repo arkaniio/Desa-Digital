@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AnnouncementService } from './announcement.service.js';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { AnnouncementService } from './announcement.service';
+import { PrismaService } from '../prisma/prisma.service';
 
 describe('AnnouncementService', () => {
   let service: AnnouncementService;

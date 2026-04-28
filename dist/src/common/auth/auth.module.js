@@ -10,9 +10,9 @@ exports.AuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const jwt_1 = require("@nestjs/jwt");
-const jwt_strategy_js_1 = require("./strategies/jwt.strategy.js");
-const jwt_auth_guard_js_1 = require("./guards/jwt-auth.guard.js");
-const roles_guard_js_1 = require("./guards/roles.guard.js");
+const jwt_strategy_1 = require("./strategies/jwt.strategy");
+const jwt_auth_guard_1 = require("./guards/jwt-auth.guard");
+const roles_guard_1 = require("./guards/roles.guard");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -26,8 +26,8 @@ exports.AuthModule = AuthModule = __decorate([
                 signOptions: { expiresIn: '1d' },
             }),
         ],
-        providers: [jwt_strategy_js_1.JwtStrategy, jwt_auth_guard_js_1.JwtAuthGuard, roles_guard_js_1.RolesGuard],
-        exports: [jwt_1.JwtModule, passport_1.PassportModule, jwt_auth_guard_js_1.JwtAuthGuard, roles_guard_js_1.RolesGuard],
+        providers: [jwt_strategy_1.JwtStrategy, jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard],
+        exports: [jwt_1.JwtModule, passport_1.PassportModule, jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard],
     })
 ], AuthModule);
 //# sourceMappingURL=auth.module.js.map

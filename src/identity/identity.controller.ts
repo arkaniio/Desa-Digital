@@ -1,12 +1,12 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
-import { IdentityService } from './identity.service.js';
-import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard.js';
-import { CurrentUser } from '../common/auth/decorators/current-user.decorator.js';
-import { RolesGuard } from '../common/auth/guards/roles.guard.js';
-import { Roles } from '../common/auth/decorators/roles.decorator.js';
-import { CreateIdentityDto } from './dto/create-identity.dto.js';
-import type { UpdateIdentityDto } from './dto/update-identity.dto.js';
-import { PaginationDto } from '../common/dto/pagination-query.dto.js';
+import { IdentityService } from './identity.service';
+import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
+import { RolesGuard } from '../common/auth/guards/roles.guard';
+import { Roles } from '../common/auth/decorators/roles.decorator';
+import { CreateIdentityDto } from './dto/create-identity.dto';
+import type { UpdateIdentityDto } from './dto/update-identity.dto';
+import { PaginationDto } from '../common/dto/pagination-query.dto';
 
 @Controller('identity')
 export class IdentityController {

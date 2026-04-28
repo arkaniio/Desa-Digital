@@ -11,21 +11,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RtService = void 0;
 const common_1 = require("@nestjs/common");
-const prisma_service_js_1 = require("../prisma/prisma.service.js");
-const null_check_helper_js_1 = require("../common/helpers/null-check.helper.js");
-const response_helper_js_1 = require("../common/helpers/response.helper.js");
+const prisma_service_1 = require("../prisma/prisma.service");
+const null_check_helper_1 = require("../common/helpers/null-check.helper");
 let RtService = class RtService {
     prisma;
     constructor(prisma) {
         this.prisma = prisma;
     }
     async registerRt(data, user_id) {
-        if (user_id == undefined || user_id == null) {
-            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.UNAUTHORIZED, "Failed to get the user id!", false);
-        }
-        if (data == undefined || data == null) {
-            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to initiate the data must be required!", false);
-        }
+        if (!user_id && user_id == undefined || user_id == null)
+            throw new common_1.UnauthorizedException("Failed to get user_id from token!");
         try {
             const data_create = await this.prisma.rt.create({
                 data: {
@@ -33,59 +28,62 @@ let RtService = class RtService {
                     Number: data.Number
                 }
             });
-            if (data_create == undefined || data_create == null) {
-                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to create data because the value is null!", false);
-            }
-            return (0, response_helper_js_1.ResponseSuccess)(data, common_1.HttpStatus.CREATED, "Successfully to create new rt!", true);
+            if (!data_create && data_create == undefined || data_create == null)
+                throw new common_1.BadRequestException("Failed to create and detect the data!");
+            return data_create;
         }
         catch (error) {
-            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to create new data rt!", false);
+            throw new common_1.BadRequestException(error.message);
         }
     }
     async updateRt(data, user_id, id) {
-        if (!user_id && id == undefined || !user_id && id == null) {
-            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to detect the user id or id!", false);
-        }
-        const update_data = (0, null_check_helper_js_1.CheckIsNullWithNumber)(data);
+        if (!user_id && user_id == undefined || user_id == null)
+            throw new common_1.UnauthorizedException("Failed to get data from token!");
+        if (!id && id == undefined || id == null)
+            throw new common_1.BadRequestException("Failed to get the id from the param!");
+        const update_data = (0, null_check_helper_1.CheckIsNullWithNumber)(data);
+        if (!update_data && update_data == undefined || update_data == null)
+            throw new common_1.BadRequestException("Failed to get the payload for update!");
         try {
+            const isNumber = id != 0 ? Number(id) : undefined;
             const update = await this.prisma.rt.update({
                 where: {
-                    Id: Number(id)
+                    Id: isNumber
                 },
                 data: update_data
             });
-            if (!update || update == undefined) {
-                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to update the data because the value is undefined!", false);
-            }
-            return (0, response_helper_js_1.ResponseSuccess)(true, common_1.HttpStatus.OK, "Successfully to update the data of rt!", true);
+            if (!update && update == undefined || update == null)
+                throw new common_1.BadRequestException("Failed to update data!");
+            return true;
         }
         catch (error) {
-            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to update the data Rt!", false);
+            throw new common_1.BadRequestException(error.message);
         }
     }
     async deleteRt(user_id, id) {
-        if (!user_id && id == undefined || !user_id && id == null) {
-            return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to get the user_id and id from the request!", false);
-        }
+        if (!user_id && user_id == undefined || !user_id == null)
+            throw new common_1.UnauthorizedException("Failed to get the data user from token and id from param!");
+        if (!id && id == undefined || id == null)
+            throw new common_1.BadRequestException("Failed to get the id from the param!");
         try {
+            const isNumber = id != 0 ? Number(id) : undefined;
             const delete_data = await this.prisma.rt.delete({
                 where: {
-                    Id: Number(id)
+                    Id: isNumber
                 }
             });
-            if (!delete_data && delete_data == undefined || delete_data == null) {
-                return (0, response_helper_js_1.ResponseError)(null, common_1.HttpStatus.BAD_REQUEST, "Failed to delete data because the data that you want to delete it is nill or undefined!", false);
-            }
-            return (0, response_helper_js_1.ResponseSuccess)(true, common_1.HttpStatus.OK, "Successfully to delete the data rw!", true);
+            if (!delete_data && delete_data == undefined || delete_data == null)
+                throw new common_1.BadRequestException("Not found!");
+            return true;
         }
         catch (error) {
-            return (0, response_helper_js_1.ResponseError)(error, common_1.HttpStatus.BAD_REQUEST, "Failed to delete the rt data!", false);
+            throw new common_1.BadRequestException(error.message);
         }
     }
 };
 exports.RtService = RtService;
 exports.RtService = RtService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [prisma_service_js_1.PrismaService])
+    __metadata("design:paramtypes", [prisma_service_1.PrismaService])
 ], RtService);
 //# sourceMappingURL=rt.service.js.map

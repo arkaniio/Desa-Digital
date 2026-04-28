@@ -1,11 +1,11 @@
 import { Controller, Post, UseGuards, Body, Put, Param, Delete } from '@nestjs/common';
-import { CurrentUser } from '../common/auth/decorators/current-user.decorator.js';
-import { Roles } from '../common/auth/decorators/roles.decorator.js';
-import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard.js';
-import { RolesGuard } from '../common/auth/guards/roles.guard.js';
-import { CreateRtDto } from './dto/create-rt.dto.js';
-import { RtService } from './rt.service.js';
-import type { UpdateRtDto } from './dto/update-rt.dto.js';
+import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
+import { Roles } from '../common/auth/decorators/roles.decorator';
+import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/auth/guards/roles.guard';
+import { CreateRtDto } from './dto/create-rt.dto';
+import { RtService } from './rt.service';
+import type { UpdateRtDto } from './dto/update-rt.dto';
 
 @Controller('rt')
 export class RtController {
