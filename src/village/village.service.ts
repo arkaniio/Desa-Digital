@@ -106,20 +106,7 @@ export class VillageService {
 
         try {
 
-            const getAll_village = await this.prisma.village.findMany({
-                include: {
-                    identityVilages: {
-                        select: {
-                            Full_Name: true,
-                            Age: true,
-                            Address: true,
-                            Village: true,
-                            Rt: true,
-                            Rw: true
-                        }
-                    }
-                }
-            })
+            const getAll_village = await this.prisma.village.findMany()
 
             if (getAll_village == undefined || getAll_village == null) throw new BadRequestException("Failed to get village!")
 
