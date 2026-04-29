@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { BufferUpload } from 'src/common/helpers/cloudinary_helper';
+import { CheckIsNull, CheckIsNullWithNumber, CheckIsNullWitMulter } from 'src/common/helpers/null-check.helper';
 import { ConfigureCloudinanry } from 'src/config/cloudinary.config';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -37,6 +38,65 @@ export class SubmissionsService {
             if (!createData && createData == undefined || createData == null) throw new BadRequestException("Failed to get payload in data!")
 
             return createData
+
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
+
+    }
+
+    async deleteSubmissions(user_id: number, id: number) {
+
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get data from token!")
+
+        if (!id && id == undefined || id == null) throw new BadRequestException("Failed to get id from param!")
+
+        try {
+
+            const isNumber = id != 0 ? Number(id) : undefined
+
+            const deleteData = await this.prisma.submissions.delete({
+                where: {
+                    id: isNumber
+                }
+            })
+
+            if (!deleteData && deleteData == undefined || deleteData == null) throw new BadRequestException("Not found!")
+
+            return true
+
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
+
+    }
+
+    async updateSubmissions(data: any, id: number, user_id: number, file: Express.Multer.File) {
+
+        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get id from token!")
+
+        if (!id && id == undefined || id == null) throw new BadRequestException("Failed to get id from param!")
+
+        try {
+
+            const isNumber = id != 0 ? Number(id) : undefined
+
+            const update_data_db = await CheckIsNullWitMulter(data, file)
+
+            const update_data = await this.prisma.submissions.update({
+                where: {
+                    id: isNumber
+                },
+                data: update_data_db
+            })
+
+            if (update_data_db.Keterangan_pengajuan == "DITERIMA") {
+                update_data.Status = "SUCCESS"
+            }
+
+            if (!update_data && update_data == undefined || update_data == null) throw new BadRequestException("Failed to get payload update!")
+
+            return true
 
         } catch (error) {
             throw new BadRequestException(error.message)

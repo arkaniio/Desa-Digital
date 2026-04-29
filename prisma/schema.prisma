@@ -63,8 +63,8 @@ model Submissions {
   Rw                   Rw                  @relation(fields: [RwId], references: [Id])
   Dokumen_pengajuan    String
   Tipe_Surat           Tipe_Surat
-  Status               String?             @default("DIAJUKAN")
-  Keterangan_Penolakan String?             @default("NO")
+  Status               String?             @default("PENDING")
+  Keterangan_pengajuan String?             @default("DIAJUKAN")
   Keperluan            String
   Tanggal_pengajuan    DateTime
   Tanggal_Selesai      DateTime?
