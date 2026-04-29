@@ -23,14 +23,14 @@ export class AnnouncementService {
 
             if (!filebuffer_cloud) throw new BadRequestException("Failed to get the buffer for upload in cloudinary!")
 
-            data.Image = filebuffer_cloud.secure_url
+            const data_Image = filebuffer_cloud.secure_url
             //  
 
             const data_create = await this.prisma.announcement.create({
                 data: {
                     Title: data.Tittle,
                     Content: data.Content,
-                    Image: data.Image,
+                    Image: data_Image,
                     AuthorId: user_id,
                     RwId: validateNumber,
                     RtId: validateNumber

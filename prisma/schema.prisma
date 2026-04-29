@@ -64,9 +64,9 @@ model Submissions {
   Dokumen_pengajuan    String
   Tipe_Surat           Tipe_Surat
   Status               String?             @default("DIAJUKAN")
-  Keterangan_Penolakan String?
+  Keterangan_Penolakan String?             @default("NO")
   Keperluan            String
-  Tanggal_Pengajuan    DateTime
+  Tanggal_pengajuan    DateTime
   Tanggal_Selesai      DateTime?
   digitalSignatures    Digital_Signature[]
 }
