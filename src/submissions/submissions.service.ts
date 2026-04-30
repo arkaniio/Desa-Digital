@@ -74,29 +74,46 @@ export class SubmissionsService {
 
         if (id == null) throw new BadRequestException("Failed to get id from param!")
 
-        try {
+        return this.prisma.$transaction(async (tx) => {
 
-            const update_data_db = await CheckIsNullWitMulter(data, file)
+            try {
 
-            // If Keterangan is DITERIMA, also update Status to SUCCESS
-            if (update_data_db.Keterangan_pengajuan === "DITERIMA") {
-                update_data_db.Status = "SUCCESS"
+                const get_data_signature = await this.prisma.digital_Signature.findFirst({
+                    where: {
+                        SubmissionsId: Number(id)
+                    }
+                })
+
+                if (!get_data_signature) throw new UnauthorizedException("Failed to get data signature in db using transaction!")
+
+                const update_data = await CheckIsNullWitMulter(data, file)
+
+                if (!update_data) throw new BadRequestException("Failed to get payload in update data!")
+
+                if (get_data_signature.Rt_desa_sign && get_data_signature.Kepala_desa_sign == true) {
+
+                    update_data.Keterangan_pengajuan = "DITERIMA"
+                    update_data.Status = "SUCCESS"
+                    update_data.Tanggal_selesai = new Date().toISOString()
+
+                }
+
+                const update_submissions = await tx.submissions.update({
+                    where: {
+                        id: Number(id)
+                    },
+                    data: update_data
+                })
+
+                if (update_submissions == null) throw new BadRequestException("Failed to update!")
+
+                return true
+
+            } catch (error) {
+                throw new BadRequestException(error.message)
             }
 
-            const update_data = await this.prisma.submissions.update({
-                where: {
-                    id: Number(id)
-                },
-                data: update_data_db
-            })
-
-            if (!update_data) throw new BadRequestException("Failed to get payload update!")
-
-            return true
-
-        } catch (error) {
-            throw new BadRequestException(error.message)
-        }
+        })
 
     }
 
