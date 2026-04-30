@@ -4,7 +4,6 @@ import { CurrentUser } from '../common/auth/decorators/current-user.decorator.js
 import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard.js';
 import { Roles } from '../common/auth/decorators/roles.decorator.js';
 import { RolesGuard } from '../common/auth/guards/roles.guard.js';
-import { CreateSubmissionDto } from './dto/submissions.dto.js';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('submissions')
@@ -27,7 +26,7 @@ export class SubmissionsController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("RT", "RW")
     async createSubmissions(
-        @Body() data: CreateSubmissionDto,
+        @Body() data: any,
         @CurrentUser() user_id: number,
         @UploadedFile() file: Express.Multer.File
     ) {
