@@ -67,7 +67,7 @@ model Submissions {
   Keterangan_pengajuan String?             @default("DIAJUKAN")
   Keperluan            String
   Tanggal_pengajuan    DateTime
-  Tanggal_Selesai      DateTime?
+  Tanggal_selesai      DateTime?
   digitalSignatures    Digital_Signature[]
 }
 

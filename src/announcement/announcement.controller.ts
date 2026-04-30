@@ -1,7 +1,7 @@
 import { Body, Controller, Post, Put, UploadedFile, UseGuards, UseInterceptors, Param, Get, Query } from '@nestjs/common';
 import { AnnouncementService } from './announcement.service';
 import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard';
-import { RolesGuard, RolesGuardDouble } from '../common/auth/guards/roles.guard';
+import { RolesGuard } from '../common/auth/guards/roles.guard';
 import { Roles } from '../common/auth/decorators/roles.decorator';
 import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
 import { AnnouncementDto } from './dto/announcement.dto';
@@ -15,7 +15,8 @@ export class AnnouncementController {
     constructor(private readonly announcementService: AnnouncementService) { }
 
     @Post("create")
-    @UseGuards(JwtAuthGuard, RolesGuardDouble)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles("RW", "RT")
     @UseInterceptors(FileInterceptor("file", {
         limits: {
             fileSize: 1024 * 1024 * 2
@@ -27,7 +28,6 @@ export class AnnouncementController {
             return cb(null, true)
         }
     }))
-    @Roles()
     async createNewAnnouncement(@Body() data: AnnouncementDto,
         @CurrentUser() user_id: number,
         @UploadedFile() file: Express.Multer.File
@@ -44,7 +44,8 @@ export class AnnouncementController {
     }
 
     @Put("update/:id")
-    @UseGuards(JwtAuthGuard, RolesGuardDouble)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles("RW", "RT")
     @UseInterceptors(FileInterceptor("file", {
         limits: {
             fileSize: 1024 * 1024 * 2
@@ -56,7 +57,6 @@ export class AnnouncementController {
             return cb(null, true)
         }
     }))
-    @Roles()
     async updateAnnouncement(@Body() data: UpdateDataAnnouncement, @Param('id') id: number, @CurrentUser() user_id: number, @UploadedFile() file: Express.Multer.File) {
 
         //debug
@@ -75,7 +75,8 @@ export class AnnouncementController {
     }
 
     @Get("/all")
-    @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles("WARGA")
     async getAllAnnouncement(@CurrentUser() user_id: number, @Query() query: PaginationDto) {
 
         //debug

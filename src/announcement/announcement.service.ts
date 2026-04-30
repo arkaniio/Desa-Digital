@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service.js';
-import { BufferUpload } from '../common/helpers/cloudinary_helper.js';
-import { CheckIsNullAnnouncement } from '../common/helpers/null-check.helper.js';
+import { PrismaService } from '../prisma/prisma.service';
+import { BufferUpload } from '../common/helpers/cloudinary_helper';
+import { CheckIsNullWitMulterAnnouncement } from '../common/helpers/null-check.helper';
 
 @Injectable()
 export class AnnouncementService {
@@ -71,7 +71,7 @@ export class AnnouncementService {
 
         try {
 
-            const payload_update = await CheckIsNullAnnouncement(data, file)
+            const payload_update = await CheckIsNullWitMulterAnnouncement(data, file, "Announcement")
 
             if (!payload_update || Object.keys(payload_update).length === 0) throw new BadRequestException("Failed to get the payload of the data!")
 

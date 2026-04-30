@@ -16,7 +16,7 @@ export const CheckIsNull = (data: Record<string, any>) => {
 
 }
 
-export const CheckIsNullWitMulter = async (data: Record<string, any>, file: Express.Multer.File) => {
+export const CheckIsNullWitMulterAvatar = async (data: Record<string, any>, file: Express.Multer.File, file_name: string) => {
 
     const update_data: Record<string, any> = {}
 
@@ -32,7 +32,7 @@ export const CheckIsNullWitMulter = async (data: Record<string, any>, file: Expr
 
     if (file) {
 
-        const result: any = await BufferUpload(file.buffer, "Avatar")
+        const result: any = await BufferUpload(file.buffer, file_name)
 
         update_data.Avatar = result.secure_url
 
@@ -42,29 +42,57 @@ export const CheckIsNullWitMulter = async (data: Record<string, any>, file: Expr
 
 }
 
-export const CheckIsNullAnnouncement = async (data: Record<string, any>, file: Express.Multer.File) => {
+export const CheckIsNullWitMulterDokumen = async (data: Record<string, any>, file: Express.Multer.File, file_name: string) => {
 
     const update_data: Record<string, any> = {}
 
     if (data && typeof data == "object") {
         Object.keys(data).forEach((key) => {
+
             if (data[key] !== undefined && data[key] !== null) {
                 update_data[key] = data[key]
             }
+
         })
     }
 
     if (file) {
 
-        const cloud_file: any = await BufferUpload(file.buffer, "Image")
+        const result: any = await BufferUpload(file.buffer, file_name)
 
-        update_data.Image = cloud_file.secure_url
+        update_data.Dokumen_pengajuan = result.secure_url
 
     }
 
     return update_data
 
 }
+
+export const CheckIsNullWitMulterAnnouncement = async (data: Record<string, any>, file: Express.Multer.File, file_name: string) => {
+
+    const update_data: Record<string, any> = {}
+
+    if (data && typeof data == "object") {
+        Object.keys(data).forEach((key) => {
+
+            if (data[key] !== undefined && data[key] !== null) {
+                update_data[key] = data[key]
+            }
+
+        })
+    }
+
+    if (file) {
+
+        const result: any = await BufferUpload(file.buffer, file_name)
+
+        update_data.Image = result.secure_url
+
+    }
+
+    return update_data
+}
+
 
 export const CheckIsNullWithNumber = (data: Record<string, any>) => {
 

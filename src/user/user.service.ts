@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service.js';
+import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { CheckIsNullWitMulter } from '../common/helpers/null-check.helper.js';
+import { CheckIsNullWitMulterAvatar } from '../common/helpers/null-check.helper';
 
 @Injectable()
 export class UserService {
@@ -111,7 +111,7 @@ export class UserService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
 
-        const update_data = await CheckIsNullWitMulter(data, file_path)
+        const update_data = await CheckIsNullWitMulterAvatar(data, file_path, "Avatar")
 
         if (!update_data || Object.keys(update_data).length === 0) throw new BadRequestException("Failed to get the payload of the request!")
 

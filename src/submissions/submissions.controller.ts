@@ -1,15 +1,23 @@
-import { Body, Controller, Delete, Param, ParseIntPipe, Post, Put, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
-import { SubmissionsService } from './submissions.service.js';
-import { CurrentUser } from '../common/auth/decorators/current-user.decorator.js';
-import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard.js';
-import { Roles } from '../common/auth/decorators/roles.decorator.js';
-import { RolesGuard } from '../common/auth/guards/roles.guard.js';
+import { Body, Controller, Get, Delete, Param, ParseIntPipe, Post, Put, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { SubmissionsService } from './submissions.service';
+import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
+import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard';
+import { Roles } from '../common/auth/decorators/roles.decorator';
+import { RolesGuard } from '../common/auth/guards/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { PaginationDto } from 'src/common/dto/pagination-query.dto';
 
 @Controller('submissions')
 export class SubmissionsController {
 
     constructor(private readonly submissionsService: SubmissionsService) { }
+
+    @Get("all")
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles("RW", "RT")
+    async getAllSubmissions(@CurrentUser() user_id: number, @Query() query: PaginationDto) {
+        return this.submissionsService.getAllSubmissions(user_id, query)
+    }
 
     @Post("create")
     @UseInterceptors(FileInterceptor("file", {

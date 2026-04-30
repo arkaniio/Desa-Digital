@@ -1,10 +1,10 @@
 import { Controller, Post, Body, UseGuards, Get, Put, UseInterceptors, UploadedFile } from '@nestjs/common';
-import { UserService } from './user.service.js';
-import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard.js';
-import { CurrentUser } from '../common/auth/decorators/current-user.decorator.js';
-import { CreateUserDto } from './dto/create-user.dto.js';
-import { LoginDto } from './dto/login.dto.js';
-import { UserUpdateDto } from './dto/update-user.dto.js';
+import { UserService } from './user.service';
+import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard';
+import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDto } from './dto/login.dto';
+import { UserUpdateDto } from './dto/update-user.dto';
 import { FileInterceptor } from "@nestjs/platform-express"
 
 @Controller('user')
