@@ -1,5 +1,4 @@
-import { ConfigureCloudinanry } from "src/config/cloudinary.config"
-import { BufferUpload } from "./cloudinary_helper"
+import { BufferUpload } from "./cloudinary_helper.js"
 
 export const CheckIsNull = (data: Record<string, any>) => {
 
@@ -7,7 +6,7 @@ export const CheckIsNull = (data: Record<string, any>) => {
 
     if (data && typeof data == "object") {
         Object.keys(data).forEach((key) => {
-            if (data[key] != undefined && data[key] != null) {
+            if (data[key] !== undefined && data[key] !== null) {
                 update_data[key] = data[key]
             }
         })
@@ -49,7 +48,7 @@ export const CheckIsNullAnnouncement = async (data: Record<string, any>, file: E
 
     if (data && typeof data == "object") {
         Object.keys(data).forEach((key) => {
-            if (data[key] != undefined && data[key] != null) {
+            if (data[key] !== undefined && data[key] !== null) {
                 update_data[key] = data[key]
             }
         })
@@ -73,10 +72,11 @@ export const CheckIsNullWithNumber = (data: Record<string, any>) => {
 
     if (data && typeof data == "object") {
         Object.keys(data).forEach((key) => {
-            if (typeof data[key] == "number") {
-                data[key] = Number(update_data[key])
+            if (data[key] !== undefined && data[key] !== null) {
+                update_data[key] = typeof data[key] === "string" && !isNaN(Number(data[key]))
+                    ? Number(data[key])
+                    : data[key]
             }
-            data[key] = update_data[key]
         })
     }
 

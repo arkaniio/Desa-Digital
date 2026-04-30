@@ -1,8 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
-import { BufferUpload } from 'src/common/helpers/cloudinary_helper';
-import { CheckIsNull, CheckIsNullWithNumber, CheckIsNullWitMulter } from 'src/common/helpers/null-check.helper';
-import { ConfigureCloudinanry } from 'src/config/cloudinary.config';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { BufferUpload } from '../common/helpers/cloudinary_helper.js';
+import { CheckIsNullWitMulter } from '../common/helpers/null-check.helper.js';
+import { PrismaService } from '../prisma/prisma.service.js';
 
 @Injectable()
 export class SubmissionsService {
@@ -12,13 +11,13 @@ export class SubmissionsService {
 
     async createSubmissions(data: any, user_id: number, file: Express.Multer.File) {
 
-        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the id data from token")
+        if (user_id == null) throw new UnauthorizedException("Failed to get the id data from token")
 
         try {
 
             const buffe_data_file = await BufferUpload(file.buffer, "Dokumen")
 
-            if (!buffe_data_file && buffe_data_file == undefined || buffe_data_file == null) throw new BadRequestException("Failed to get the file!")
+            if (!buffe_data_file) throw new BadRequestException("Failed to get the file!")
 
             const dataFile = buffe_data_file.secure_url
 
@@ -35,7 +34,7 @@ export class SubmissionsService {
                 }
             })
 
-            if (!createData && createData == undefined || createData == null) throw new BadRequestException("Failed to get payload in data!")
+            if (!createData) throw new BadRequestException("Failed to get payload in data!")
 
             return createData
 
@@ -47,21 +46,19 @@ export class SubmissionsService {
 
     async deleteSubmissions(user_id: number, id: number) {
 
-        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get data from token!")
+        if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")
 
-        if (!id && id == undefined || id == null) throw new BadRequestException("Failed to get id from param!")
+        if (id == null) throw new BadRequestException("Failed to get id from param!")
 
         try {
 
-            const isNumber = id != 0 ? Number(id) : undefined
-
             const deleteData = await this.prisma.submissions.delete({
                 where: {
-                    id: isNumber
+                    id: Number(id)
                 }
             })
 
-            if (!deleteData && deleteData == undefined || deleteData == null) throw new BadRequestException("Not found!")
+            if (!deleteData) throw new BadRequestException("Not found!")
 
             return true
 
@@ -73,28 +70,27 @@ export class SubmissionsService {
 
     async updateSubmissions(data: any, id: number, user_id: number, file: Express.Multer.File) {
 
-        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get id from token!")
+        if (user_id == null) throw new UnauthorizedException("Failed to get id from token!")
 
-        if (!id && id == undefined || id == null) throw new BadRequestException("Failed to get id from param!")
+        if (id == null) throw new BadRequestException("Failed to get id from param!")
 
         try {
 
-            const isNumber = id != 0 ? Number(id) : undefined
-
             const update_data_db = await CheckIsNullWitMulter(data, file)
+
+            // If Keterangan is DITERIMA, also update Status to SUCCESS
+            if (update_data_db.Keterangan_pengajuan === "DITERIMA") {
+                update_data_db.Status = "SUCCESS"
+            }
 
             const update_data = await this.prisma.submissions.update({
                 where: {
-                    id: isNumber
+                    id: Number(id)
                 },
                 data: update_data_db
             })
 
-            if (update_data_db.Keterangan_pengajuan == "DITERIMA") {
-                update_data.Status = "SUCCESS"
-            }
-
-            if (!update_data && update_data == undefined || update_data == null) throw new BadRequestException("Failed to get payload update!")
+            if (!update_data) throw new BadRequestException("Failed to get payload update!")
 
             return true
 
@@ -105,3 +101,4 @@ export class SubmissionsService {
     }
 
 }
+

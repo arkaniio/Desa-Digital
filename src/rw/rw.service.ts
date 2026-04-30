@@ -1,6 +1,6 @@
-import { BadGatewayException, BadRequestException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
-import { CheckIsNullWithNumber } from '../common/helpers/null-check.helper';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service.js';
+import { CheckIsNullWithNumber } from '../common/helpers/null-check.helper.js';
 
 @Injectable()
 export class RwService {
@@ -9,7 +9,7 @@ export class RwService {
 
     async registerRw(data: any, user_id: number) {
 
-        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id data from token!")
+        if (user_id == null) throw new UnauthorizedException("Failed to get the user id data from token!")
 
         try {
 
@@ -19,7 +19,7 @@ export class RwService {
                 }
             })
 
-            if (!data_create && data_create == undefined || data_create == null) throw new BadRequestException("Failed to create data because data is nill!")
+            if (!data_create) throw new BadRequestException("Failed to create data because data is nill!")
 
             return data_create
 
@@ -31,26 +31,24 @@ export class RwService {
 
     async updateRw(data: any, user_id: number, id: number) {
 
-        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get user_id from token!")
+        if (user_id == null) throw new UnauthorizedException("Failed to get user_id from token!")
 
-        if (!id && id == undefined || id == null) throw new BadRequestException("Failed to get the param id!")
+        if (id == null) throw new BadRequestException("Failed to get the param id!")
 
         const update_data_Rw = CheckIsNullWithNumber(data)
 
-        if (!update_data_Rw && update_data_Rw == undefined || update_data_Rw == null) throw new BadRequestException("Failed to get the update data payload!")
+        if (!update_data_Rw || Object.keys(update_data_Rw).length === 0) throw new BadRequestException("Failed to get the update data payload!")
 
         try {
 
-            const isNumber = id != 0 ? Number(id) : undefined
-
             const update_data = await this.prisma.rw.update({
                 where: {
-                    Id: isNumber
+                    Id: Number(id)
                 },
                 data: update_data_Rw
             })
 
-            if (!update_data && update_data == undefined || update_data == undefined) throw new BadRequestException("Failed to get the data of update!")
+            if (!update_data) throw new BadRequestException("Failed to get the data of update!")
 
             return true
 
@@ -62,21 +60,19 @@ export class RwService {
 
     async deleteRw(user_id: number, id: number) {
 
-        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
+        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
 
-        if (!id && id == undefined || id == null) throw new BadRequestException("Failed to get the id from the param!")
+        if (id == null) throw new BadRequestException("Failed to get the id from the param!")
 
         try {
 
-            const isNumber = id != 0 ? Number(id) : undefined
-
             const delete_data = await this.prisma.rw.delete({
                 where: {
-                    Id: isNumber
+                    Id: Number(id)
                 }
             })
 
-            if (!delete_data && delete_data == undefined || delete_data == null) throw new BadRequestException("Not found!")
+            if (!delete_data) throw new BadRequestException("Not found!")
 
             return true
 
@@ -87,3 +83,4 @@ export class RwService {
     }
 
 }
+

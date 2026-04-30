@@ -1,10 +1,8 @@
-import { BadRequestException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service.js';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { normalizeEmail } from 'validator';
-import { CheckIsNullWithNumber, CheckIsNullWitMulter } from '../common/helpers/null-check.helper';
-import { ConfigureCloudinanry } from 'src/config/cloudinary.config.js';
+import { CheckIsNullWitMulter } from '../common/helpers/null-check.helper.js';
 
 @Injectable()
 export class UserService {
@@ -24,7 +22,7 @@ export class UserService {
         if (user_data) throw new BadRequestException("Email has been already exists!")
 
         const password_hash = await bcrypt.hash(data.Password, 10)
-        if (!password_hash == undefined || password_hash == null) throw new BadRequestException("Failed to hashing password!")
+        if (!password_hash) throw new BadRequestException("Failed to hashing password!")
 
         try {
             const user = await this.prisma.user.create({
@@ -54,10 +52,10 @@ export class UserService {
             }
         })
 
-        if (user_data == undefined || user_data == null) throw new BadRequestException("Failed to get the data!")
+        if (!user_data) throw new BadRequestException("Failed to get the data!")
 
-        const isPasswordValid = await bcrypt.compare(data.Password, user_data?.Password)
-        if (isPasswordValid == undefined || !isPasswordValid) throw new BadRequestException("Failed to compare the password!")
+        const isPasswordValid = await bcrypt.compare(data.Password, user_data.Password)
+        if (!isPasswordValid) throw new BadRequestException("Failed to compare the password!")
 
         const token = this.jwtService.sign({
             id: user_data.id,
@@ -72,17 +70,24 @@ export class UserService {
 
     async getProfile(user_id: number) {
 
-        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
+        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
 
         try {
 
-            const isNumber = user_id != 0 ? Number(user_id) : undefined
-
             const data_user = await this.prisma.user.findUnique({
                 where: {
-                    id: isNumber
+                    id: Number(user_id)
                 },
-                include: {
+                select: {
+                    id: true,
+                    Username: true,
+                    Email: true,
+                    Address: true,
+                    Role: true,
+                    Avatar: true,
+                    VillageId: true,
+                    Created_at: true,
+                    Updated_at: true,
                     Village: {
                         select: {
                             Name: true,
@@ -92,7 +97,7 @@ export class UserService {
                 }
             })
 
-            if (!data_user && data_user == undefined || data_user == null) throw new BadRequestException("Failed to get the data user!")
+            if (!data_user) throw new BadRequestException("Failed to get the data user!")
 
             return data_user
 
@@ -104,15 +109,11 @@ export class UserService {
 
     async updateProfile(file_path: Express.Multer.File, user_id: number, data: any) {
 
-        if (!user_id && user_id == undefined || user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
+        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
 
         const update_data = await CheckIsNullWitMulter(data, file_path)
 
-        //debug
-        console.log(update_data)
-        //
-
-        if (!update_data && update_data == undefined || update_data == null) throw new BadRequestException("Failed to get the payload of the request!")
+        if (!update_data || Object.keys(update_data).length === 0) throw new BadRequestException("Failed to get the payload of the request!")
 
         try {
 
@@ -123,7 +124,7 @@ export class UserService {
                 data: update_data
             })
 
-            if (!update_users && update_users == undefined || update_users == null) throw new BadRequestException("Failed to get the data update!")
+            if (!update_users) throw new BadRequestException("Failed to get the data update!")
 
             return true
 

@@ -24,13 +24,6 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-
-  const payload_user = {
-    Username: "Lalu Firdaus Muhardika",
-    Email: "lalufirdausmuhardika@gmail.com",
-    Password: "dika123",
-  }
-
   const login_user = {
     Email: "lalufirdausmuhardika@gmail.com",
     Password: "dika123"

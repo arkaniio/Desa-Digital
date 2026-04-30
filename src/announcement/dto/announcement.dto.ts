@@ -1,9 +1,17 @@
-import { IsInt, IsString } from "class-validator";
+import { IsInt, IsOptional, IsString } from "class-validator";
 
-export type UpdateDataAnnouncement = {
+export class UpdateDataAnnouncement {
 
+    @IsOptional()
+    @IsString()
     Tittle?: string
+
+    @IsOptional()
+    @IsString()
     Content?: string
+
+    @IsOptional()
+    @IsString()
     Image?: string
 
 }
