@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CheckIsNullWithNumber } from '../common/helpers/null-check.helper';
+import { use } from 'react';
 
 @Injectable()
 export class RwService {
@@ -15,6 +16,7 @@ export class RwService {
 
             const data_create = await this.prisma.rw.create({
                 data: {
+                    UserId: Number(user_id),
                     Name: data.Name
                 }
             })

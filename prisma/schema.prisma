@@ -33,6 +33,8 @@ model User {
   Updated_at    DateTime       @updatedAt
   announcements Announcement[]
   submissions   Submissions[]
+  rts           Rt[]
+  rws           Rw[]
 }
 
 model Digital_Signature {
@@ -97,6 +99,8 @@ model Village {
 
 model Rw {
   Id            Int            @id @default(autoincrement())
+  UserId        Int
+  User          User           @relation(fields: [UserId], references: [id])
   Name          String
   rts           Rt[]
   announcements Announcement[]
@@ -105,6 +109,8 @@ model Rw {
 
 model Rt {
   Id            Int            @id @default(autoincrement())
+  UserId        Int
+  User          User           @relation(fields: [UserId], references: [id])
   Number        Int
   RwId          Int
   Rw            Rw             @relation(fields: [RwId], references: [Id])

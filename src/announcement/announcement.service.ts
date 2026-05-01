@@ -51,7 +51,8 @@ export class AnnouncementService {
 
             const deleteData = await this.prisma.announcement.delete({
                 where: {
-                    id: Number(id)
+                    id: Number(id),
+                    AuthorId: Number(user_id)
                 }
             })
 
