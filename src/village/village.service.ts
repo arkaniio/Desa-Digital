@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { CheckIsNull } from '../common/helpers/null-check.helper.js';
+import { CheckIsNull, CheckIsNullWithNumber } from '../common/helpers/null-check.helper.js';
 
 @Injectable()
 export class VillageService {
@@ -68,7 +68,7 @@ export class VillageService {
         if (user_id == null) throw new UnauthorizedException("Failed to get the user id data from token!")
 
         //tools
-        const update_data = CheckIsNull(data)
+        const update_data = CheckIsNullWithNumber(data)
         //
 
         if (!update_data || Object.keys(update_data).length === 0) throw new BadRequestException("Failed to get the payload of the update data!")

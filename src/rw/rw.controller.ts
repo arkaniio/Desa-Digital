@@ -3,9 +3,8 @@ import { RwService } from './rw.service.js';
 import { Roles } from '../common/auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/auth/guards/roles.guard';
-import { CreateRwDto } from './dto/create-rw.dto';
+import { CreateRwDto, UpdateRwDto } from './dto/rw.dto.js';
 import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
-import { UpdateRwDto } from './dto/update-rw.dto';
 
 @Controller('rw')
 export class RwController {

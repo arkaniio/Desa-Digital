@@ -75,68 +75,29 @@ export class SubmissionsService {
 
         if (id == null) throw new BadRequestException("Failed to get id from param!")
 
-        return this.prisma.$transaction(async (tx) => {
+        try {
 
-            try {
+            const update_data = await CheckIsNullWitMulterDokumen(data, file, "Dokumen")
 
-                const get_data_signature = await tx.digital_Signature.findFirst({
-                    where: {
-                        SubmissionsId: Number(id)
-                    }
-                })
+            if (!update_data || Object.keys(update_data).length == 0) throw new BadRequestException("Failed to get payload data!")
 
-                if (!get_data_signature) {
+            const update_db = await this.prisma.submissions.update({
+                where: {
+                    id: Number(id)
+                },
+                data: update_data
+            })
 
-                    const update_data = await CheckIsNullWitMulterDokumen(data, file, "Dokumen")
+            if (update_db == null) throw new BadRequestException("Failed to update data because the data is not found!")
 
-                    if (!update_data) throw new BadRequestException("Failed to get payload in update data!")
+            return true
 
-                    const update_submissions = await tx.submissions.update({
-                        where: {
-                            id: Number(id)
-                        },
-                        data: update_data
-                    })
-
-                    if (update_submissions == null) throw new BadRequestException("Failed to update!")
-
-                    return true
-
-                } else {
-
-                    const update_data = await CheckIsNullWitMulterDokumen(data, file, "Dokumen")
-
-                    if (!update_data) throw new BadRequestException("Failed to get payload in update data!")
-
-                    if (get_data_signature.Rt_desa_sign && get_data_signature.Kepala_desa_sign == true) {
-
-                        update_data.Keterangan_pengajuan = "DITERIMA"
-                        update_data.Status = "SUCCESS"
-                        update_data.Tanggal_selesai = new Date().toISOString()
-
-                    }
-
-                    const update_submissions = await tx.submissions.update({
-                        where: {
-                            id: Number(id)
-                        },
-                        data: update_data
-                    })
-
-                    if (update_submissions == null) throw new BadRequestException("Failed to update!")
-
-                    return true
-
-                }
-
-
-            } catch (error) {
-                throw new BadRequestException(error.message)
-            }
-
-        })
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
 
     }
+
 
     async getAllSubmissions(user_id: number, query: any) {
 

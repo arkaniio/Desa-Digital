@@ -9,6 +9,7 @@ import { RwModule } from './rw/rw.module';
 import { AnnouncementModule } from './announcement/announcement.module';
 import { VillageModule } from './village/village.module';
 import { SubmissionsModule } from './submissions/submissions.module';
+import { DigitalSignatureModule } from './digital_signature/digital_signature.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { SubmissionsModule } from './submissions/submissions.module';
     AnnouncementModule,
     VillageModule,
     SubmissionsModule,
+    DigitalSignatureModule,
   ],
   controllers: [AppController],
   providers: [AppService],

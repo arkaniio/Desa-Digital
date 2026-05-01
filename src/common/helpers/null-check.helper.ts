@@ -1,3 +1,4 @@
+import { isBoolean } from "class-validator"
 import { BufferUpload } from "./cloudinary_helper.js"
 
 export const CheckIsNull = (data: Record<string, any>) => {
@@ -8,6 +9,28 @@ export const CheckIsNull = (data: Record<string, any>) => {
         Object.keys(data).forEach((key) => {
             if (data[key] !== undefined && data[key] !== null) {
                 update_data[key] = data[key]
+            }
+        })
+    }
+
+    return update_data
+
+}
+
+export const CheckIsNullWithBooleanAndNumber = (data: Record<string, any>) => {
+
+    const update_data: Record<string, any> = {}
+
+    if (data && typeof data == "object") {
+        Object.keys(data).forEach((key) => {
+            if (data[key] !== undefined && data[key] !== null) {
+                if (typeof data[key] === "string" && data[key].trim() !== "" && !isNaN(Number(data[key]))) {
+                    update_data[key] = Number(data[key])
+                } else if (data[key] === "true" || data[key] === "false") {
+                    update_data[key] = data[key] === "true"
+                } else {
+                    update_data[key] = data[key]
+                }
             }
         })
     }

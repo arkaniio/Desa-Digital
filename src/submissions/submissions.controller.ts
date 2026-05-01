@@ -5,7 +5,8 @@ import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard';
 import { Roles } from '../common/auth/decorators/roles.decorator';
 import { RolesGuard } from '../common/auth/guards/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PaginationDto } from 'src/common/dto/pagination-query.dto';
+import { PaginationDto } from '../common/dto/pagination-query.dto';
+import { CreateSubmissionDto, UpdateSubmissionsDto } from './dto/submissions.dto';
 
 @Controller('submissions')
 export class SubmissionsController {
@@ -34,7 +35,7 @@ export class SubmissionsController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("RT", "RW")
     async createSubmissions(
-        @Body() data: any,
+        @Body() data: CreateSubmissionDto,
         @CurrentUser() user_id: number,
         @UploadedFile() file: Express.Multer.File
     ) {
@@ -56,7 +57,7 @@ export class SubmissionsController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("RT", "RW")
     async updateSubmissions(
-        @Body() data: any,
+        @Body() data: UpdateSubmissionsDto,
         @Param('id', ParseIntPipe) id: number,
         @CurrentUser() user_id: number,
         @UploadedFile() file: Express.Multer.File

@@ -1,11 +1,10 @@
 import { Controller, Post, UseGuards, Body, Delete, Param, Put, Get, ParseIntPipe } from '@nestjs/common';
-import { VillageService } from './village.service.js';
-import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard.js';
-import { RolesGuard } from '../common/auth/guards/roles.guard.js';
-import { Roles } from '../common/auth/decorators/roles.decorator.js';
-import { CreateVillageDto } from './dto/create-village.dto.js';
-import { CurrentUser } from '../common/auth/decorators/current-user.decorator.js';
-import { UpdateVillageDto } from './dto/update-village.dto.js';
+import { VillageService } from './village.service';
+import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '../common/auth/guards/roles.guard';
+import { Roles } from '../common/auth/decorators/roles.decorator';
+import { CreateVillageDto, UpdateVillageDto } from './dto/village.dto';
+import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
 
 @Controller('village')
 export class VillageController {

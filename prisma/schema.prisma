@@ -47,11 +47,11 @@ model Digital_Signature {
 }
 
 enum Tipe_Surat {
-  DOMISILI
-  KURANG_MAMPU
-  NIKAH
-  KEMATIAN
-  USAHA
+  SURAT_DOMISILI
+  SURAT_KURANG_MAMPU
+  SURAT_NIKAH
+  SURAT_KEMATIAN
+  SURAT_USAHA
 }
 
 model Submissions {

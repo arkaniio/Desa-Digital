@@ -1,7 +1,6 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CheckIsNullWithNumber } from '../common/helpers/null-check.helper';
-import { use } from 'react';
 
 @Injectable()
 export class RtService {

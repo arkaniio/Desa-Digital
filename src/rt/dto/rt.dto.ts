@@ -1,3 +1,4 @@
+import { PartialType } from "@nestjs/mapped-types";
 import { IsInt, Min } from "class-validator";
 
 export class CreateRtDto {
@@ -11,3 +12,5 @@ export class CreateRtDto {
     RwId: number
 
 }
+
+export class UpdateRtDto extends PartialType(CreateRtDto) { }

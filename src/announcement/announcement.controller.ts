@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Put, UploadedFile, UseGuards, UseInterceptors, Param, Get, Query } from '@nestjs/common';
+import { Body, Controller, Post, Put, UploadedFile, UseGuards, UseInterceptors, Param, Get, Query, ParseIntPipe, Delete } from '@nestjs/common';
 import { AnnouncementService } from './announcement.service';
 import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../common/auth/guards/roles.guard';
@@ -7,7 +7,7 @@ import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
 import { AnnouncementDto } from './dto/announcement.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { UpdateDataAnnouncement } from './dto/announcement.dto';
-import { PaginationDto } from 'src/common/dto/pagination-query.dto';
+import { PaginationDto } from '../common/dto/pagination-query.dto';
 
 @Controller('announcement')
 export class AnnouncementController {
@@ -57,7 +57,7 @@ export class AnnouncementController {
             return cb(null, true)
         }
     }))
-    async updateAnnouncement(@Body() data: UpdateDataAnnouncement, @Param('id') id: number, @CurrentUser() user_id: number, @UploadedFile() file: Express.Multer.File) {
+    async updateAnnouncement(@Body() data: UpdateDataAnnouncement, @Param('id', ParseIntPipe) id: number, @CurrentUser() user_id: number, @UploadedFile() file: Express.Multer.File) {
 
         //debug
         console.log(id)
@@ -86,6 +86,13 @@ export class AnnouncementController {
 
         return this.announcementService.getAllAnnouncement(user_id, query)
 
+    }
+
+    @Delete("delete/:id")
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles("RT", "RW")
+    async deleteAnnouncement(@Param('id', ParseIntPipe) id: number, @CurrentUser() user_id: number) {
+        return this.announcementService.deleteAnnouncement(user_id, id)
     }
 
 }

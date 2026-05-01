@@ -1,3 +1,4 @@
+import { PartialType } from "@nestjs/mapped-types";
 import { IsString, MinLength } from "class-validator";
 
 export class CreateRwDto {
@@ -7,3 +8,5 @@ export class CreateRwDto {
     Name: string
 
 }
+
+export class UpdateRwDto extends PartialType(CreateRwDto) { }

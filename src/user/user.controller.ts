@@ -2,9 +2,7 @@ import { Controller, Post, Body, UseGuards, Get, Put, UseInterceptors, UploadedF
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
-import { CreateUserDto } from './dto/create-user.dto';
-import { LoginDto } from './dto/login.dto';
-import { UserUpdateDto } from './dto/update-user.dto';
+import { CreateUserDto, LoginDto, UpdateUserDto } from './dto/user.dto';
 import { FileInterceptor } from "@nestjs/platform-express"
 
 @Controller('user')
@@ -41,7 +39,7 @@ export class UserController {
             return cb(null, true)
         },
     }))
-    async updateProfile(@Body() data: UserUpdateDto, @CurrentUser() user_id: number, @UploadedFile() file: Express.Multer.File) {
+    async updateProfile(@Body() data: UpdateUserDto, @CurrentUser() user_id: number, @UploadedFile() file: Express.Multer.File) {
         return this.userService.updateProfile(file, user_id, data)
     }
 

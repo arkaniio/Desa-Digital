@@ -43,7 +43,7 @@ export class AnnouncementService {
 
     }
 
-    async deletAnnouncement(user_id: number, id: number) {
+    async deleteAnnouncement(user_id: number, id: number) {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the data user from the token!")
 

@@ -1,3 +1,4 @@
+import { PartialType } from "@nestjs/mapped-types";
 import { IsInt, IsString, MinLength } from "class-validator";
 
 export class CreateVillageDto {
@@ -19,3 +20,5 @@ export class CreateVillageDto {
     Leader_VillageId: number
 
 }
+
+export class UpdateVillageDto extends PartialType(CreateVillageDto) { }
