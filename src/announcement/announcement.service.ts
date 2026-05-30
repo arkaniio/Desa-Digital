@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { BufferUpload } from '../common/helpers/cloudinary_helper';
-import { CheckIsNullWitMulterAnnouncement } from '../common/helpers/null-check.helper';
+import { CheckIsNullWithNumber, CheckIsNullWitMulterAnnouncement } from '../common/helpers/null-check.helper';
 
 @Injectable()
 export class AnnouncementService {
@@ -103,6 +103,9 @@ export class AnnouncementService {
 
         if (search_query) {
 
+            const isNumber = search_query?.trim() !== "" && !isNaN(Number(search_query))
+            const Number_convert = isNumber ? Number(search_query) : undefined
+
             const where: any = {
                 OR: [
                     {
@@ -116,7 +119,18 @@ export class AnnouncementService {
                             contains: search_query,
                             mode: "insensitive"
                         }
-                    }
+                    },
+                    ...(isNumber ? [
+                        {
+                            RtId: {
+                                equals: Number_convert
+                            },
+                            RwId: {
+                                equals: Number_convert
+                            }
+                        }
+                    ] : []
+                    )
                 ]
             }
 

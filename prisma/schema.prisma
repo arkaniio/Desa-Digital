@@ -24,17 +24,18 @@ model User {
   Username      String         @unique
   Email         String         @unique
   Address       String
+  RtId          Int
+  Rt            Rt             @relation(fields: [RtId], references: [Id])
+  RwId          Int
+  Rw            Rw             @relation(fields: [RwId], references: [Id])
   Password      String
   Role          role?          @default(WARGA)
   Avatar        String?
-  VillageId     Int
-  Village       Village        @relation(fields: [VillageId], references: [id])
   Created_at    DateTime       @default(now())
   Updated_at    DateTime       @updatedAt
   announcements Announcement[]
   submissions   Submissions[]
-  rts           Rt[]
-  rws           Rw[]
+  villages      Village[]
 }
 
 model Digital_Signature {
@@ -44,6 +45,7 @@ model Digital_Signature {
   Submissions      Submissions @relation(fields: [SubmissionsId], references: [id])
   Kepala_desa_sign Boolean
   Rt_desa_sign     Boolean
+  Dibuat_pada      DateTime    @default(now())
 }
 
 enum Tipe_Surat {
@@ -74,17 +76,17 @@ model Submissions {
 }
 
 model Announcement {
-  id        Int      @id @default(autoincrement())
-  Title     String
-  Content   String
-  Image     String
-  AuthorId  Int
-  Author    User     @relation(fields: [AuthorId], references: [id])
-  RwId      Int
-  RtId      Int
-  Rw        Rw       @relation(fields: [RwId], references: [Id])
-  Rt        Rt       @relation(fields: [RtId], references: [Id])
-  CreatedAt DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  Title       String
+  Content     String
+  Image       String
+  AuthorId    Int
+  Author      User     @relation(fields: [AuthorId], references: [id])
+  RwId        Int
+  RtId        Int
+  Rw          Rw       @relation(fields: [RwId], references: [Id])
+  Rt          Rt       @relation(fields: [RtId], references: [Id])
+  Dibuat_pada DateTime @default(now())
 }
 
 model Village {
@@ -94,26 +96,24 @@ model Village {
   Total_Population Int
   Village_Age      Int
   Leader_VillageId Int
-  users            User[]
+  Leader_Village   User   @relation(fields: [Leader_VillageId], references: [id])
 }
 
 model Rw {
   Id            Int            @id @default(autoincrement())
-  UserId        Int
-  User          User           @relation(fields: [UserId], references: [id])
   Name          String
   rts           Rt[]
   announcements Announcement[]
   submissions   Submissions[]
+  users         User[]
 }
 
 model Rt {
   Id            Int            @id @default(autoincrement())
-  UserId        Int
-  User          User           @relation(fields: [UserId], references: [id])
   Number        Int
   RwId          Int
   Rw            Rw             @relation(fields: [RwId], references: [Id])
   announcements Announcement[]
   submissions   Submissions[]
+  users         User[]
 }

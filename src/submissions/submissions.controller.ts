@@ -15,7 +15,7 @@ export class SubmissionsController {
 
     @Get("all")
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("RW", "RT")
+    @Roles("WARGA")
     async getAllSubmissions(@CurrentUser() user_id: number, @Query() query: PaginationDto) {
         return this.submissionsService.getAllSubmissions(user_id, query)
     }
@@ -33,7 +33,7 @@ export class SubmissionsController {
         }
     }))
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("RT", "RW")
+    @Roles("WARGA")
     async createSubmissions(
         @Body() data: CreateSubmissionDto,
         @CurrentUser() user_id: number,
@@ -55,7 +55,7 @@ export class SubmissionsController {
         }
     }))
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("RT", "RW")
+    @Roles("WARGA")
     async updateSubmissions(
         @Body() data: UpdateSubmissionsDto,
         @Param('id', ParseIntPipe) id: number,
@@ -67,7 +67,7 @@ export class SubmissionsController {
 
     @Delete("delete/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("RT", "RW")
+    @Roles("WARGA")
     async deleteSubmissions(
         @Param('id', ParseIntPipe) id: number,
         @CurrentUser() user_id: number
