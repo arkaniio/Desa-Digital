@@ -1,6 +1,7 @@
-import { IsEmail, IsEnum, IsInt, IsString, Min, MinLength } from "class-validator";
+import { IsEmail, IsEnum, IsIn, IsInt, IsString, Min, MinLength } from "class-validator";
 import { role } from "@prisma/client";
 import { PartialType } from "@nestjs/mapped-types";
+import { isMainThread } from "node:worker_threads";
 
 export class CreateUserDto {
 
@@ -28,6 +29,14 @@ export class CreateUserDto {
     @IsInt()
     @Min(1)
     VillageId: number
+
+    @IsInt()
+    @Min(1)
+    RtId: number
+
+    @IsInt()
+    @Min(1)
+    RwId: number
 }
 
 export class LoginDto {
@@ -40,6 +49,17 @@ export class LoginDto {
     @MinLength(6)
     Password: string
 
+    @IsInt()
+    @Min(1)
+    RtId: number
+
+    @IsInt()
+    @Min(1)
+    RwId: number
+
+    @IsInt()
+    @Min(1)
+    VillageId: number
 }
 
 export class UpdateUserDto extends PartialType(CreateUserDto) { }

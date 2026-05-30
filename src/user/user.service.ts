@@ -21,6 +21,13 @@ export class UserService {
         })
         if (user_data) throw new BadRequestException("Email has been already exists!")
 
+        const user_name = await this.prisma.user.findUnique({
+            where: {
+                Username: data.Username
+            }
+        })
+        if (user_name) throw new BadRequestException("Username has been already exists!")
+
         const password_hash = await bcrypt.hash(data.Password, 10)
         if (!password_hash) throw new BadRequestException("Failed to hashing password!")
 
@@ -32,7 +39,11 @@ export class UserService {
                     Address: data.Address,
                     Password: password_hash,
                     Role: data.Role,
-                    VillageId: data.VillageId
+                    Created_at: new Date().toISOString(),
+                    Updated_at: new Date().toISOString(),
+                    VillageId: Number(data.VillageId),
+                    RtId: Number(data.RtId),
+                    RwId: Number(data.RwId)
                 }
             })
 
@@ -93,9 +104,83 @@ export class UserService {
                             Name: true,
                             Address: true
                         }
+                    },
+                    Rt: {
+                        select: {
+                            Number: true,
+                            RwId: true,
+                            Rw: {
+                                select: {
+                                    Name: true,
+                                    Village: {
+                                        select: {
+                                            Name: true,
+                                            Address: true
+                                        }
+                                    },
+                                    Leader: {
+                                        select: {
+                                            Username: true,
+                                            Address: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    LedVillages: {
+                        select: {
+                            Leader_Village: {
+                                select: {
+                                    Username: true,
+                                    Address: true
+                                }
+                            }
+                        }
+                    },
+                    LedRws: {
+                        select: {
+                            Name: true,
+                            Village: {
+                                select: {
+                                    Name: true,
+                                    Address: true
+                                }
+                            },
+                            Leader: {
+                                select: {
+                                    Username: true,
+                                    Address: true
+                                }
+                            }
+                        }
+                    },
+                    LedRts: {
+                        select: {
+                            Number: true,
+                            RwId: true,
+                            Rw: {
+                                select: {
+                                    Name: true,
+                                    Village: {
+                                        select: {
+                                            Name: true,
+                                            Address: true
+                                        }
+                                    },
+                                    Leader: {
+                                        select: {
+                                            Username: true,
+                                            Address: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-            })
+            }
+            )
 
             if (!data_user) throw new BadRequestException("Failed to get the data user!")
 
@@ -110,6 +195,13 @@ export class UserService {
     async updateProfile(file_path: Express.Multer.File, user_id: number, data: any) {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
+
+        if (data.Password != null || data.Password != undefined) {
+            const hashPassword = await bcrypt.hash(data.Password, 10)
+            if (!hashPassword || hashPassword == null && hashPassword == undefined) {
+                throw new BadRequestException("Failed to get and hashing the data password for update data in users data!")
+            }
+        }
 
         const update_data = await CheckIsNullWitMulterAvatar(data, file_path, "Avatar")
 

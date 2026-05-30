@@ -29,7 +29,8 @@ export class AnnouncementService {
                     Image: data_Image,
                     AuthorId: user_id,
                     RwId: Number(data.RwId),
-                    RtId: Number(data.RtId)
+                    RtId: Number(data.RtId),
+                    Dibuat_pada: new Date().toISOString(),
                 }
             })
 
@@ -145,7 +146,7 @@ export class AnnouncementService {
                             Title: true,
                             Content: true,
                             Author: true,
-                            CreatedAt: true
+                            Dibuat_pada: true
                         },
                     }),
                     this.prisma.announcement.count({ where: where })
@@ -182,7 +183,7 @@ export class AnnouncementService {
                         Title: true,
                         Content: true,
                         Author: true,
-                        CreatedAt: true
+                        Dibuat_pada: true
                     }
                 }),
                 this.prisma.announcement.count()

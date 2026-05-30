@@ -24,28 +24,68 @@ model User {
   Username      String         @unique
   Email         String         @unique
   Address       String
-  RtId          Int
-  Rt            Rt             @relation(fields: [RtId], references: [Id])
-  RwId          Int
-  Rw            Rw             @relation(fields: [RwId], references: [Id])
   Password      String
   Role          role?          @default(WARGA)
   Avatar        String?
   Created_at    DateTime       @default(now())
   Updated_at    DateTime       @updatedAt
+  // Setiap user terikat pada struktur Desa, RW, dan RT mereka tempat mereka tinggal tinggal
+  VillageId     Int
+  Village       Village        @relation("VillageMembers", fields: [VillageId], references: [id])
+  RwId          Int
+  Rw            Rw             @relation("RwMembers", fields: [RwId], references: [Id])
+  RtId          Int
+  Rt            Rt             @relation("RtMembers", fields: [RtId], references: [Id])
+  // Back-relation untuk jabatan kepemimpinan
+  LedVillages   Village[]      @relation("VillageLeader")
+  LedRws        Rw[]           @relation("RwLeader")
+  LedRts        Rt[]           @relation("RtLeader")
   announcements Announcement[]
   submissions   Submissions[]
-  villages      Village[]
 }
 
-model Digital_Signature {
-  id               Int         @id @default(autoincrement())
-  No_surat_desa    Int
-  SubmissionsId    Int
-  Submissions      Submissions @relation(fields: [SubmissionsId], references: [id])
-  Kepala_desa_sign Boolean
-  Rt_desa_sign     Boolean
-  Dibuat_pada      DateTime    @default(now())
+model Village {
+  id               Int    @id @default(autoincrement())
+  Name             String @unique
+  Address          String
+  Total_Population Int
+  Village_Age      Int
+
+  // Hubungan ke Kepala Desa
+  Leader_VillageId Int
+  Leader_Village   User @relation("VillageLeader", fields: [Leader_VillageId], references: [id])
+
+  users User[] @relation("VillageMembers")
+  rws   Rw[]
+}
+
+model Rw {
+  Id        Int     @id @default(autoincrement())
+  Name      String // Contoh: "RW 01"
+  VillageId Int
+  Village   Village @relation(fields: [VillageId], references: [id])
+
+  // Hubungan ke Ketua RW (opsional jika jabatan sedang kosong)
+  Leader_Id     Int?
+  Leader        User?          @relation("RwLeader", fields: [Leader_Id], references: [id])
+  rts           Rt[]
+  announcements Announcement[]
+  submissions   Submissions[]
+  users         User[]         @relation("RwMembers")
+}
+
+model Rt {
+  Id     Int @id @default(autoincrement())
+  Number Int // Contoh: 3 (artinya RT 03)
+  RwId   Int
+  Rw     Rw  @relation(fields: [RwId], references: [Id])
+
+  // Hubungan ke Ketua RT (opsional jika jabatan sedang kosong)
+  Leader_Id     Int?
+  Leader        User?          @relation("RtLeader", fields: [Leader_Id], references: [id])
+  announcements Announcement[]
+  submissions   Submissions[]
+  users         User[]         @relation("RtMembers")
 }
 
 enum Tipe_Surat {
@@ -57,22 +97,28 @@ enum Tipe_Surat {
 }
 
 model Submissions {
-  id                   Int                 @id @default(autoincrement())
+  id                   Int        @id @default(autoincrement())
   Nomor_surat_rt       Int
   UserId               Int
-  User                 User                @relation(fields: [UserId], references: [id])
+  User                 User       @relation(fields: [UserId], references: [id])
   RtId                 Int
-  Rt                   Rt                  @relation(fields: [RtId], references: [Id])
+  Rt                   Rt         @relation(fields: [RtId], references: [Id])
   RwId                 Int
-  Rw                   Rw                  @relation(fields: [RwId], references: [Id])
-  Dokumen_pengajuan    String
+  Rw                   Rw         @relation(fields: [RwId], references: [Id])
+  Dokumen_pengajuan    String // URL bukti pendukung di Cloudinary (KTP/KK)
   Tipe_Surat           Tipe_Surat
-  Status               String?             @default("PENDING")
-  Keterangan_pengajuan String?             @default("DIAJUKAN")
+  Status               String?    @default("PENDING") // PENDING, APPROVED_RT, SUCCESS, REJECTED
+  Keterangan_pengajuan String?    @default("DIAJUKAN")
   Keperluan            String
-  Tanggal_pengajuan    DateTime
+  Tanggal_pengajuan    DateTime   @default(now())
   Tanggal_selesai      DateTime?
-  digitalSignatures    Digital_Signature[]
+
+  // Tanda Tangan Terintegrasi (Menghilangkan tabel Digital_Signature yang rawan celah)
+  Rt_desa_sign     Boolean @default(false)
+  Kepala_desa_sign Boolean @default(false)
+
+  // Untuk fitur pengesahan surat publik
+  QrCodeSignature String? @unique
 }
 
 model Announcement {
@@ -87,33 +133,4 @@ model Announcement {
   Rw          Rw       @relation(fields: [RwId], references: [Id])
   Rt          Rt       @relation(fields: [RtId], references: [Id])
   Dibuat_pada DateTime @default(now())
-}
-
-model Village {
-  id               Int    @id @default(autoincrement())
-  Name             String
-  Address          String
-  Total_Population Int
-  Village_Age      Int
-  Leader_VillageId Int
-  Leader_Village   User   @relation(fields: [Leader_VillageId], references: [id])
-}
-
-model Rw {
-  Id            Int            @id @default(autoincrement())
-  Name          String
-  rts           Rt[]
-  announcements Announcement[]
-  submissions   Submissions[]
-  users         User[]
-}
-
-model Rt {
-  Id            Int            @id @default(autoincrement())
-  Number        Int
-  RwId          Int
-  Rw            Rw             @relation(fields: [RwId], references: [Id])
-  announcements Announcement[]
-  submissions   Submissions[]
-  users         User[]
 }
