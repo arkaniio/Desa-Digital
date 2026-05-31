@@ -1,7 +1,8 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { BufferUpload } from '../common/helpers/cloudinary_helper';
-import { CheckIsNullWitMulterDokumen } from '../common/helpers/null-check.helper';
+import { CheckIsNull, CheckIsNullWitMulterDokumen } from '../common/helpers/null-check.helper';
 import { PrismaService } from '../prisma/prisma.service';
+import { createHash, randomBytes } from 'node:crypto';
 
 @Injectable()
 export class SubmissionsService {
@@ -12,6 +13,8 @@ export class SubmissionsService {
     async createSubmissions(data: any, user_id: number, file: Express.Multer.File) {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the id data from token")
+
+        if (!file) throw new BadRequestException("Failed to attach the file in new submissions!")
 
         try {
 
@@ -24,7 +27,7 @@ export class SubmissionsService {
             const createData = await this.prisma.submissions.create({
                 data: {
                     Nomor_surat_rt: Number(data.Nomor_surat_rt),
-                    UserId: user_id,
+                    SenderId: user_id,
                     RtId: Number(data.RtId),
                     RwId: Number(data.RwId),
                     Dokumen_pengajuan: dataFile,
@@ -48,18 +51,18 @@ export class SubmissionsService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")
 
-        if (id == null) throw new BadRequestException("Failed to get id from param!")
+        if (id == null && id == undefined) throw new BadRequestException("Failed to get id from param!")
 
         try {
 
             const deleteData = await this.prisma.submissions.delete({
                 where: {
                     id: Number(id),
-                    UserId: user_id
+                    SenderId: user_id
                 }
             })
 
-            if (!deleteData) throw new BadRequestException("Not found!")
+            if (!deleteData || deleteData == null && deleteData == undefined) throw new BadRequestException("Can't find the data that you want to delete it!")
 
             return true
 
@@ -73,7 +76,7 @@ export class SubmissionsService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get id from token!")
 
-        if (id == null) throw new BadRequestException("Failed to get id from param!")
+        if (id == null && id == undefined) throw new BadRequestException("Failed to get id from param!")
 
         try {
 
@@ -83,12 +86,13 @@ export class SubmissionsService {
 
             const update_db = await this.prisma.submissions.update({
                 where: {
-                    id: Number(id)
+                    id: Number(id),
+                    SenderId: user_id
                 },
                 data: update_data
             })
 
-            if (update_db == null) throw new BadRequestException("Failed to update data because the data is not found!")
+            if (!update_db) throw new BadRequestException("Failed to update data because the data is not found!")
 
             return true
 
@@ -106,6 +110,8 @@ export class SubmissionsService {
         const { page, limit, search_query } = query
 
         const skip = (page - 1) * limit
+
+        // Jangan Lupa difilter oleh sender id agar tidak bisa get submissions semua orang
 
         if (search_query) {
 
@@ -128,7 +134,8 @@ export class SubmissionsService {
                             }
                         }
                     ] : [])
-                ]
+                ],
+                SenderId: user_id
             }
 
             try {
@@ -145,7 +152,9 @@ export class SubmissionsService {
                             Dokumen_pengajuan: true,
                             Rt: true,
                             Rw: true,
-                            digitalSignatures: true
+                            Rt_desa_sign: true,
+                            Kepala_desa_sign: true,
+                            QrCodeSignature: true
                         },
                     }),
                     this.prisma.submissions.count({ where: where })
@@ -175,6 +184,9 @@ export class SubmissionsService {
                 this.prisma.submissions.findMany({
                     skip: skip,
                     take: limit,
+                    where: {
+                        SenderId: user_id
+                    },
                     orderBy: {
                         id: "asc"
                     },
@@ -185,10 +197,16 @@ export class SubmissionsService {
                         Dokumen_pengajuan: true,
                         Rt: true,
                         Rw: true,
-                        digitalSignatures: true
+                        Rt_desa_sign: true,
+                        Kepala_desa_sign: true,
+                        QrCodeSignature: true
                     }
                 }),
-                this.prisma.submissions.count()
+                this.prisma.submissions.count({
+                    where: {
+                        SenderId: user_id
+                    }
+                })
             ])
 
             if (!data) throw new BadRequestException("Failed to get the data and total data!")
@@ -209,6 +227,117 @@ export class SubmissionsService {
             throw new BadRequestException(error.message)
         }
 
+
+    }
+
+    async updateSubmissionsWithRt(user_id: number, data: any, id: number) {
+
+        if (user_id == null) throw new UnauthorizedException("Failed to detect the auth id from parameter!")
+
+        if (id == null && id == undefined) throw new BadRequestException("Failed to get the id in params to update data!")
+
+        const update_data = CheckIsNull(data)
+
+        if (!update_data || Object.keys(data).length == 0) throw new BadRequestException("Update data cannot be success!")
+
+        try {
+
+            // Cek jika rt desa sign tidak kosong
+            if (update_data.Rt_desa_sign !== undefined) {
+
+                const update_data_rt_sign = await this.prisma.submissions.update({
+                    where: {
+                        id: id,
+                    },
+                    data: update_data
+                })
+
+                if (!update_data_rt_sign) throw new BadRequestException("Failed to get update data and rt sign!")
+
+                // Update status submissionsq
+                const update_status = await this.prisma.submissions.update({
+                    where: {
+                        id: id
+                    },
+                    data: {
+                        Status: "DISETUJUI OLEH RT"
+                    }
+                })
+
+                if (!update_status) throw new BadRequestException("Failed to update the status of submissions")
+
+                return true
+
+            } else {
+                throw new BadRequestException("Failed to update others data for peoples in the village!")
+            }
+
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
+
+    }
+
+    async updateSubmissionsWithKepalaDesa(user_id: number, data: any, id: number) {
+
+        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token and auth parameter!")
+
+        if (id == null && id == undefined) throw new BadRequestException("Failed to get the id from parameter!")
+
+        const update_data = CheckIsNull(data)
+
+        if (!update_data || Object.keys(update_data).length == 0 || update_data.Kepala_desa_sign == undefined) throw new BadRequestException("Failed to get the value of the request body!")
+
+        try {
+
+            const findDataSubmissions = await this.prisma.submissions.findUnique({
+                where: {
+                    id: id
+                }
+            })
+
+            if (!findDataSubmissions) throw new BadRequestException("Failed to found the submissions data!")
+
+            if (update_data.Rt_desa_sign == true && update_data.Kepala_desa_sign == true) {
+
+                // Generate token signature unik yang aman
+                const secureSignature = createHash('sha256')
+                    .update(`${id}-${findDataSubmissions.SenderId}-${Date.now()}-${randomBytes(4).toString('hex')}`)
+                    .digest('hex');
+
+                const update_data_submissions_new = await this.prisma.submissions.update({
+                    where: {
+                        id: id
+                    },
+                    data: {
+                        QrCodeSignature: secureSignature,
+                        Tanggal_selesai: new Date().toISOString(),
+                        Status: "SUCCESS",
+                    }
+                })
+
+                if (!update_data_submissions_new) throw new BadRequestException("Failed to get the data submissions for update!")
+
+            }
+
+            // Jika rt belum tanda tangan maka kepala desa bisa menandatangani duluan
+            const update_data_desa_sign = await this.prisma.submissions.update({
+                where: {
+                    id: id
+                },
+                data: {
+                    Kepala_desa_sign: update_data.Kepala_desa_sign,
+                    Status: "DISETUJUI KEPALA DESA"
+                }
+            })
+
+            if (!update_data_desa_sign) throw new BadRequestException("Failed to update the data because the request body is null!")
+
+            return true
+
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
 
     }
 

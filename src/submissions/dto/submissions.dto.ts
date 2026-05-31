@@ -1,10 +1,12 @@
 import { PartialType } from '@nestjs/mapped-types';
+import { Type } from 'class-transformer';
 import {
     IsInt,
     IsString,
     IsOptional,
     IsEnum,
-    IsDateString
+    IsDateString,
+    IsBoolean
 } from 'class-validator';
 
 enum Tipe_Surat {
@@ -17,15 +19,15 @@ enum Tipe_Surat {
 
 export class CreateSubmissionDto {
     @IsInt()
+    @Type(() => Number)
     Nomor_surat_rt: number;
 
     @IsInt()
-    UserId: number;
-
-    @IsInt()
+    @Type(() => Number)
     RtId: number;
 
     @IsInt()
+    @Type(() => Number)
     RwId: number;
 
     @IsString()
@@ -51,6 +53,20 @@ export class CreateSubmissionDto {
     @IsOptional()
     @IsDateString()
     Tanggal_selesai?: string;
+}
+
+export class UpdateRtSignSubmissions {
+
+    @IsBoolean()
+    Rt_desa_sign: boolean
+
+}
+
+export class UpdateKepalaDesaSignSubmissions {
+
+    @IsBoolean()
+    Kepala_desa_sign: boolean
+
 }
 
 export class UpdateSubmissionsDto extends PartialType(CreateSubmissionDto) { }

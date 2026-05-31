@@ -2,6 +2,7 @@ import { IsEmail, IsEnum, IsIn, IsInt, IsString, Min, MinLength } from "class-va
 import { role } from "@prisma/client";
 import { PartialType } from "@nestjs/mapped-types";
 import { isMainThread } from "node:worker_threads";
+import { Type } from "class-transformer";
 
 export class CreateUserDto {
 
@@ -28,14 +29,17 @@ export class CreateUserDto {
 
     @IsInt()
     @Min(1)
+    @Type(() => Number)
     VillageId: number
 
     @IsInt()
     @Min(1)
+    @Type(() => Number)
     RtId: number
 
     @IsInt()
     @Min(1)
+    @Type(() => Number)
     RwId: number
 }
 

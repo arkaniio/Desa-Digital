@@ -74,6 +74,9 @@ export const CheckIsNullWitMulterDokumen = async (data: Record<string, any>, fil
 
             if (data[key] !== undefined && data[key] !== null) {
                 update_data[key] = data[key]
+                if (typeof data[key] === "string" && data[key].trim() !== "" && !isNaN(Number(data[key]))) {
+                    update_data[key] = Number(data[key])
+                }
             }
 
         })

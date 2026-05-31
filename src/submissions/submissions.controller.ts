@@ -6,7 +6,7 @@ import { Roles } from '../common/auth/decorators/roles.decorator';
 import { RolesGuard } from '../common/auth/guards/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PaginationDto } from '../common/dto/pagination-query.dto';
-import { CreateSubmissionDto, UpdateSubmissionsDto } from './dto/submissions.dto';
+import { CreateSubmissionDto, UpdateKepalaDesaSignSubmissions, UpdateRtSignSubmissions, UpdateSubmissionsDto } from './dto/submissions.dto';
 
 @Controller('submissions')
 export class SubmissionsController {
@@ -73,6 +73,26 @@ export class SubmissionsController {
         @CurrentUser() user_id: number
     ) {
         return this.submissionsService.deleteSubmissions(user_id, id)
+    }
+
+    @Put("permissions_rt/:id")
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles("RT")
+    async updateSubmissionsWithRt(@Body() data: UpdateRtSignSubmissions,
+        @Param('id', ParseIntPipe) id: number,
+        @CurrentUser() user_id: number
+    ) {
+        return this.submissionsService.updateSubmissionsWithRt(user_id, data, id)
+    }
+
+    @Put("permissions_kepdes/:id")
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles("KEPALA_DESA")
+    async updateSubmissionsWithKepalaDesa(
+        @Body() data: UpdateKepalaDesaSignSubmissions, @Param('id', ParseIntPipe) id: number,
+        @CurrentUser() user_id: number
+    ) {
+        return this.submissionsService.updateSubmissionsWithKepalaDesa(user_id, data, id)
     }
 
 }
