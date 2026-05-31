@@ -123,6 +123,7 @@ model Submissions {
 
 model Announcement {
   id          Int      @id @default(autoincrement())
+  Status      String   @default("ACTIVE")
   Title       String
   Content     String
   Image       String
