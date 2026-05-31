@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CheckIsNullWithNumber } from '../common/helpers/null-check.helper';
+import { use } from 'passport';
 
 @Injectable()
 export class RtService {
@@ -15,9 +16,9 @@ export class RtService {
 
             const data_create = await this.prisma.rt.create({
                 data: {
+                    Number: data.Number,
                     RwId: data.RwId,
-                    UserId: Number(user_id),
-                    Number: data.Number
+                    VillageId: data.VillageId
                 }
             })
 
@@ -35,7 +36,7 @@ export class RtService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")
 
-        if (id == null) throw new BadRequestException("Failed to get the id from the param!")
+        if (id == null && id == undefined) throw new BadRequestException("Failed to get the id from the param!")
 
         const update_data = CheckIsNullWithNumber(data)
 
@@ -45,7 +46,8 @@ export class RtService {
 
             const update = await this.prisma.rt.update({
                 where: {
-                    Id: Number(id)
+                    Id: id,
+                    Leader_Id: user_id
                 },
                 data: update_data
             })
@@ -64,19 +66,93 @@ export class RtService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the data user from token!")
 
-        if (id == null) throw new BadRequestException("Failed to get the id from the param!")
+        if (id == null && id == undefined) throw new BadRequestException("Failed to get the id from the param!")
 
         try {
 
             const delete_data = await this.prisma.rt.delete({
                 where: {
-                    Id: Number(id)
+                    Id: id,
+                    Leader_Id: user_id
                 }
             })
 
             if (!delete_data) throw new BadRequestException("Not found!")
 
             return true
+
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
+
+    }
+
+    async getAllRt(user_id: number, query: any, village_id: number) {
+
+        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token or auth params!")
+
+        const { page, limit } = query
+
+        const skip = (page - 1) * limit
+
+        // Jangan Lupa difilter oleh sender id agar tidak bisa get submissions semua orang
+        try {
+
+            const [data, total_data] = await Promise.all([
+                this.prisma.rt.findMany({
+                    skip: skip,
+                    take: limit,
+                    where: {
+                        Leader_Id: user_id,
+                        VillageId: village_id
+                    },
+                    orderBy: {
+                        Id: "asc"
+                    },
+                    select: {
+                        Number: true,
+                        Village: {
+                            select: {
+                                Name: true,
+                                Address: true,
+                                Leader_Village: {
+                                    select: {
+                                        Username: true,
+                                        Address: true,
+                                        Avatar: true
+                                    }
+                                }
+                            }
+                        },
+                        Leader: {
+                            select: {
+                                Username: true,
+                                Address: true,
+                                Avatar: true
+                            }
+                        }
+                    }
+                }),
+                this.prisma.rt.count({
+                    where: {
+                        VillageId: user_id
+                    }
+                })
+            ])
+
+            if (!data) throw new BadRequestException("Failed to get the data and total data!")
+
+            return {
+                data: data,
+                meta: {
+                    total: total_data,
+                    page: page,
+                    limit: limit,
+                    skip: skip,
+                    last_page: Math.ceil(total_data / limit)
+                }
+            }
+
 
         } catch (error) {
             throw new BadRequestException(error.message)

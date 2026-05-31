@@ -57,6 +57,7 @@ model Village {
 
   users User[] @relation("VillageMembers")
   rws   Rw[]
+  rts   Rt[]
 }
 
 model Rw {
@@ -75,10 +76,12 @@ model Rw {
 }
 
 model Rt {
-  Id     Int @id @default(autoincrement())
-  Number Int // Contoh: 3 (artinya RT 03)
-  RwId   Int
-  Rw     Rw  @relation(fields: [RwId], references: [Id])
+  Id        Int     @id @default(autoincrement())
+  Number    Int // Contoh: 3 (artinya RT 03)
+  RwId      Int
+  Rw        Rw      @relation(fields: [RwId], references: [Id])
+  VillageId Int
+  Village   Village @relation(fields: [VillageId], references: [id])
 
   // Hubungan ke Ketua RT (opsional jika jabatan sedang kosong)
   Leader_Id     Int?

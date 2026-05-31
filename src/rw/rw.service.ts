@@ -15,7 +15,7 @@ export class RwService {
 
             const data_create = await this.prisma.rw.create({
                 data: {
-                    UserId: Number(user_id),
+                    VillageId: Number(data.VillageId),
                     Name: data.Name
                 }
             })
@@ -44,7 +44,8 @@ export class RwService {
 
             const update_data = await this.prisma.rw.update({
                 where: {
-                    Id: Number(id)
+                    Id: Number(id),
+                    Leader_Id: user_id
                 },
                 data: update_data_Rw
             })
@@ -69,7 +70,8 @@ export class RwService {
 
             const delete_data = await this.prisma.rw.delete({
                 where: {
-                    Id: Number(id)
+                    Id: Number(id),
+                    Leader_Id: user_id
                 }
             })
 
@@ -83,5 +85,77 @@ export class RwService {
 
     }
 
+    async getAllRw(user_id: number, query: any, village_id: number) {
+
+        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token or auth params!")
+
+        const { page, limit } = query
+
+        const skip = (page - 1) * limit
+
+        // Jangan Lupa difilter oleh sender id agar tidak bisa get submissions semua orang
+        try {
+
+            const [data, total_data] = await Promise.all([
+                this.prisma.rw.findMany({
+                    skip: skip,
+                    take: limit,
+                    where: {
+                        Leader_Id: user_id,
+                        VillageId: village_id
+                    },
+                    orderBy: {
+                        Id: "asc"
+                    },
+                    select: {
+                        Name: true,
+                        Village: {
+                            select: {
+                                Name: true,
+                                Address: true,
+                                Leader_Village: {
+                                    select: {
+                                        Username: true,
+                                        Address: true,
+                                        Avatar: true
+                                    }
+                                }
+                            }
+                        },
+                        Leader: {
+                            select: {
+                                Username: true,
+                                Address: true,
+                                Avatar: true
+                            }
+                        }
+                    }
+                }),
+                this.prisma.rw.count({
+                    where: {
+                        VillageId: user_id
+                    }
+                })
+            ])
+
+            if (!data) throw new BadRequestException("Failed to get the data and total data!")
+
+            return {
+                data: data,
+                meta: {
+                    total: total_data,
+                    page: page,
+                    limit: limit,
+                    skip: skip,
+                    last_page: Math.ceil(total_data / limit)
+                }
+            }
+
+
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
+
+    }
 }
 

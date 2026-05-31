@@ -95,5 +95,10 @@ export class SubmissionsController {
         return this.submissionsService.updateSubmissionsWithKepalaDesa(user_id, data, id)
     }
 
+    @Get("verify_submissions")
+    async verifySubmission(signature: string) {
+        return this.submissionsService.verifySubmission(signature)
+    }
+
 }
 

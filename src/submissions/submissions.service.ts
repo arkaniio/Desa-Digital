@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { BufferUpload } from '../common/helpers/cloudinary_helper';
 import { CheckIsNull, CheckIsNullWitMulterDokumen } from '../common/helpers/null-check.helper';
 import { PrismaService } from '../prisma/prisma.service';
@@ -339,6 +339,39 @@ export class SubmissionsService {
             throw new BadRequestException(error.message)
         }
 
+    }
+
+    async verifySubmission(signature: string) {
+        const submission = await this.prisma.submissions.findUnique({
+            where: { QrCodeSignature: signature },
+            select: {
+                id: true,
+                Nomor_surat_rt: true,
+                Tipe_Surat: true,
+                Status: true,
+                Keterangan_pengajuan: true,
+                Keperluan: true,
+                Tanggal_pengajuan: true,
+                Tanggal_selesai: true,
+                Sender: {
+                    select: {
+                        Username: true, // Tampilkan nama pengirim
+                        Address: true   // Dan alamatnya untuk validasi
+                    }
+                },
+                Rt: {
+                    select: { Number: true }
+                },
+                Rw: {
+                    select: { Name: true }
+                }
+            }
+        });
+        // Jika signature tidak ditemukan di DB, berarti surat tersebut palsu / hasil manipulasi
+        if (!submission) {
+            throw new NotFoundException("Dokumen surat tidak valid atau tidak terdaftar di sistem desa!");
+        }
+        return submission;
     }
 
 

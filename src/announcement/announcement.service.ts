@@ -28,8 +28,8 @@ export class AnnouncementService {
                     Content: data.Content,
                     Image: data_Image,
                     AuthorId: user_id,
-                    RwId: Number(data.RwId),
-                    RtId: Number(data.RtId),
+                    RwId: data.RwId,
+                    RtId: data.RtId,
                     Dibuat_pada: new Date().toISOString(),
                 }
             })
@@ -52,8 +52,8 @@ export class AnnouncementService {
 
             const deleteData = await this.prisma.announcement.delete({
                 where: {
-                    id: Number(id),
-                    AuthorId: Number(user_id)
+                    id: id,
+                    AuthorId: user_id
                 }
             })
 
@@ -79,7 +79,8 @@ export class AnnouncementService {
 
             const update_data_db = await this.prisma.announcement.update({
                 where: {
-                    id: Number(id)
+                    id: id,
+                    AuthorId: user_id
                 },
                 data: payload_update
             })
