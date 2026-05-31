@@ -99,8 +99,8 @@ enum Tipe_Surat {
 model Submissions {
   id                   Int        @id @default(autoincrement())
   Nomor_surat_rt       Int
-  UserId               Int
-  User                 User       @relation(fields: [UserId], references: [id])
+  SenderId             Int
+  Sender               User       @relation(fields: [SenderId], references: [id])
   RtId                 Int
   Rt                   Rt         @relation(fields: [RtId], references: [Id])
   RwId                 Int
