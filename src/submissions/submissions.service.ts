@@ -51,7 +51,7 @@ export class SubmissionsService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")
 
-        if (id == null && id == undefined) throw new BadRequestException("Failed to get id from param!")
+        if (id == null && id == undefined) throw new NotFoundException("Failed to get id from param!")
 
         try {
 
@@ -76,7 +76,7 @@ export class SubmissionsService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get id from token!")
 
-        if (id == null && id == undefined) throw new BadRequestException("Failed to get id from param!")
+        if (id == null && id == undefined) throw new NotFoundException("Failed to get id from param!")
 
         try {
 
@@ -234,7 +234,7 @@ export class SubmissionsService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to detect the auth id from parameter!")
 
-        if (id == null && id == undefined) throw new BadRequestException("Failed to get the id in params to update data!")
+        if (id == null && id == undefined) throw new NotFoundException("Failed to get the id in params to update data!")
 
         const update_data = CheckIsNull(data)
 
@@ -282,7 +282,7 @@ export class SubmissionsService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token and auth parameter!")
 
-        if (id == null && id == undefined) throw new BadRequestException("Failed to get the id from parameter!")
+        if (id == null && id == undefined) throw new NotFoundException("Failed to get the id from parameter!")
 
         const update_data = CheckIsNull(data)
 

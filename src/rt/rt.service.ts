@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CheckIsNullWithNumber } from '../common/helpers/null-check.helper';
 import { use } from 'passport';
@@ -36,7 +36,7 @@ export class RtService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")
 
-        if (id == null && id == undefined) throw new BadRequestException("Failed to get the id from the param!")
+        if (id == null && id == undefined) throw new NotFoundException("Failed to get the id from the param!")
 
         const update_data = CheckIsNullWithNumber(data)
 
@@ -66,7 +66,7 @@ export class RtService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the data user from token!")
 
-        if (id == null && id == undefined) throw new BadRequestException("Failed to get the id from the param!")
+        if (id == null && id == undefined) throw new NotFoundException("Failed to get the id from the param!")
 
         try {
 
@@ -90,6 +90,14 @@ export class RtService {
     async getAllRt(user_id: number, query: any, village_id: number) {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token or auth params!")
+
+        const findDataVillage = await this.prisma.rt.findFirst({
+            where: {
+                VillageId: village_id
+            }
+        })
+
+        if (!findDataVillage || findDataVillage == undefined && findDataVillage == null) throw new NotFoundException("Failed to detect the village id!")
 
         const { page, limit } = query
 

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -63,7 +63,7 @@ export class UserService {
             }
         })
 
-        if (!user_data) throw new BadRequestException("Failed to get the data!")
+        if (!user_data) throw new NotFoundException("Email not found!")
 
         const isPasswordValid = await bcrypt.compare(data.Password, user_data.Password)
         if (!isPasswordValid) throw new BadRequestException("Failed to compare the password!")

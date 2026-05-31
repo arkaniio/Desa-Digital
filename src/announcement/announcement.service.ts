@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { BufferUpload } from '../common/helpers/cloudinary_helper';
 import { CheckIsNullWithNumber, CheckIsNullWitMulterAnnouncement } from '../common/helpers/null-check.helper';
@@ -70,6 +70,8 @@ export class AnnouncementService {
     async updateAnnouncement(user_id: number, id: number, data: any, file: Express.Multer.File) {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the id from token!")
+
+        if (id == undefined || id == null) throw new NotFoundException("Failed to detect id from the params!")
 
         try {
 

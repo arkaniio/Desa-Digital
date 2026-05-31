@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CheckIsNull, CheckIsNullWithNumber } from '../common/helpers/null-check.helper.js';
 
@@ -45,7 +45,7 @@ export class VillageService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
 
-        if (id == null && id == undefined) throw new BadRequestException("Failed to detect the id from the parameter!")
+        if (id == null && id == undefined) throw new NotFoundException("Failed to detect the id from the parameter!")
 
         try {
 
@@ -69,7 +69,7 @@ export class VillageService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the user id data from token!")
 
-        if (id == null && id == undefined) throw new BadRequestException("Failed to detect the id in the parameter request!")
+        if (id == null && id == undefined) throw new NotFoundException("Failed to detect the id in the parameter request!")
 
         //tools
         const update_data = CheckIsNullWithNumber(data)
@@ -81,7 +81,7 @@ export class VillageService {
 
             const update = await this.prisma.village.update({
                 where: {
-                    id: Number(id)
+                    id: id
                 },
                 data: update_data
             })
