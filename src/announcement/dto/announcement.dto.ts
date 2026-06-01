@@ -1,5 +1,6 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsInt, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsInt, IsOptional, IsString, Min } from "class-validator";
 
 export class AnnouncementDto {
 
@@ -10,12 +11,18 @@ export class AnnouncementDto {
     Content: string
 
     @IsInt()
+    @Min(1)
+    @Type(() => Number)
     AuthorId: number
 
     @IsInt()
+    @Min(1)
+    @Type(() => Number)
     RtId: number
 
     @IsInt()
+    @Min(1)
+    @Type(() => Number)
     RwId: number
 
 }

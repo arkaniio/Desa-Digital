@@ -42,8 +42,8 @@ export class UserService {
                     Created_at: new Date().toISOString(),
                     Updated_at: new Date().toISOString(),
                     VillageId: Number(data.VillageId),
-                    RtId: Number(data.RtId),
-                    RwId: Number(data.RwId)
+                    RtId: data.RtId,
+                    RwId: data.RwId
                 }
             })
 
@@ -196,18 +196,18 @@ export class UserService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
 
-        if (data.Password != null || data.Password != undefined) {
-            const hashPassword = await bcrypt.hash(data.Password, 10)
-            if (!hashPassword || hashPassword == null && hashPassword == undefined) {
-                throw new BadRequestException("Failed to get and hashing the data password for update data in users data!")
-            }
-        }
-
-        const update_data = await CheckIsNullWitMulterAvatar(data, file_path, "Avatar")
-
-        if (!update_data || Object.keys(update_data).length === 0) throw new BadRequestException("Failed to get the payload of the request!")
-
         try {
+
+            const update_data = await CheckIsNullWitMulterAvatar(data, file_path, "Avatar")
+
+            if (!update_data || Object.keys(update_data).length === 0) throw new BadRequestException("Failed to get the payload of the request!")
+
+            if (update_data.Password != null || update_data.Password != undefined) {
+                const hashPassword = await bcrypt.hash(update_data.Password, 10)
+                if (!hashPassword || hashPassword == null && hashPassword == undefined) {
+                    throw new BadRequestException("Failed to get and hashing the data password for update data in users data!")
+                }
+            }
 
             const update_users = await this.prisma.user.update({
                 where: {

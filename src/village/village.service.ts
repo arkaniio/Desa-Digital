@@ -25,13 +25,13 @@ export class VillageService {
                 data: {
                     Name: data.Name,
                     Address: data.Address,
-                    Total_Population: Number(data.Total_Population),
-                    Village_Age: Number(data.Village_Age),
-                    Leader_VillageId: Number(data.Leader_VillageId)
+                    Total_Population: data.Total_Population,
+                    Village_Age: data.Village_Age,
+                    Leader_VillageId: data.Leader_VillageId
                 }
             })
 
-            if (!data_create || data_create == null && data_create == undefined) throw new BadRequestException("Failed to create because the data is nill!")
+            if (!data_create) throw new BadRequestException("Failed to create because the data is nill!")
 
             return data_create
 
@@ -49,13 +49,21 @@ export class VillageService {
 
         try {
 
-            const delete_data = await this.prisma.village.delete({
+            const findDataUsingId = await this.prisma.village.findFirst({
                 where: {
-                    id: Number(id)
+                    id: id
                 }
             })
 
-            if (!delete_data || delete_data == null && delete_data == undefined) throw new BadRequestException("Can't find the data that you want to delete it!")
+            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the id that you want to delete it!")
+
+            const delete_data = await this.prisma.village.delete({
+                where: {
+                    id: id
+                }
+            })
+
+            if (!delete_data) throw new BadRequestException("Can't find the data that you want to delete it!")
 
             return true
 

@@ -16,7 +16,7 @@ export class AnnouncementController {
 
     @Post("create")
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("RW", "RT")
+    @Roles("KEPALA_DESA")
     @UseInterceptors(FileInterceptor("file", {
         limits: {
             fileSize: 1024 * 1024 * 2
@@ -32,20 +32,12 @@ export class AnnouncementController {
         @CurrentUser() user_id: number,
         @UploadedFile() file: Express.Multer.File
     ) {
-
-        //debug
-        console.log(data)
-        console.log(user_id)
-        console.log(typeof data)
-        console.log(typeof user_id)
-        //
-
         return this.announcementService.createNewAnnouncement(data, user_id, file)
     }
 
     @Put("update/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("RW", "RT")
+    @Roles("KEPALA_DESA")
     @UseInterceptors(FileInterceptor("file", {
         limits: {
             fileSize: 1024 * 1024 * 2
@@ -58,39 +50,19 @@ export class AnnouncementController {
         }
     }))
     async updateAnnouncement(@Body() data: UpdateDataAnnouncement, @Param('id', ParseIntPipe) id: number, @CurrentUser() user_id: number, @UploadedFile() file: Express.Multer.File) {
-
-        //debug
-        console.log(id)
-        console.log(data)
-        console.log(user_id)
-        console.log(file)
-        console.log(typeof id)
-        console.log(typeof data)
-        console.log(typeof user_id)
-        console.log(typeof file)
-        //
-
         return this.announcementService.updateAnnouncement(user_id, id, data, file)
-
     }
 
-    @Get("/all")
+    @Get("all")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("WARGA")
-    async getAllAnnouncement(@CurrentUser() user_id: number, @Query() query: PaginationDto) {
-
-        //debug
-        console.log(user_id)
-        console.log(typeof user_id)
-        //
-
-        return this.announcementService.getAllAnnouncement(user_id, query)
-
+    async getAllAnnouncement(@CurrentUser() user_id: number, @Query() query: PaginationDto, @Param('id', ParseIntPipe) authorId: number) {
+        return this.announcementService.getAllAnnouncement(user_id, query, authorId)
     }
 
     @Delete("delete/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("RT", "RW")
+    @Roles("KEPALA_DESA")
     async deleteAnnouncement(@Param('id', ParseIntPipe) id: number, @CurrentUser() user_id: number) {
         return this.announcementService.deleteAnnouncement(user_id, id)
     }

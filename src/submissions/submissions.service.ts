@@ -3,6 +3,7 @@ import { BufferUpload } from '../common/helpers/cloudinary_helper';
 import { CheckIsNull, CheckIsNullWitMulterDokumen } from '../common/helpers/null-check.helper';
 import { PrismaService } from '../prisma/prisma.service';
 import { createHash, randomBytes } from 'node:crypto';
+import { find } from 'rxjs';
 
 @Injectable()
 export class SubmissionsService {
@@ -14,7 +15,7 @@ export class SubmissionsService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the id data from token")
 
-        if (!file) throw new BadRequestException("Failed to attach the file in new submissions!")
+        if (!file || file == null && file == undefined) throw new BadRequestException("File in this submissions must be required!")
 
         try {
 
@@ -28,8 +29,8 @@ export class SubmissionsService {
                 data: {
                     Nomor_surat_rt: Number(data.Nomor_surat_rt),
                     SenderId: user_id,
-                    RtId: Number(data.RtId),
-                    RwId: Number(data.RwId),
+                    RtId: data.RtId,
+                    RwId: data.RwId,
                     Dokumen_pengajuan: dataFile,
                     Tipe_Surat: data.Tipe_Surat,
                     Keperluan: data.Keperluan,
@@ -55,6 +56,14 @@ export class SubmissionsService {
 
         try {
 
+            const findDataUsingId = await this.prisma.submissions.findFirst({
+                where: {
+                    id: id
+                }
+            })
+
+            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the id that you want to delete it!")
+
             const deleteData = await this.prisma.submissions.delete({
                 where: {
                     id: Number(id),
@@ -79,6 +88,14 @@ export class SubmissionsService {
         if (id == null && id == undefined) throw new NotFoundException("Failed to get id from param!")
 
         try {
+
+            const findDataUsingId = await this.prisma.submissions.findFirst({
+                where: {
+                    id: id
+                }
+            })
+
+            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the id that you want to delete it!")
 
             const update_data = await CheckIsNullWitMulterDokumen(data, file, "Dokumen")
 
@@ -236,11 +253,19 @@ export class SubmissionsService {
 
         if (id == null && id == undefined) throw new NotFoundException("Failed to get the id in params to update data!")
 
-        const update_data = CheckIsNull(data)
-
-        if (!update_data || Object.keys(data).length == 0) throw new BadRequestException("Update data cannot be success!")
-
         try {
+
+            const findDataUsingId = await this.prisma.submissions.findFirst({
+                where: {
+                    id: id
+                }
+            })
+
+            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the id that you want to update with rt!")
+
+            const update_data = CheckIsNull(data)
+
+            if (!update_data || Object.keys(data).length == 0) throw new BadRequestException("Update data cannot be success!")
 
             // Cek jika rt desa sign tidak kosong
             if (update_data.Rt_desa_sign !== undefined) {
@@ -284,25 +309,25 @@ export class SubmissionsService {
 
         if (id == null && id == undefined) throw new NotFoundException("Failed to get the id from parameter!")
 
-        const update_data = CheckIsNull(data)
-
-        if (!update_data || Object.keys(update_data).length == 0 || update_data.Kepala_desa_sign == undefined) throw new BadRequestException("Failed to get the value of the request body!")
-
         try {
 
-            const findDataSubmissions = await this.prisma.submissions.findUnique({
+            const update_data = CheckIsNull(data)
+
+            if (!update_data || Object.keys(update_data).length == 0 || update_data.Kepala_desa_sign == undefined) throw new BadRequestException("Failed to get the value of the request body!")
+
+            const findDataUsingId = await this.prisma.submissions.findFirst({
                 where: {
                     id: id
                 }
             })
 
-            if (!findDataSubmissions) throw new BadRequestException("Failed to found the submissions data!")
+            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to found the submissions data!")
 
             if (update_data.Rt_desa_sign == true && update_data.Kepala_desa_sign == true) {
 
                 // Generate token signature unik yang aman
                 const secureSignature = createHash('sha256')
-                    .update(`${id}-${findDataSubmissions.SenderId}-${Date.now()}-${randomBytes(4).toString('hex')}`)
+                    .update(`${id}-${findDataUsingId.SenderId}-${Date.now()}-${randomBytes(4).toString('hex')}`)
                     .digest('hex');
 
                 const update_data_submissions_new = await this.prisma.submissions.update({
@@ -369,7 +394,7 @@ export class SubmissionsService {
         });
         // Jika signature tidak ditemukan di DB, berarti surat tersebut palsu / hasil manipulasi
         if (!submission) {
-            throw new NotFoundException("Dokumen surat tidak valid atau tidak terdaftar di sistem desa!");
+            throw new NotFoundException("The document of letter!");
         }
         return submission;
     }

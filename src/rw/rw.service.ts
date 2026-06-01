@@ -36,11 +36,19 @@ export class RwService {
 
         if (id == null) throw new NotFoundException("Failed to get the param id!")
 
-        const update_data_Rw = CheckIsNullWithNumber(data)
-
-        if (!update_data_Rw || Object.keys(update_data_Rw).length === 0) throw new BadRequestException("Failed to get the update data payload!")
-
         try {
+
+            const findDataUsingId = await this.prisma.rw.findFirst({
+                where: {
+                    Id: id
+                }
+            })
+
+            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the id that you want to delete it!")
+
+            const update_data_Rw = CheckIsNullWithNumber(data)
+
+            if (!update_data_Rw || Object.keys(update_data_Rw).length === 0) throw new BadRequestException("Failed to get the update data payload!")
 
             const update_data = await this.prisma.rw.update({
                 where: {
@@ -67,6 +75,14 @@ export class RwService {
         if (id == null) throw new NotFoundException("Failed to get the id from the param!")
 
         try {
+
+            const findDataUsingId = await this.prisma.rw.findFirst({
+                where: {
+                    Id: id
+                }
+            })
+
+            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect id that you want to delete it!")
 
             const delete_data = await this.prisma.rw.delete({
                 where: {

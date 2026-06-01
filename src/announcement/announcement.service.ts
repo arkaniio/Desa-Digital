@@ -62,6 +62,8 @@ export class AnnouncementService {
 
             if (!findDataUsingId || findDataUsingId == undefined && findDataUsingId == null) throw new NotFoundException("Failed to find the data that you want to delete it!")
 
+            if (findDataUsingId.AuthorId != user_id) throw new BadRequestException("Cannot delete others rt or rw announcement!")
+
             const deleteData = await this.prisma.announcement.delete({
                 where: {
                     id: id,
@@ -86,6 +88,14 @@ export class AnnouncementService {
         if (id == undefined || id == null) throw new NotFoundException("Failed to detect id from the params!")
 
         try {
+
+            const findDataUsingId = await this.prisma.announcement.findFirst({
+                where: {
+                    id: id
+                }
+            })
+
+            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to find the data that you want to delete it!")
 
             const payload_update = await CheckIsNullWitMulterAnnouncement(data, file, "Announcement")
 
