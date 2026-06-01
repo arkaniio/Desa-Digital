@@ -12,6 +12,8 @@ export class AnnouncementService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")
 
+        if (!file || file == null && file == undefined) throw new BadRequestException("File for data announcement is required!")
+
         try {
 
             //create an image file detector
@@ -48,7 +50,17 @@ export class AnnouncementService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the data user from the token!")
 
+        if (id == null && id == undefined) throw new BadRequestException("Failed to get id from the parameters on url!")
+
         try {
+
+            const findDataUsingId = await this.prisma.announcement.findFirst({
+                where: {
+                    id: id
+                }
+            })
+
+            if (!findDataUsingId || findDataUsingId == undefined && findDataUsingId == null) throw new NotFoundException("Failed to find the data that you want to delete it!")
 
             const deleteData = await this.prisma.announcement.delete({
                 where: {
