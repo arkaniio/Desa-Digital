@@ -3,12 +3,16 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { CheckIsNullWitMulterAvatar } from '../common/helpers/null-check.helper';
+import { SELECT_USER_DATA } from './constants/user_select';
+import PasswordService from '../auth/password.service';
+import { hash } from 'node:crypto';
 
 @Injectable()
 export class UserService {
 
     constructor(
         private prisma: PrismaService,
+        private passwordService: PasswordService
     ) { }
 
     async getProfile(user_id: number) {
@@ -19,98 +23,9 @@ export class UserService {
 
             const data_user = await this.prisma.user.findUnique({
                 where: {
-                    id: Number(user_id)
+                    id: user_id
                 },
-                select: {
-                    id: true,
-                    Username: true,
-                    Email: true,
-                    Address: true,
-                    Role: true,
-                    Avatar: true,
-                    VillageId: true,
-                    Created_at: true,
-                    Updated_at: true,
-                    Village: {
-                        select: {
-                            Name: true,
-                            Address: true
-                        }
-                    },
-                    Rt: {
-                        select: {
-                            Number: true,
-                            RwId: true,
-                            Rw: {
-                                select: {
-                                    Name: true,
-                                    Village: {
-                                        select: {
-                                            Name: true,
-                                            Address: true
-                                        }
-                                    },
-                                    Leader: {
-                                        select: {
-                                            Username: true,
-                                            Address: true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    LedVillages: {
-                        select: {
-                            Leader_Village: {
-                                select: {
-                                    Username: true,
-                                    Address: true
-                                }
-                            }
-                        }
-                    },
-                    LedRws: {
-                        select: {
-                            Name: true,
-                            Village: {
-                                select: {
-                                    Name: true,
-                                    Address: true
-                                }
-                            },
-                            Leader: {
-                                select: {
-                                    Username: true,
-                                    Address: true
-                                }
-                            }
-                        }
-                    },
-                    LedRts: {
-                        select: {
-                            Number: true,
-                            RwId: true,
-                            Rw: {
-                                select: {
-                                    Name: true,
-                                    Village: {
-                                        select: {
-                                            Name: true,
-                                            Address: true
-                                        }
-                                    },
-                                    Leader: {
-                                        select: {
-                                            Username: true,
-                                            Address: true
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                select: SELECT_USER_DATA
             }
             )
 
@@ -134,21 +49,20 @@ export class UserService {
 
             if (!update_data || Object.keys(update_data).length === 0) throw new BadRequestException("Failed to get the payload of the request!")
 
-            if (update_data.Password != null || update_data.Password != undefined) {
-                const hashPassword = await bcrypt.hash(update_data.Password, 10)
-                if (!hashPassword || hashPassword == null && hashPassword == undefined) {
-                    throw new BadRequestException("Failed to get and hashing the data password for update data in users data!")
-                }
+            if (update_data.Password) {
+                const hashPassword = await this.passwordService.hashPassword(update_data.Password)
+                if (!hashPassword) throw new BadRequestException("Failed to hashing password!")
+                update_data.Password = hashPassword
             }
 
             const update_users = await this.prisma.user.update({
                 where: {
-                    id: Number(user_id)
+                    id: user_id
                 },
                 data: update_data
             })
 
-            if (!update_users) throw new BadRequestException("Failed to get the data update!")
+            if (!update_users) throw new BadRequestException("Failed to update the users data!")
 
             return true
 

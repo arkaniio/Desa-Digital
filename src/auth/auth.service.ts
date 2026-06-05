@@ -1,39 +1,70 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from "bcrypt"
+import TokenService from './token.service';
+import PasswordService from './password.service';
+import { BADFAMILY } from 'node:dns';
 
 @Injectable()
 export class AuthService {
 
     constructor(
         private prisma: PrismaService,
-        private jwtService: JwtService
+        private tokenService: TokenService,
+        private passwordService: PasswordService
     ) { }
 
     async findUserByEmail(email: string) {
 
-        return await this.prisma.user.findUnique({
-            where: {
-                Email: email
-            }
-        })
+        try {
+
+            return await this.prisma.user.findUnique({
+                where: {
+                    Email: email
+                }
+            })
+
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
 
     }
 
-    async findUserByUsername(username: string) {
+    async findUserById(user_id: number) {
 
-        return await this.prisma.user.findUnique({
-            where: {
-                Username: username
-            }
-        })
+        try {
+
+            return await this.prisma.user.findFirst({
+                where: {
+                    id: user_id
+                }
+            })
+
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
 
     }
 
     async generateAuth(data: any) {
 
-        return await this.prisma.user.create(data)
+        try {
+
+            if (data.Password != null) {
+
+                const hashPassword = this.passwordService.hashPassword(data.password)
+
+                data.Password = hashPassword
+
+                return this.prisma.user.create(data)
+
+            }
+
+            return await this.prisma.user.create(data)
+
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
 
     }
 
@@ -55,30 +86,23 @@ export class AuthService {
 
         }
 
-        return this.jwtService.sign({
+        return this.tokenService.generateToken({
             id: user.id,
-            email: user.Email,
-            role: user.Role
+            Role: user.Role,
+            Email: user.Email
         })
-
     }
 
     async registerUser(data: any) {
 
         const user_data = await this.findUserByEmail(data.Email)
 
-        if (user_data != null || user_data != undefined) throw new BadRequestException("Email has been already exists!")
-
-        const user_name = await this.findUserByUsername(data.Username)
-
-        if (user_name != null || user_data != undefined) throw new BadRequestException("Username has been already exists!")
-
-        const password_hash = await bcrypt.hash(data.Password, 10)
-        if (!password_hash) throw new BadRequestException("Failed to hashing password!")
+        if (user_data) throw new BadRequestException("Email has been already exists!")
 
         try {
 
             const user = await this.generateAuth(data)
+            if (!user) throw new BadRequestException("Failed to create new user, something went wrong!")
 
             return user
 
@@ -94,17 +118,54 @@ export class AuthService {
 
         if (!user_data) throw new NotFoundException("Email not found!")
 
-        const isPasswordValid = await bcrypt.compare(data.Password, user_data.Password)
-        if (!isPasswordValid) throw new BadRequestException("Failed to compare the password!")
+        const comparePassword = await this.passwordService.comparePassword(user_data.Password, data.Password)
+        if (!comparePassword) throw new BadRequestException("Failed to compare new password!")
 
-        const token = this.jwtService.sign({
-            id: user_data.id,
-            email: user_data.Email,
-            role: user_data.Role,
-            username: user_data.Username
-        })
+        try {
 
-        return token
+            const token = this.tokenService.generateToken({
+                id: user_data.id,
+                role: user_data.Role,
+                email: user_data.Email,
+                username: user_data.Username
+            })
+
+            return token
+
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
+
+    }
+
+    async changePassword(password: string, user_id: number) {
+
+        if (password == null) throw new BadRequestException("Password that you want to change must be required!")
+
+        if (user_id == null) throw new UnauthorizedException("User id in authorization must be required!")
+
+        try {
+
+            const findUser = await this.findUserById(user_id)
+            if (!findUser) throw new NotFoundException("Failed to found the user!")
+
+            const comparePassword = await this.passwordService.comparePassword(findUser.Password, password)
+            if (!comparePassword) throw new BadRequestException("Failed to compare the password!")
+
+            const updatePassword = await this.prisma.user.update({
+                where: {
+                    id: user_id
+                },
+                data: {
+                    Password: password
+                }
+            })
+
+            if (!updatePassword) throw new BadRequestException("Failed to update password!")
+
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
 
     }
 
