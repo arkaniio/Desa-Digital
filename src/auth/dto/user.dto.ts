@@ -43,5 +43,25 @@ export class CreateUserDto {
     RwId: number
 }
 
+export class LoginDto {
 
-export class UpdateUserDto extends PartialType(CreateUserDto) { }
+    @IsEmail()
+    @IsString()
+    Email: string
+
+    @IsString()
+    @MinLength(6)
+    Password: string
+
+    @IsInt()
+    @Min(1)
+    RtId: number
+
+    @IsInt()
+    @Min(1)
+    RwId: number
+
+    @IsInt()
+    @Min(1)
+    VillageId: number
+}

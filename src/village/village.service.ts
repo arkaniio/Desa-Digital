@@ -79,13 +79,22 @@ export class VillageService {
 
         if (id == null && id == undefined) throw new NotFoundException("Failed to detect the id in the parameter request!")
 
-        //tools
-        const update_data = CheckIsNullWithNumber(data)
-        //
-
-        if (!update_data || Object.keys(update_data).length === 0) throw new BadRequestException("Failed to get the payload of the update data!")
-
         try {
+
+            const findDataUsingId = await this.prisma.village.findFirst({
+                where: {
+                    id: id
+                }
+            })
+
+            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the data that you want to update!")
+
+            //tools
+            const update_data = CheckIsNullWithNumber(data)
+            //
+
+            if (!update_data || Object.keys(update_data).length === 0) throw new BadRequestException("Failed to get the payload of the update data!")
+
 
             const update = await this.prisma.village.update({
                 where: {

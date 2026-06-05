@@ -2,23 +2,13 @@ import { Controller, Post, Body, UseGuards, Get, Put, UseInterceptors, UploadedF
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
-import { CreateUserDto, LoginDto, UpdateUserDto } from './dto/user.dto';
+import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { FileInterceptor } from "@nestjs/platform-express"
 
 @Controller('user')
 export class UserController {
 
     constructor(private readonly userService: UserService) { }
-
-    @Post('register')
-    async registerUser(@Body() data: CreateUserDto) {
-        return this.userService.registerUser(data)
-    }
-
-    @Post('login')
-    async loginUser(@Body() data: LoginDto) {
-        return this.userService.loginUser(data)
-    }
 
     @Get('profile')
     @UseGuards(JwtAuthGuard)

@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException, UnauthorizedExcepti
 import { PrismaService } from '../prisma/prisma.service';
 import { BufferUpload } from '../common/helpers/cloudinary_helper';
 import { CheckIsNullWithNumber, CheckIsNullWitMulterAnnouncement } from '../common/helpers/null-check.helper';
+import { use } from 'passport';
 
 @Injectable()
 export class AnnouncementService {
@@ -97,6 +98,8 @@ export class AnnouncementService {
 
             if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to find the data that you want to delete it!")
 
+            if (findDataUsingId.AuthorId != user_id) throw new BadRequestException("Cannot to update others rt or rw annoucmenent!")
+
             const payload_update = await CheckIsNullWitMulterAnnouncement(data, file, "Announcement")
 
             if (!payload_update || Object.keys(payload_update).length === 0) throw new BadRequestException("Failed to get the payload of the data!")
@@ -119,7 +122,7 @@ export class AnnouncementService {
 
     }
 
-    async getAllAnnouncement(user_id: number, query: any) {
+    async getAllAnnouncement(user_id: number, query: any, autorId: number) {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the id from token!")
 
@@ -157,7 +160,8 @@ export class AnnouncementService {
                         }
                     ] : []
                     )
-                ]
+                ],
+                AuthorId: autorId
             }
 
             try {
@@ -211,7 +215,11 @@ export class AnnouncementService {
                         Dibuat_pada: true
                     }
                 }),
-                this.prisma.announcement.count()
+                this.prisma.announcement.count({
+                    where: {
+                        AuthorId: autorId
+                    }
+                })
             ])
 
             if (!data) throw new BadRequestException("Failed to get the data and total data!")

@@ -9,75 +9,7 @@ export class UserService {
 
     constructor(
         private prisma: PrismaService,
-        private jwtService: JwtService
     ) { }
-
-    async registerUser(data: any) {
-
-        const user_data = await this.prisma.user.findUnique({
-            where: {
-                Email: data.Email
-            }
-        })
-        if (user_data) throw new BadRequestException("Email has been already exists!")
-
-        const user_name = await this.prisma.user.findUnique({
-            where: {
-                Username: data.Username
-            }
-        })
-        if (user_name) throw new BadRequestException("Username has been already exists!")
-
-        const password_hash = await bcrypt.hash(data.Password, 10)
-        if (!password_hash) throw new BadRequestException("Failed to hashing password!")
-
-        try {
-            const user = await this.prisma.user.create({
-                data: {
-                    Username: data.Username,
-                    Email: data.Email,
-                    Address: data.Address,
-                    Password: password_hash,
-                    Role: data.Role,
-                    Created_at: new Date().toISOString(),
-                    Updated_at: new Date().toISOString(),
-                    VillageId: Number(data.VillageId),
-                    RtId: data.RtId,
-                    RwId: data.RwId
-                }
-            })
-
-            return user
-
-        } catch (error) {
-            throw new BadRequestException(error.message)
-        }
-
-    }
-
-    async loginUser(data: any) {
-
-        const user_data = await this.prisma.user.findUnique({
-            where: {
-                Email: data.Email
-            }
-        })
-
-        if (!user_data) throw new NotFoundException("Email not found!")
-
-        const isPasswordValid = await bcrypt.compare(data.Password, user_data.Password)
-        if (!isPasswordValid) throw new BadRequestException("Failed to compare the password!")
-
-        const token = this.jwtService.sign({
-            id: user_data.id,
-            email: user_data.Email,
-            role: user_data.Role,
-            username: user_data.Username
-        })
-
-        return token
-
-    }
 
     async getProfile(user_id: number) {
 

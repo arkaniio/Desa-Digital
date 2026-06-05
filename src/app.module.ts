@@ -10,6 +10,7 @@ import { AnnouncementModule } from './announcement/announcement.module';
 import { VillageModule } from './village/village.module';
 import { SubmissionsModule } from './submissions/submissions.module';
 import { DigitalSignatureModule } from './digital_signature/digital_signature.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
