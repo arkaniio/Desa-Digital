@@ -47,10 +47,9 @@ model User {
   id            Int            @id @default(autoincrement())
   Username      String         @unique
   Email         String         @unique
-  Address       String
   Password      String
   Role          role?          @default(WARGA)
-  Avatar        String?
+  Avatar        String?        @default("Tidak ada profil")
   Created_at    DateTime       @default(now())
   Updated_at    DateTime       @updatedAt
   // Setiap user terikat pada struktur Desa, RW, dan RT mereka tempat mereka tinggal tinggal

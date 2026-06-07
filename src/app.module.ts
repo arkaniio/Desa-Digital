@@ -9,11 +9,14 @@ import { RwModule } from './rw/rw.module';
 import { AnnouncementModule } from './announcement/announcement.module';
 import { VillageModule } from './village/village.module';
 import { SubmissionsModule } from './submissions/submissions.module';
-import { DigitalSignatureModule } from './digital_signature/digital_signature.module';
-import { AuthModule } from './auth/auth.module';
+import BoostrapService from './common/services/bootstrap/bootstrap.service';
+import { BootstrapModule } from './common/services/bootstrap/bootstrap.module';
+import { PasswordModule } from './common/services/password/password.module';
 
 @Module({
   imports: [
+    BootstrapModule,
+    PasswordModule,
     PrismaModule,
     AuthModule,
     UserModule,
@@ -22,10 +25,9 @@ import { AuthModule } from './auth/auth.module';
     AnnouncementModule,
     VillageModule,
     SubmissionsModule,
-    DigitalSignatureModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [BoostrapService, AppService],
 })
 export class AppModule { }
 

@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { CheckIsNullWitMulterAvatar } from '../common/helpers/null-check.helper';
 import { SELECT_USER_DATA } from './constants/user_select';
-import PasswordService from '../auth/password.service';
+import PasswordService from '../common/services/password/password.service';
 import { hash } from 'node:crypto';
 
 @Injectable()
@@ -14,6 +14,36 @@ export class UserService {
         private prisma: PrismaService,
         private passwordService: PasswordService
     ) { }
+
+    //This is for create the kepala desa, rw account
+
+    async createKepalaDesaAccount(user_id: number, data: any) {
+
+        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from authentication")
+
+        try {
+
+            if (data.Password) {
+
+                const hashPassword = await this.passwordService.hashPassword(data.Password)
+
+                if (!hashPassword) throw new BadRequestException("Failed to hash the password!")
+
+                data.Password = hashPassword
+
+            }
+
+            return this.prisma.user.create({
+                data: data
+            })
+
+        } catch (error) {
+            throw new BadRequestException(error.message)
+        }
+
+    }
+
+    //
 
     async getProfile(user_id: number) {
 

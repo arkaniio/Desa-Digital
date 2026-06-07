@@ -281,7 +281,7 @@ export class SubmissionsService {
                         id: id
                     },
                     data: {
-                        Status: "DISETUJUI OLEH RT"
+                        Status: "APPROVED_RT"
                     }
                 })
 
@@ -348,7 +348,7 @@ export class SubmissionsService {
                 },
                 data: {
                     Kepala_desa_sign: update_data.Kepala_desa_sign,
-                    Status: "DISETUJUI KEPALA DESA"
+                    Status: "APPROVED_KEPALA_DESA"
                 }
             })
 
@@ -377,7 +377,6 @@ export class SubmissionsService {
                 Sender: {
                     select: {
                         Username: true, // Tampilkan nama pengirim
-                        Address: true   // Dan alamatnya untuk validasi
                     }
                 },
                 Rt: {

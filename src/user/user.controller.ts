@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '../common/auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { FileInterceptor } from "@nestjs/platform-express"
+import { Roles, RolesGuard } from '../common/auth';
 
 @Controller('user')
 export class UserController {
@@ -14,6 +15,13 @@ export class UserController {
     @UseGuards(JwtAuthGuard)
     async getProfile(@CurrentUser() user_id: number) {
         return this.userService.getProfile(user_id)
+    }
+
+    @Post('create-kepala-desa-account')
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles("SUPER_ADMIN")
+    async createKepalaDesaAccount(@Body() data: any, @CurrentUser() user_id: number) {
+        return this.userService.createKepalaDesaAccount(user_id, data)
     }
 
     @Put("update")

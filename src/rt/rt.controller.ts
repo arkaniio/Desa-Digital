@@ -13,7 +13,7 @@ export class RtController {
     constructor(private readonly RtService: RtService) { }
 
     @Post('register')
-    @Roles("KEPALA_DESA")
+    @Roles("RW")
     @UseGuards(JwtAuthGuard, RolesGuard)
     async registerRt(@Body() data: CreateRtDto, @CurrentUser() user_id: number) {
         return this.RtService.registerRt(data, user_id)

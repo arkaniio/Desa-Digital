@@ -1,9 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import * as bcrypt from "bcrypt"
-import TokenService from './token.service';
-import PasswordService from './password.service';
-import { BADFAMILY } from 'node:dns';
+import TokenService from '../common/services/token/token.service';
+import PasswordService from '../common/services/password/password.service';
 
 @Injectable()
 export class AuthService {
