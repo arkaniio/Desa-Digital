@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { BufferUpload } from '../common/helpers/cloudinary_helper';
-import { CheckIsNullWithNumber, CheckIsNullWitMulterAnnouncement } from '../common/helpers/null-check.helper';
-import { use } from 'passport';
+import { CheckIsNullWitMulterAnnouncement } from '../common/helpers/null-check.helper';
+import { WHERE_CLAUSE_SEARCH_ANNOUNCEMENT } from './constants/announcement.mapping';
 
 @Injectable()
 export class AnnouncementService {
@@ -12,8 +12,6 @@ export class AnnouncementService {
     async createNewAnnouncement(data: any, user_id: number, file: Express.Multer.File) {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")
-
-        if (!file || file == null && file == undefined) throw new BadRequestException("File for data announcement is required!")
 
         try {
 
@@ -33,7 +31,6 @@ export class AnnouncementService {
                     AuthorId: user_id,
                     RwId: data.RwId,
                     RtId: data.RtId,
-                    Dibuat_pada: new Date().toISOString(),
                 }
             })
 
@@ -132,37 +129,9 @@ export class AnnouncementService {
 
         if (search_query) {
 
-            const isNumber = search_query?.trim() !== "" && !isNaN(Number(search_query))
-            const Number_convert = isNumber ? Number(search_query) : undefined
+            const where_clause = WHERE_CLAUSE_SEARCH_ANNOUNCEMENT(query, search_query, autorId)
 
-            const where: any = {
-                OR: [
-                    {
-                        Title: {
-                            contains: search_query,
-                            mode: "insensitive"
-                        }
-                    },
-                    {
-                        Content: {
-                            contains: search_query,
-                            mode: "insensitive"
-                        }
-                    },
-                    ...(isNumber ? [
-                        {
-                            RtId: {
-                                equals: Number_convert
-                            },
-                            RwId: {
-                                equals: Number_convert
-                            }
-                        }
-                    ] : []
-                    )
-                ],
-                AuthorId: autorId
-            }
+            if (where_clause == undefined) throw new BadRequestException("Failed to get the query!")
 
             try {
 
@@ -170,7 +139,7 @@ export class AnnouncementService {
                     this.prisma.announcement.findMany({
                         skip: skip,
                         take: limit,
-                        where: where,
+                        where: where_clause,
                         select: {
                             Title: true,
                             Content: true,
@@ -178,7 +147,7 @@ export class AnnouncementService {
                             Dibuat_pada: true
                         },
                     }),
-                    this.prisma.announcement.count({ where: where })
+                    this.prisma.announcement.count({ where: where_clause })
                 ])
 
                 if (!data) throw new BadRequestException("Failed to get the total data and data!")
@@ -197,6 +166,7 @@ export class AnnouncementService {
             } catch (error) {
                 throw new BadRequestException(error.message)
             }
+
         }
 
         try {

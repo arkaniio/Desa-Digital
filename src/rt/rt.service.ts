@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CheckIsNullWithNumber } from '../common/helpers/null-check.helper';
-import { use } from 'passport';
+import { MAPPING_SELECT_RT } from './constants/rt.mapping_select';
 
 @Injectable()
 export class RtService {
@@ -36,7 +36,7 @@ export class RtService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")
 
-        if (id == null && id == undefined) throw new NotFoundException("Failed to get the id from the param!")
+        if (id == null) throw new NotFoundException("Failed to get the id from the param!")
 
         try {
 
@@ -46,7 +46,7 @@ export class RtService {
                 }
             })
 
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect id of the data that you want to update it!")
+            if (!findDataUsingId) throw new NotFoundException("Failed to detect id of the data that you want to update it!")
 
             const update_data = CheckIsNullWithNumber(data)
 
@@ -74,7 +74,7 @@ export class RtService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the data user from token!")
 
-        if (id == null && id == undefined) throw new NotFoundException("Failed to get the id from the param!")
+        if (id == null) throw new NotFoundException("Failed to get the id from the param!")
 
         try {
 
@@ -84,7 +84,7 @@ export class RtService {
                 }
             })
 
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the id that you want to delete it!")
+            if (!findDataUsingId) throw new NotFoundException("Failed to detect the id that you want to delete it!")
 
             const delete_data = await this.prisma.rt.delete({
                 where: {
@@ -113,7 +113,7 @@ export class RtService {
             }
         })
 
-        if (!findDataVillage || findDataVillage == undefined && findDataVillage == null) throw new NotFoundException("Failed to detect the village id!")
+        if (!findDataVillage) throw new NotFoundException("Failed to detect the village id!")
 
         const { page, limit } = query
 
@@ -133,29 +133,7 @@ export class RtService {
                     orderBy: {
                         Id: "asc"
                     },
-                    select: {
-                        Number: true,
-                        Village: {
-                            select: {
-                                Name: true,
-                                Address: true,
-                                Leader_Village: {
-                                    select: {
-                                        Username: true,
-                                        Address: true,
-                                        Avatar: true
-                                    }
-                                }
-                            }
-                        },
-                        Leader: {
-                            select: {
-                                Username: true,
-                                Address: true,
-                                Avatar: true
-                            }
-                        }
-                    }
+                    select: MAPPING_SELECT_RT
                 }),
                 this.prisma.rt.count({
                     where: {

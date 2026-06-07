@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsIn, IsInt, IsString, Min, MinLength } from "class-validator";
+import { IsEmail, IsEnum, IsIn, IsInt, isString, IsString, Min, MinLength } from "class-validator";
 import { role } from "@prisma/client";
 import { PartialType } from "@nestjs/mapped-types";
 import { isMainThread } from "node:worker_threads";

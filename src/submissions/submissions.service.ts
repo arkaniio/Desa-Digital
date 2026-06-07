@@ -15,19 +15,15 @@ export class SubmissionsService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get the id data from token")
 
-        if (!file || file == null && file == undefined) throw new BadRequestException("File in this submissions must be required!")
-
         try {
 
             const buffe_data_file = await BufferUpload(file.buffer, "Dokumen")
-
-            if (!buffe_data_file) throw new BadRequestException("Failed to get the file!")
 
             const dataFile = buffe_data_file.secure_url
 
             const createData = await this.prisma.submissions.create({
                 data: {
-                    Nomor_surat_rt: Number(data.Nomor_surat_rt),
+                    Nomor_surat_rt: data.Nomor_surat_rt,
                     SenderId: user_id,
                     RtId: data.RtId,
                     RwId: data.RwId,
@@ -52,7 +48,7 @@ export class SubmissionsService {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")
 
-        if (id == null && id == undefined) throw new NotFoundException("Failed to get id from param!")
+        if (id == null) throw new NotFoundException("Failed to get id from param!")
 
         try {
 
@@ -62,7 +58,7 @@ export class SubmissionsService {
                 }
             })
 
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the id that you want to delete it!")
+            if (!findDataUsingId) throw new NotFoundException("Failed to detect the id that you want to delete it!")
 
             const deleteData = await this.prisma.submissions.delete({
                 where: {

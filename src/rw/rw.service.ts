@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CheckIsNullWithNumber } from '../common/helpers/null-check.helper';
+import { MAPPING_SELECT_RW } from './constants/rw.mapping_select';
 
 @Injectable()
 export class RwService {
@@ -15,7 +16,7 @@ export class RwService {
 
             const data_create = await this.prisma.rw.create({
                 data: {
-                    VillageId: Number(data.VillageId),
+                    VillageId: data.VillageId,
                     Name: data.Name
                 }
             })
@@ -44,7 +45,7 @@ export class RwService {
                 }
             })
 
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the id that you want to delete it!")
+            if (!findDataUsingId) throw new NotFoundException("Failed to detect the id that you want to delete it!")
 
             const update_data_Rw = CheckIsNullWithNumber(data)
 
@@ -52,7 +53,7 @@ export class RwService {
 
             const update_data = await this.prisma.rw.update({
                 where: {
-                    Id: Number(id),
+                    Id: id,
                     Leader_Id: user_id
                 },
                 data: update_data_Rw
@@ -82,11 +83,11 @@ export class RwService {
                 }
             })
 
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect id that you want to delete it!")
+            if (!findDataUsingId) throw new NotFoundException("Failed to detect id that you want to delete it!")
 
             const delete_data = await this.prisma.rw.delete({
                 where: {
-                    Id: Number(id),
+                    Id: id,
                     Leader_Id: user_id
                 }
             })
@@ -111,7 +112,7 @@ export class RwService {
             }
         })
 
-        if (!findDataVillage || findDataVillage == undefined && findDataVillage == null) throw new NotFoundException("Failed to detect the village id!")
+        if (!findDataVillage) throw new NotFoundException("Failed to detect the village id!")
 
 
         const { page, limit } = query
@@ -132,29 +133,7 @@ export class RwService {
                     orderBy: {
                         Id: "asc"
                     },
-                    select: {
-                        Name: true,
-                        Village: {
-                            select: {
-                                Name: true,
-                                Address: true,
-                                Leader_Village: {
-                                    select: {
-                                        Username: true,
-                                        Address: true,
-                                        Avatar: true
-                                    }
-                                }
-                            }
-                        },
-                        Leader: {
-                            select: {
-                                Username: true,
-                                Address: true,
-                                Avatar: true
-                            }
-                        }
-                    }
+                    select: MAPPING_SELECT_RW
                 }),
                 this.prisma.rw.count({
                     where: {

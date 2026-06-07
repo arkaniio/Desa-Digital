@@ -13,10 +13,34 @@ datasource db {
 }
 
 enum role {
+  SUPER_ADMIN
   KEPALA_DESA
   RT
   RW
   WARGA
+}
+
+enum Tipe_Surat {
+  SURAT_DOMISILI
+  SURAT_KURANG_MAMPU
+  SURAT_NIKAH
+  SURAT_KEMATIAN
+  SURAT_USAHA
+}
+
+enum Status_Surat {
+  PENDING
+  DIAJUKAN
+  APPROVED_RT
+  APPROVED_KEPALA_DESA
+  REJECTED
+  SUCCESS
+}
+
+enum Announcement_Status {
+  ACTIVE
+  INACTIVE
+  EXPIRED
 }
 
 model User {
@@ -30,12 +54,12 @@ model User {
   Created_at    DateTime       @default(now())
   Updated_at    DateTime       @updatedAt
   // Setiap user terikat pada struktur Desa, RW, dan RT mereka tempat mereka tinggal tinggal
-  VillageId     Int
-  Village       Village        @relation("VillageMembers", fields: [VillageId], references: [id])
-  RwId          Int
-  Rw            Rw             @relation("RwMembers", fields: [RwId], references: [Id])
-  RtId          Int
-  Rt            Rt             @relation("RtMembers", fields: [RtId], references: [Id])
+  VillageId     Int?
+  Village       Village?       @relation("VillageMembers", fields: [VillageId], references: [id])
+  RwId          Int?
+  Rw            Rw?            @relation("RwMembers", fields: [RwId], references: [Id])
+  RtId          Int?
+  Rt            Rt?            @relation("RtMembers", fields: [RtId], references: [Id])
   // Back-relation untuk jabatan kepemimpinan
   LedVillages   Village[]      @relation("VillageLeader")
   LedRws        Rw[]           @relation("RwLeader")
@@ -91,29 +115,21 @@ model Rt {
   users         User[]         @relation("RtMembers")
 }
 
-enum Tipe_Surat {
-  SURAT_DOMISILI
-  SURAT_KURANG_MAMPU
-  SURAT_NIKAH
-  SURAT_KEMATIAN
-  SURAT_USAHA
-}
-
 model Submissions {
-  id                   Int        @id @default(autoincrement())
+  id                   Int          @id @default(autoincrement())
   Nomor_surat_rt       Int
   SenderId             Int
-  Sender               User       @relation(fields: [SenderId], references: [id])
+  Sender               User         @relation(fields: [SenderId], references: [id])
   RtId                 Int
-  Rt                   Rt         @relation(fields: [RtId], references: [Id])
+  Rt                   Rt           @relation(fields: [RtId], references: [Id])
   RwId                 Int
-  Rw                   Rw         @relation(fields: [RwId], references: [Id])
+  Rw                   Rw           @relation(fields: [RwId], references: [Id])
   Dokumen_pengajuan    String // URL bukti pendukung di Cloudinary (KTP/KK)
   Tipe_Surat           Tipe_Surat
-  Status               String?    @default("PENDING") // PENDING, APPROVED_RT, SUCCESS, REJECTED
-  Keterangan_pengajuan String?    @default("DIAJUKAN")
+  Status               Status_Surat @default(PENDING) // PENDING, APPROVED_RT, SUCCESS, REJECTED
+  Keterangan_pengajuan String?      @default("DIAJUKAN")
   Keperluan            String
-  Tanggal_pengajuan    DateTime   @default(now())
+  Tanggal_pengajuan    DateTime     @default(now())
   Tanggal_selesai      DateTime?
 
   // Tanda Tangan Terintegrasi (Menghilangkan tabel Digital_Signature yang rawan celah)
@@ -125,16 +141,16 @@ model Submissions {
 }
 
 model Announcement {
-  id          Int      @id @default(autoincrement())
-  Status      String   @default("ACTIVE")
+  id          Int                 @id @default(autoincrement())
+  Status      Announcement_Status @default(ACTIVE)
   Title       String
   Content     String
   Image       String
   AuthorId    Int
-  Author      User     @relation(fields: [AuthorId], references: [id])
+  Author      User                @relation(fields: [AuthorId], references: [id])
   RwId        Int
   RtId        Int
-  Rw          Rw       @relation(fields: [RwId], references: [Id])
-  Rt          Rt       @relation(fields: [RtId], references: [Id])
-  Dibuat_pada DateTime @default(now())
+  Rw          Rw                  @relation(fields: [RwId], references: [Id])
+  Rt          Rt                  @relation(fields: [RtId], references: [Id])
+  Dibuat_pada DateTime            @default(now())
 }
