@@ -18,14 +18,14 @@ export declare class RwController {
                 Name: string;
                 Address: string;
                 Leader_Village: {
-                    Avatar: string | null;
                     Username: string;
+                    Avatar: string | null;
                     Address: never;
                 };
             };
             Leader: {
-                Avatar: string | null;
                 Username: string;
+                Avatar: string | null;
                 Address: never;
             } | null;
             Name: string;

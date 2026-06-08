@@ -18,9 +18,8 @@ export declare class VillageController {
         Address: string;
         Village_Age: number;
         Leader_Village: {
-            Avatar: string | null;
             Username: string;
-            Address: never;
+            Avatar: string | null;
         };
     }[]>;
 }

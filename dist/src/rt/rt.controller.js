@@ -42,10 +42,10 @@ let RtController = class RtController {
 exports.RtController = RtController;
 __decorate([
     (0, common_1.Post)('register'),
-    (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("RW"),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [rt_dto_1.CreateRtDto, Number]),
     __metadata("design:returntype", Promise)
@@ -55,7 +55,7 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
     __param(2, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [rt_dto_1.UpdateRtDto, Number, Number]),
@@ -66,7 +66,7 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
@@ -75,8 +75,8 @@ __decorate([
     (0, common_1.Get)("all"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
-    __param(0, (0, current_user_decorator_1.CurrentUser)()),
-    __param(1, (0, common_1.Query)()),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(1, (0, common_1.Query)('query')),
     __param(2, (0, common_1.Param)('village_id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, pagination_query_dto_1.PaginationDto, Number]),

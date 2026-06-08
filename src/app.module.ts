@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
-import { AuthModule } from './common/auth/auth.module';
+import { AuthModule } from './common/auth/jwt.module';
 import { UserModule } from './user/user.module';
 import { RtModule } from './rt/rt.module';
 import { RwModule } from './rw/rw.module';
@@ -12,9 +12,11 @@ import { SubmissionsModule } from './submissions/submissions.module';
 import BoostrapService from './common/services/bootstrap/bootstrap.service';
 import { BootstrapModule } from './common/services/bootstrap/bootstrap.module';
 import { PasswordModule } from './common/services/password/password.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
+    DashboardModule,
     BootstrapModule,
     PasswordModule,
     PrismaModule,

@@ -19,9 +19,9 @@ const current_user_decorator_1 = require("../common/auth/decorators/current-user
 const jwt_auth_guard_1 = require("../common/auth/guards/jwt-auth.guard");
 const roles_decorator_1 = require("../common/auth/decorators/roles.decorator");
 const roles_guard_1 = require("../common/auth/guards/roles.guard");
-const platform_express_1 = require("@nestjs/platform-express");
 const pagination_query_dto_1 = require("../common/dto/pagination-query.dto");
 const submissions_dto_1 = require("./dto/submissions.dto");
+const file_helper_1 = require("../common/files_tools/file_helper");
 let SubmissionsController = class SubmissionsController {
     submissionsService;
     constructor(submissionsService) {
@@ -54,29 +54,19 @@ __decorate([
     (0, common_1.Get)("all"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("WARGA"),
-    __param(0, (0, current_user_decorator_1.CurrentUser)()),
-    __param(1, (0, common_1.Query)()),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(1, (0, common_1.Query)('query')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, pagination_query_dto_1.PaginationDto]),
     __metadata("design:returntype", Promise)
 ], SubmissionsController.prototype, "getAllSubmissions", null);
 __decorate([
     (0, common_1.Post)("create"),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", {
-        limits: {
-            fileSize: 1024 * 1024 * 2
-        },
-        fileFilter: (req, file, cb) => {
-            if (!file.mimetype.includes("image")) {
-                return cb(new Error("Failed to get the image for data!"), false);
-            }
-            return cb(null, true);
-        }
-    })),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("WARGA"),
+    (0, common_1.UseInterceptors)(file_helper_1.FileInterceptorTools),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
     __param(2, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [submissions_dto_1.CreateSubmissionDto, Number, Object]),
@@ -84,22 +74,12 @@ __decorate([
 ], SubmissionsController.prototype, "createSubmissions", null);
 __decorate([
     (0, common_1.Put)("update/:id"),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file", {
-        limits: {
-            fileSize: 1024 * 1024 * 2
-        },
-        fileFilter: (req, file, cb) => {
-            if (!file.mimetype.includes("image")) {
-                return cb(new Error("Failed to get the image for data!"), false);
-            }
-            return cb(null, true);
-        }
-    })),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("WARGA"),
+    (0, common_1.UseInterceptors)(file_helper_1.FileInterceptorTools),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __param(2, (0, current_user_decorator_1.CurrentUser)('user_id')),
     __param(3, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [submissions_dto_1.UpdateSubmissionsDto, Number, Number, Object]),

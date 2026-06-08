@@ -17,9 +17,8 @@ export declare class VillageService {
         Address: string;
         Village_Age: number;
         Leader_Village: {
-            Avatar: string | null;
             Username: string;
-            Address: never;
+            Avatar: string | null;
         };
     }[]>;
 }

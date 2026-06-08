@@ -25,6 +25,24 @@ let UserService = class UserService {
         this.prisma = prisma;
         this.passwordService = passwordService;
     }
+    async createKepalaDesaAccount(user_id, data) {
+        if (user_id == null)
+            throw new common_1.UnauthorizedException("Failed to get the user id from authentication");
+        try {
+            if (data.Password) {
+                const hashPassword = await this.passwordService.hashPassword(data.Password);
+                if (!hashPassword)
+                    throw new common_1.BadRequestException("Failed to hash the password!");
+                data.Password = hashPassword;
+            }
+            return this.prisma.user.create({
+                data: data
+            });
+        }
+        catch (error) {
+            throw new common_1.BadRequestException(error.message);
+        }
+    }
     async getProfile(user_id) {
         if (user_id == null)
             throw new common_1.UnauthorizedException("Failed to get the user id from token!");

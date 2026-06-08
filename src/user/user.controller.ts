@@ -5,6 +5,7 @@ import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
 import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 import { FileInterceptor } from "@nestjs/platform-express"
 import { Roles, RolesGuard } from '../common/auth';
+import { FileInterceptorTools } from '../common/files_tools/file_helper';
 
 @Controller('user')
 export class UserController {
@@ -13,31 +14,21 @@ export class UserController {
 
     @Get('profile')
     @UseGuards(JwtAuthGuard)
-    async getProfile(@CurrentUser() user_id: number) {
+    async getProfile(@CurrentUser('user_id') user_id: number) {
         return this.userService.getProfile(user_id)
     }
 
     @Post('create-kepala-desa-account')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("SUPER_ADMIN")
-    async createKepalaDesaAccount(@Body() data: any, @CurrentUser() user_id: number) {
+    async createKepalaDesaAccount(@Body() data: any, @CurrentUser('user_id') user_id: number) {
         return this.userService.createKepalaDesaAccount(user_id, data)
     }
 
     @Put("update")
     @UseGuards(JwtAuthGuard)
-    @UseInterceptors(FileInterceptor("file", {
-        limits: {
-            fileSize: 1024 * 1024 * 2 // 2 mb
-        },
-        fileFilter: (req, file, cb) => {
-            if (!file.mimetype.includes("image")) {
-                return cb(new Error("Failed to detect the image file!"), false)
-            }
-            return cb(null, true)
-        },
-    }))
-    async updateProfile(@Body() data: UpdateUserDto, @CurrentUser() user_id: number, @UploadedFile() file: Express.Multer.File) {
+    @UseInterceptors(FileInterceptorTools)
+    async updateProfile(@Body() data: UpdateUserDto, @CurrentUser('user_id') user_id: number, @UploadedFile() file: Express.Multer.File) {
         return this.userService.updateProfile(file, user_id, data)
     }
 

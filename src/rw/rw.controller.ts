@@ -15,28 +15,28 @@ export class RwController {
     @Post('register')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    async regsiterRw(@Body() data: CreateRwDto, @CurrentUser() user_id: number) {
+    async regsiterRw(@Body() data: CreateRwDto, @CurrentUser('user_id') user_id: number) {
         return this.rwService.registerRw(data, user_id)
     }
 
     @Put('update/:id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    async updateRw(@Body() data: UpdateRwDto, @CurrentUser() user_id: number, @Param('id', ParseIntPipe) id: number) {
+    async updateRw(@Body() data: UpdateRwDto, @CurrentUser('user_id') user_id: number, @Param('id', ParseIntPipe) id: number) {
         return this.rwService.updateRw(data, user_id, id)
     }
 
     @Delete('delete/:id')
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    async deleteRw(@CurrentUser() user_id: number, @Param('id', ParseIntPipe) id: number) {
+    async deleteRw(@CurrentUser('user_id') user_id: number, @Param('id', ParseIntPipe) id: number) {
         return this.rwService.deleteRw(user_id, id)
     }
 
     @Get("all")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    async getAllRw(@CurrentUser() user_id: number, @Query() query: PaginationDto, @Param('village_id', ParseIntPipe) village_id: number) {
+    async getAllRw(@CurrentUser('user_id') user_id: number, @Query() query: PaginationDto, @Param('village_id', ParseIntPipe) village_id: number) {
         return this.rwService.getAllRw(user_id, query, village_id)
     }
 

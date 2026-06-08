@@ -21,7 +21,7 @@ export class AuthController {
     }
 
     @Put('updatePassword')
-    async changePassword(@Body() passwordData: string, @CurrentUser() user_id: number) {
+    async changePassword(@Body() passwordData: string, @CurrentUser('user_id') user_id: number) {
         return this.authService.changePassword(passwordData, user_id)
     }
 

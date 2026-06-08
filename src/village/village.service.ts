@@ -127,7 +127,6 @@ export class VillageService {
                     Leader_Village: {
                         select: {
                             Username: true,
-                            Address: true,
                             Avatar: true
                         }
                     }

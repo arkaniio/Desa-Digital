@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.JwtStrategy = exports.Roles = exports.CurrentUser = exports.RolesGuard = exports.JwtAuthGuard = exports.AuthModule = void 0;
-var auth_module_js_1 = require("./auth.module.js");
-Object.defineProperty(exports, "AuthModule", { enumerable: true, get: function () { return auth_module_js_1.AuthModule; } });
+var jwt_module_js_1 = require("./jwt.module.js");
+Object.defineProperty(exports, "AuthModule", { enumerable: true, get: function () { return jwt_module_js_1.AuthModule; } });
 var jwt_auth_guard_js_1 = require("./guards/jwt-auth.guard.js");
 Object.defineProperty(exports, "JwtAuthGuard", { enumerable: true, get: function () { return jwt_auth_guard_js_1.JwtAuthGuard; } });
 var roles_guard_js_1 = require("./guards/roles.guard.js");

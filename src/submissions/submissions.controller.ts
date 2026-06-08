@@ -7,6 +7,7 @@ import { RolesGuard } from '../common/auth/guards/roles.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PaginationDto } from '../common/dto/pagination-query.dto';
 import { CreateSubmissionDto, UpdateKepalaDesaSignSubmissions, UpdateRtSignSubmissions, UpdateSubmissionsDto } from './dto/submissions.dto';
+import { FileInterceptorTools } from '../common/files_tools/file_helper';
 
 @Controller('submissions')
 export class SubmissionsController {
@@ -16,50 +17,30 @@ export class SubmissionsController {
     @Get("all")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("WARGA")
-    async getAllSubmissions(@CurrentUser() user_id: number, @Query() query: PaginationDto) {
+    async getAllSubmissions(@CurrentUser('user_id') user_id: number, @Query('query') query: PaginationDto) {
         return this.submissionsService.getAllSubmissions(user_id, query)
     }
 
     @Post("create")
-    @UseInterceptors(FileInterceptor("file", {
-        limits: {
-            fileSize: 1024 * 1024 * 2
-        },
-        fileFilter: (req, file, cb) => {
-            if (!file.mimetype.includes("image")) {
-                return cb(new Error("Failed to get the image for data!"), false)
-            }
-            return cb(null, true)
-        }
-    }))
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("WARGA")
+    @UseInterceptors(FileInterceptorTools)
     async createSubmissions(
         @Body() data: CreateSubmissionDto,
-        @CurrentUser() user_id: number,
+        @CurrentUser('user_id') user_id: number,
         @UploadedFile() file: Express.Multer.File
     ) {
         return this.submissionsService.createSubmissions(data, user_id, file)
     }
 
     @Put("update/:id")
-    @UseInterceptors(FileInterceptor("file", {
-        limits: {
-            fileSize: 1024 * 1024 * 2
-        },
-        fileFilter: (req, file, cb) => {
-            if (!file.mimetype.includes("image")) {
-                return cb(new Error("Failed to get the image for data!"), false)
-            }
-            return cb(null, true)
-        }
-    }))
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("WARGA")
+    @UseInterceptors(FileInterceptorTools)
     async updateSubmissions(
         @Body() data: UpdateSubmissionsDto,
         @Param('id', ParseIntPipe) id: number,
-        @CurrentUser() user_id: number,
+        @CurrentUser('user_id') user_id: number,
         @UploadedFile() file: Express.Multer.File
     ) {
         return this.submissionsService.updateSubmissions(data, id, user_id, file)

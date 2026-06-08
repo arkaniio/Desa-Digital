@@ -34,7 +34,7 @@ class BoostrapService implements OnModuleInit {
                 data: {
                     Username: username_super_admin,
                     Email: email_super_admin,
-                    Password: password_super_admin,
+                    Password: hash_password,
                     Role: "SUPER_ADMIN"
                 }
             })

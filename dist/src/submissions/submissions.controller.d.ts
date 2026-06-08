@@ -6,8 +6,8 @@ export declare class SubmissionsController {
     constructor(submissionsService: SubmissionsService);
     getAllSubmissions(user_id: number, query: PaginationDto): Promise<{
         data: {
-            Dokumen_pengajuan: string;
             Nomor_surat_rt: number;
+            Dokumen_pengajuan: string;
             Keterangan_pengajuan: string | null;
             Keperluan: string;
             Rt_desa_sign: boolean;
@@ -36,8 +36,12 @@ export declare class SubmissionsController {
         };
     }>;
     createSubmissions(data: CreateSubmissionDto, user_id: number, file: Express.Multer.File): Promise<{
-        Dokumen_pengajuan: string;
+        id: number;
         Nomor_surat_rt: number;
+        SenderId: number;
+        RtId: number;
+        RwId: number;
+        Dokumen_pengajuan: string;
         Tipe_Surat: import("@prisma/client").$Enums.Tipe_Surat;
         Status: import("@prisma/client").$Enums.Status_Surat;
         Keterangan_pengajuan: string | null;
@@ -47,16 +51,13 @@ export declare class SubmissionsController {
         Rt_desa_sign: boolean;
         Kepala_desa_sign: boolean;
         QrCodeSignature: string | null;
-        id: number;
-        SenderId: number;
-        RtId: number;
-        RwId: number;
     }>;
     updateSubmissions(data: UpdateSubmissionsDto, id: number, user_id: number, file: Express.Multer.File): Promise<boolean>;
     deleteSubmissions(id: number, user_id: number): Promise<boolean>;
     updateSubmissionsWithRt(data: UpdateRtSignSubmissions, id: number, user_id: number): Promise<boolean>;
     updateSubmissionsWithKepalaDesa(data: UpdateKepalaDesaSignSubmissions, id: number, user_id: number): Promise<boolean>;
     verifySubmission(signature: string): Promise<{
+        id: number;
         Nomor_surat_rt: number;
         Tipe_Surat: import("@prisma/client").$Enums.Tipe_Surat;
         Status: import("@prisma/client").$Enums.Status_Surat;
@@ -73,6 +74,5 @@ export declare class SubmissionsController {
         Rw: {
             Name: string;
         };
-        id: number;
     }>;
 }

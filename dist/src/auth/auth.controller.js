@@ -58,7 +58,7 @@ __decorate([
 __decorate([
     (0, common_1.Put)('updatePassword'),
     __param(0, (0, common_2.Body)()),
-    __param(1, (0, auth_2.CurrentUser)()),
+    __param(1, (0, auth_2.CurrentUser)('user_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, Number]),
     __metadata("design:returntype", Promise)

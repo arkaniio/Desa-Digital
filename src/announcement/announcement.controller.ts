@@ -8,6 +8,7 @@ import { AnnouncementDto } from './dto/announcement.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { UpdateDataAnnouncement } from './dto/announcement.dto';
 import { PaginationDto } from '../common/dto/pagination-query.dto';
+import { FileInterceptorTools } from '../common/files_tools/file_helper';
 
 @Controller('announcement')
 export class AnnouncementController {
@@ -17,19 +18,9 @@ export class AnnouncementController {
     @Post("create")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    @UseInterceptors(FileInterceptor("file", {
-        limits: {
-            fileSize: 1024 * 1024 * 2
-        },
-        fileFilter: (req, file, cb) => {
-            if (!file.mimetype.includes("image")) {
-                return cb(new Error("Failed to detect an image has been invalid!"), false)
-            }
-            return cb(null, true)
-        }
-    }))
+    @UseInterceptors(FileInterceptorTools)
     async createNewAnnouncement(@Body() data: AnnouncementDto,
-        @CurrentUser() user_id: number,
+        @CurrentUser('user_id') user_id: number,
         @UploadedFile() file: Express.Multer.File
     ) {
         return this.announcementService.createNewAnnouncement(data, user_id, file)
@@ -38,17 +29,7 @@ export class AnnouncementController {
     @Put("update/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    @UseInterceptors(FileInterceptor("file", {
-        limits: {
-            fileSize: 1024 * 1024 * 2
-        },
-        fileFilter: (req, file, cb) => {
-            if (!file.mimetype.includes("image")) {
-                return cb(new Error("Failed to detect an image has been invalid!"), false)
-            }
-            return cb(null, true)
-        }
-    }))
+    @UseInterceptors(FileInterceptorTools)
     async updateAnnouncement(@Body() data: UpdateDataAnnouncement, @Param('id', ParseIntPipe) id: number, @CurrentUser() user_id: number, @UploadedFile() file: Express.Multer.File) {
         return this.announcementService.updateAnnouncement(user_id, id, data, file)
     }
@@ -56,14 +37,14 @@ export class AnnouncementController {
     @Get("all")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("WARGA")
-    async getAllAnnouncement(@CurrentUser() user_id: number, @Query() query: PaginationDto, @Param('id', ParseIntPipe) authorId: number) {
+    async getAllAnnouncement(@CurrentUser('user_id') user_id: number, @Query('query') query: PaginationDto, @Param('id', ParseIntPipe) authorId: number) {
         return this.announcementService.getAllAnnouncement(user_id, query, authorId)
     }
 
     @Delete("delete/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    async deleteAnnouncement(@Param('id', ParseIntPipe) id: number, @CurrentUser() user_id: number) {
+    async deleteAnnouncement(@Param('id', ParseIntPipe) id: number, @CurrentUser('user_id') user_id: number) {
         return this.announcementService.deleteAnnouncement(user_id, id)
     }
 

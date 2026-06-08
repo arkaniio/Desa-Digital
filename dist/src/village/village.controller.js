@@ -44,7 +44,7 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [village_dto_1.CreateVillageDto, Number]),
     __metadata("design:returntype", Promise)
@@ -54,7 +54,7 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
@@ -65,7 +65,7 @@ __decorate([
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __param(2, (0, current_user_decorator_1.CurrentUser)('user_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [village_dto_1.UpdateVillageDto, Number, Number]),
     __metadata("design:returntype", Promise)
@@ -73,7 +73,7 @@ __decorate([
 __decorate([
     (0, common_1.Get)("allVillage"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('user_id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
