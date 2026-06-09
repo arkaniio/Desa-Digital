@@ -113,35 +113,30 @@ let AuthService = class AuthService {
                 role: user_data.Role,
                 username: user_data.Username
             });
-            console.log(token);
             return token;
         }
         catch (error) {
             throw new common_1.BadRequestException(error.message);
         }
     }
-    async changePassword(password, user_id) {
-        if (password == null)
-            throw new common_1.BadRequestException("Password that you want to change must be required!");
+    async changePassword(data, user_id) {
         if (user_id == null)
             throw new common_1.UnauthorizedException("User id in authorization must be required!");
         try {
-            const findUser = await this.findUserById(user_id);
-            if (!findUser)
-                throw new common_1.NotFoundException("Failed to found the user!");
-            const comparePassword = await this.passwordService.comparePassword(findUser.Password, password);
-            if (!comparePassword)
-                throw new common_1.BadRequestException("Failed to compare the password!");
+            const hashPassword = await this.passwordService.hashPassword(data.Password);
+            data.Password = hashPassword;
             const updatePassword = await this.prisma.user.update({
                 where: {
                     id: user_id
                 },
                 data: {
-                    Password: password
+                    Password: hashPassword
                 }
             });
+            console.log(updatePassword, data.Password);
             if (!updatePassword)
                 throw new common_1.BadRequestException("Failed to update password!");
+            return true;
         }
         catch (error) {
             throw new common_1.BadRequestException(error.message);

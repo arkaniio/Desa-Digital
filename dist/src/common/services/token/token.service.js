@@ -18,10 +18,10 @@ let TokenService = class TokenService {
     }
     async generateToken(userData) {
         return this.jwtService.sign({
-            id: userData.id,
-            role: userData.Role,
-            email: userData.Email,
-            username: userData.Username
+            userId: userData.userId,
+            role: userData.role,
+            email: userData.email,
+            username: userData.username
         });
     }
 };

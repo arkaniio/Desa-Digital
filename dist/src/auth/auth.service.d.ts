@@ -60,5 +60,5 @@ export declare class AuthService {
         RtId: number | null;
     }>;
     loginUser(data: any): Promise<string>;
-    changePassword(password: string, user_id: number): Promise<void>;
+    changePassword(data: any, user_id: number): Promise<boolean>;
 }

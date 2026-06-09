@@ -142,30 +142,30 @@ export class AuthService {
 
     }
 
-    async changePassword(password: string, user_id: number) {
-
-        if (password == null) throw new BadRequestException("Password that you want to change must be required!")
+    async changePassword(data: any, user_id: number) {
 
         if (user_id == null) throw new UnauthorizedException("User id in authorization must be required!")
 
         try {
 
-            const findUser = await this.findUserById(user_id)
-            if (!findUser) throw new NotFoundException("Failed to found the user!")
+            const hashPassword = await this.passwordService.hashPassword(data.Password)
 
-            const comparePassword = await this.passwordService.comparePassword(findUser.Password, password)
-            if (!comparePassword) throw new BadRequestException("Failed to compare the password!")
+            data.Password = hashPassword
 
             const updatePassword = await this.prisma.user.update({
                 where: {
                     id: user_id
                 },
                 data: {
-                    Password: password
+                    Password: hashPassword
                 }
             })
 
+            console.log(updatePassword, data.Password)
+
             if (!updatePassword) throw new BadRequestException("Failed to update password!")
+
+            return true
 
         } catch (error) {
             throw new BadRequestException(error.message)

@@ -1,9 +1,9 @@
 import { Controller, Get, Post, Req, UseGuards, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginDto } from './dto/auth';
+import { ChangePasswordDto, CreateUserDto, LoginDto } from './dto/auth';
 import { Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { CurrentUser } from '../common/auth';
+import { CurrentUser, JwtAuthGuard } from '../common/auth';
 
 @Controller('auth')
 export class AuthController {
@@ -22,8 +22,12 @@ export class AuthController {
     }
 
     @Put('updatePassword')
-    async changePassword(@Body() passwordData: string, @CurrentUser('user_id') user_id: number) {
-        return this.authService.changePassword(passwordData, user_id)
+    @UseGuards(JwtAuthGuard)
+    async changePassword(@Body() data: any, @CurrentUser('userId') userId: number) {
+
+        console.log(data)
+
+        return this.authService.changePassword(data, userId)
     }
 
     //redirect ke google

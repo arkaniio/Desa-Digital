@@ -28,11 +28,11 @@ let AuthController = class AuthController {
         return this.authService.registerUser(data);
     }
     async loginUser(data) {
-        console.log(data);
         return this.authService.loginUser(data);
     }
-    async changePassword(passwordData, user_id) {
-        return this.authService.changePassword(passwordData, user_id);
+    async changePassword(data, userId) {
+        console.log(data);
+        return this.authService.changePassword(data, userId);
     }
     async googleAuth() { }
     async googleCallbackAuth(req) {
@@ -58,10 +58,11 @@ __decorate([
 ], AuthController.prototype, "loginUser", null);
 __decorate([
     (0, common_1.Put)('updatePassword'),
+    (0, common_1.UseGuards)(auth_2.JwtAuthGuard),
     __param(0, (0, common_2.Body)()),
-    __param(1, (0, auth_2.CurrentUser)('user_id')),
+    __param(1, (0, auth_2.CurrentUser)('userId')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:paramtypes", [Object, Number]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "changePassword", null);
 __decorate([
