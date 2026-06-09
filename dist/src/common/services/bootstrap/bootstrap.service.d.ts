@@ -6,6 +6,7 @@ declare class BoostrapService implements OnModuleInit {
     private readonly passwordService;
     constructor(prismaService: PrismaService, passwordService: PasswordService);
     onModuleInit(): Promise<{
+        id: number;
         Username: string;
         Email: string;
         Password: string;
@@ -13,7 +14,6 @@ declare class BoostrapService implements OnModuleInit {
         Avatar: string | null;
         Created_at: Date;
         Updated_at: Date;
-        id: number;
         VillageId: number | null;
         RwId: number | null;
         RtId: number | null;

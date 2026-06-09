@@ -18,11 +18,8 @@ export class CreateUserDto {
     @MinLength(5)
     Username: string
 
-    @IsString()
-    Address: string
-
     @IsEnum(role)
-    Role: role
+    Role?: role
 
     @IsString()
     Avatar?: string
@@ -30,17 +27,17 @@ export class CreateUserDto {
     @IsInt()
     @Min(1)
     @Type(() => Number)
-    VillageId: number
+    VillageId?: number
 
     @IsInt()
     @Min(1)
     @Type(() => Number)
-    RtId: number
+    RtId?: number
 
     @IsInt()
     @Min(1)
     @Type(() => Number)
-    RwId: number
+    RwId?: number
 }
 
 export class LoginDto {

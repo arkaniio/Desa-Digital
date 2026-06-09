@@ -52,12 +52,16 @@ let AuthService = class AuthService {
     }
     async generateAuth(data) {
         try {
-            if (data.Password != null) {
-                const hashPassword = this.passwordService.hashPassword(data.password);
+            if (data.Password) {
+                const hashPassword = await this.passwordService.hashPassword(data.Password);
                 data.Password = hashPassword;
-                return this.prisma.user.create(data);
+                return await this.prisma.user.create({
+                    data: data
+                });
             }
-            return await this.prisma.user.create(data);
+            return await this.prisma.user.create({
+                data: data
+            });
         }
         catch (error) {
             throw new common_1.BadRequestException(error.message);
@@ -88,7 +92,7 @@ let AuthService = class AuthService {
         try {
             const user = await this.generateAuth(data);
             if (!user)
-                throw new common_1.BadRequestException("Failed to create new user, something went wrong!");
+                throw new common_1.BadRequestException("Failed to create user, something went wrong!");
             return user;
         }
         catch (error) {

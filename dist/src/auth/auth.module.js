@@ -13,12 +13,13 @@ const auth_service_1 = require("./auth.service");
 const googleAuth_strategy_1 = require("../common/auth/strategies/googleAuth.strategy");
 const password_module_1 = require("../common/services/password/password.module");
 const token_module_1 = require("../common/services/token/token.module");
+const prisma_module_1 = require("../prisma/prisma.module");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
 exports.AuthModule = AuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [password_module_1.PasswordModule, token_module_1.TokenModule],
+        imports: [password_module_1.PasswordModule, token_module_1.TokenModule, prisma_module_1.PrismaModule],
         controllers: [auth_controller_1.AuthController],
         providers: [auth_service_1.AuthService, googleAuth_strategy_1.GoogleStrategy]
     })

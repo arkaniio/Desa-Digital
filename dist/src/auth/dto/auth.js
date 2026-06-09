@@ -17,7 +17,6 @@ class CreateUserDto {
     Email;
     Password;
     Username;
-    Address;
     Role;
     Avatar;
     VillageId;
@@ -40,10 +39,6 @@ __decorate([
     (0, class_validator_1.MinLength)(5),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "Username", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "Address", void 0);
 __decorate([
     (0, class_validator_1.IsEnum)(client_1.role),
     __metadata("design:type", String)

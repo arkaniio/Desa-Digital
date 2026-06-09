@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
-import { AuthModule } from './common/auth/jwt.module';
+import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { RtModule } from './rt/rt.module';
 import { RwModule } from './rw/rw.module';
@@ -16,11 +16,11 @@ import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
+    AuthModule,
     DashboardModule,
     BootstrapModule,
     PasswordModule,
     PrismaModule,
-    AuthModule,
     UserModule,
     RtModule,
     RwModule,

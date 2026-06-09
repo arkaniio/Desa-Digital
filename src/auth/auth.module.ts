@@ -6,9 +6,10 @@ import PasswordService from '../common/services/password/password.service';
 import TokenService from '../common/services/token/token.service';
 import { PasswordModule } from '../common/services/password/password.module';
 import { TokenModule } from '../common/services/token/token.module';
+import { PrismaModule } from '../prisma/prisma.module';
 
 @Module({
-  imports: [PasswordModule, TokenModule],
+  imports: [PasswordModule, TokenModule, PrismaModule],
   controllers: [AuthController],
   providers: [AuthService, GoogleStrategy]
 })

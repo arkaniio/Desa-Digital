@@ -42,17 +42,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const common_1 = require("@nestjs/common");
 const bcrypt = __importStar(require("bcrypt"));
 let PasswordService = class PasswordService {
-    async hashPassword(password) {
-        if (password == null)
-            throw new common_1.NotFoundException("Failed to detect password!");
-        const hashPassword = await bcrypt.hash(password, 10);
+    async hashPassword(Password) {
+        const hashPassword = await bcrypt.hash(Password, 10);
         if (!hashPassword)
             throw new common_1.BadRequestException("Failed to hashing password from user!");
         return hashPassword;
     }
     async comparePassword(hashPassword, newPassword) {
-        if (hashPassword && newPassword == null)
-            throw new common_1.NotFoundException("Failed to found the hash password and new password!");
         const comparePassword = await bcrypt.compare(newPassword, hashPassword);
         if (!comparePassword)
             throw new common_1.BadRequestException("Failed to compare the password!");

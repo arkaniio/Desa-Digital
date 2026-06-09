@@ -12,11 +12,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TokenModule = void 0;
 const common_1 = require("@nestjs/common");
 const token_service_1 = __importDefault(require("./token.service"));
+const jwt_1 = require("@nestjs/jwt");
 let TokenModule = class TokenModule {
 };
 exports.TokenModule = TokenModule;
 exports.TokenModule = TokenModule = __decorate([
     (0, common_1.Module)({
+        imports: [jwt_1.JwtModule],
         providers: [token_service_1.default],
         exports: [token_service_1.default]
     })

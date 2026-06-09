@@ -5,6 +5,17 @@ export declare class UserController {
     constructor(userService: UserService);
     getProfile(user_id: number): Promise<{
         id: number;
+        Username: string;
+        Email: string;
+        Role: import("@prisma/client").$Enums.role | null;
+        Avatar: string | null;
+        Created_at: Date;
+        Updated_at: Date;
+        VillageId: number | null;
+        Village: {
+            Name: string;
+            Address: string;
+        } | null;
         Rt: {
             RwId: number;
             Rw: {
@@ -12,25 +23,14 @@ export declare class UserController {
                     Name: string;
                     Address: string;
                 };
+                Name: string;
                 Leader: {
                     Username: string;
                     Address: never;
                 } | null;
-                Name: string;
             };
             Number: number;
         } | null;
-        VillageId: number | null;
-        Village: {
-            Name: string;
-            Address: string;
-        } | null;
-        Username: string;
-        Email: string;
-        Role: import("@prisma/client").$Enums.role | null;
-        Avatar: string | null;
-        Created_at: Date;
-        Updated_at: Date;
         LedVillages: {
             Leader_Village: {
                 Username: string;
@@ -42,11 +42,11 @@ export declare class UserController {
                 Name: string;
                 Address: string;
             };
+            Name: string;
             Leader: {
                 Username: string;
                 Address: never;
             } | null;
-            Name: string;
         }[];
         LedRts: {
             RwId: number;
@@ -55,11 +55,11 @@ export declare class UserController {
                     Name: string;
                     Address: string;
                 };
+                Name: string;
                 Leader: {
                     Username: string;
                     Address: never;
                 } | null;
-                Name: string;
             };
             Number: number;
         }[];
@@ -67,9 +67,6 @@ export declare class UserController {
     }>;
     createKepalaDesaAccount(data: any, user_id: number): Promise<{
         id: number;
-        RtId: number | null;
-        RwId: number | null;
-        VillageId: number | null;
         Username: string;
         Email: string;
         Password: string;
@@ -77,6 +74,9 @@ export declare class UserController {
         Avatar: string | null;
         Created_at: Date;
         Updated_at: Date;
+        VillageId: number | null;
+        RwId: number | null;
+        RtId: number | null;
     }>;
     updateProfile(data: UpdateUserDto, user_id: number, file: Express.Multer.File): Promise<boolean>;
 }
