@@ -6,7 +6,7 @@ class TokenService {
 
     constructor(private jwtService: JwtService) { }
 
-    generateToken(userData: any) {
+    async generateToken(userData: any) {
         return this.jwtService.sign({
             id: userData.id,
             role: userData.Role,

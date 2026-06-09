@@ -11,13 +11,13 @@ export declare class DashboardController {
         total_submissions_approved_kepala: number;
         submissions_data: {
             id: number;
+            RwId: number;
+            RtId: number;
+            Status: import("@prisma/client").$Enums.Status_Surat;
             Nomor_surat_rt: number;
             SenderId: number;
-            RtId: number;
-            RwId: number;
             Dokumen_pengajuan: string;
             Tipe_Surat: import("@prisma/client").$Enums.Tipe_Surat;
-            Status: import("@prisma/client").$Enums.Status_Surat;
             Keterangan_pengajuan: string | null;
             Keperluan: string;
             Tanggal_pengajuan: Date;

@@ -1,4 +1,4 @@
-export { AuthModule } from './jwt.module.js';
+export { JwtAuthModule } from './jwt.module.js';
 export { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 export { RolesGuard } from './guards/roles.guard.js';
 export { CurrentUser } from './decorators/current-user.decorator.js';

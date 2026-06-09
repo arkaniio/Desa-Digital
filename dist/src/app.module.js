@@ -15,6 +15,7 @@ const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const prisma_module_1 = require("./prisma/prisma.module");
 const auth_module_1 = require("./auth/auth.module");
+const jwt_module_1 = require("./common/auth/jwt.module");
 const user_module_1 = require("./user/user.module");
 const rt_module_1 = require("./rt/rt.module");
 const rw_module_1 = require("./rw/rw.module");
@@ -31,6 +32,7 @@ exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            jwt_module_1.JwtAuthModule,
             auth_module_1.AuthModule,
             dashboard_module_1.DashboardModule,
             bootstrap_module_1.BootstrapModule,

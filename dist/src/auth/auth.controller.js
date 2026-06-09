@@ -28,6 +28,7 @@ let AuthController = class AuthController {
         return this.authService.registerUser(data);
     }
     async loginUser(data) {
+        console.log(data);
         return this.authService.loginUser(data);
     }
     async changePassword(passwordData, user_id) {

@@ -4,20 +4,17 @@ export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
     getProfile(user_id: number): Promise<{
-        id: number;
         Username: string;
         Email: string;
         Role: import("@prisma/client").$Enums.role | null;
         Avatar: string | null;
         Created_at: Date;
         Updated_at: Date;
-        VillageId: number | null;
         Village: {
             Name: string;
             Address: string;
         } | null;
         Rt: {
-            RwId: number;
             Rw: {
                 Village: {
                     Name: string;
@@ -29,6 +26,7 @@ export declare class UserController {
                     Address: never;
                 } | null;
             };
+            RwId: number;
             Number: number;
         } | null;
         LedVillages: {
@@ -49,7 +47,6 @@ export declare class UserController {
             } | null;
         }[];
         LedRts: {
-            RwId: number;
             Rw: {
                 Village: {
                     Name: string;
@@ -61,12 +58,14 @@ export declare class UserController {
                     Address: never;
                 } | null;
             };
+            RwId: number;
             Number: number;
         }[];
+        id: number;
+        VillageId: number | null;
         Address: never;
     }>;
     createKepalaDesaAccount(data: any, user_id: number): Promise<{
-        id: number;
         Username: string;
         Email: string;
         Password: string;
@@ -74,6 +73,7 @@ export declare class UserController {
         Avatar: string | null;
         Created_at: Date;
         Updated_at: Date;
+        id: number;
         VillageId: number | null;
         RwId: number | null;
         RtId: number | null;

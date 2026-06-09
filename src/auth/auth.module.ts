@@ -7,6 +7,7 @@ import TokenService from '../common/services/token/token.service';
 import { PasswordModule } from '../common/services/password/password.module';
 import { TokenModule } from '../common/services/token/token.module';
 import { PrismaModule } from '../prisma/prisma.module';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [PasswordModule, TokenModule, PrismaModule],

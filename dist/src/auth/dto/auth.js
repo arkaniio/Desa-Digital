@@ -11,19 +11,17 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LoginDto = exports.CreateUserDto = void 0;
 const class_validator_1 = require("class-validator");
-const client_1 = require("@prisma/client");
-const class_transformer_1 = require("class-transformer");
 class CreateUserDto {
+    Username;
     Email;
     Password;
-    Username;
-    Role;
-    Avatar;
-    VillageId;
-    RtId;
-    RwId;
 }
 exports.CreateUserDto = CreateUserDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(5),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "Username", void 0);
 __decorate([
     (0, class_validator_1.IsEmail)(),
     (0, class_validator_1.IsString)(),
@@ -34,43 +32,9 @@ __decorate([
     (0, class_validator_1.MinLength)(6),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "Password", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(5),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "Username", void 0);
-__decorate([
-    (0, class_validator_1.IsEnum)(client_1.role),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "Role", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "Avatar", void 0);
-__decorate([
-    (0, class_validator_1.IsInt)(),
-    (0, class_validator_1.Min)(1),
-    (0, class_transformer_1.Type)(() => Number),
-    __metadata("design:type", Number)
-], CreateUserDto.prototype, "VillageId", void 0);
-__decorate([
-    (0, class_validator_1.IsInt)(),
-    (0, class_validator_1.Min)(1),
-    (0, class_transformer_1.Type)(() => Number),
-    __metadata("design:type", Number)
-], CreateUserDto.prototype, "RtId", void 0);
-__decorate([
-    (0, class_validator_1.IsInt)(),
-    (0, class_validator_1.Min)(1),
-    (0, class_transformer_1.Type)(() => Number),
-    __metadata("design:type", Number)
-], CreateUserDto.prototype, "RwId", void 0);
 class LoginDto {
     Email;
     Password;
-    RtId;
-    RwId;
-    VillageId;
 }
 exports.LoginDto = LoginDto;
 __decorate([
@@ -83,19 +47,4 @@ __decorate([
     (0, class_validator_1.MinLength)(6),
     __metadata("design:type", String)
 ], LoginDto.prototype, "Password", void 0);
-__decorate([
-    (0, class_validator_1.IsInt)(),
-    (0, class_validator_1.Min)(1),
-    __metadata("design:type", Number)
-], LoginDto.prototype, "RtId", void 0);
-__decorate([
-    (0, class_validator_1.IsInt)(),
-    (0, class_validator_1.Min)(1),
-    __metadata("design:type", Number)
-], LoginDto.prototype, "RwId", void 0);
-__decorate([
-    (0, class_validator_1.IsInt)(),
-    (0, class_validator_1.Min)(1),
-    __metadata("design:type", Number)
-], LoginDto.prototype, "VillageId", void 0);
 //# sourceMappingURL=auth.js.map

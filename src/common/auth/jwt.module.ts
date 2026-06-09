@@ -10,11 +10,13 @@ import { RolesGuard } from './guards/roles.guard';
   imports: [
     PassportModule,
     JwtModule.register({
-      secret: process.env.JWT_AUTH,
-      signOptions: { expiresIn: '1d' },
+      secret: process.env.JWT_AUTH ?? "yondaktaukoktanyasaya",
+      signOptions: {
+        expiresIn: "7d"
+      },
     }),
   ],
   providers: [JwtStrategy, JwtAuthGuard, RolesGuard],
   exports: [JwtModule, PassportModule, JwtAuthGuard, RolesGuard],
 })
-export class AuthModule { }
+export class JwtAuthModule { }

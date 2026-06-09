@@ -6,28 +6,30 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthModule = void 0;
+exports.JwtAuthModule = void 0;
 const common_1 = require("@nestjs/common");
 const passport_1 = require("@nestjs/passport");
 const jwt_1 = require("@nestjs/jwt");
 const jwt_strategy_1 = require("./strategies/jwt.strategy");
 const jwt_auth_guard_1 = require("./guards/jwt-auth.guard");
 const roles_guard_1 = require("./guards/roles.guard");
-let AuthModule = class AuthModule {
+let JwtAuthModule = class JwtAuthModule {
 };
-exports.AuthModule = AuthModule;
-exports.AuthModule = AuthModule = __decorate([
+exports.JwtAuthModule = JwtAuthModule;
+exports.JwtAuthModule = JwtAuthModule = __decorate([
     (0, common_1.Global)(),
     (0, common_1.Module)({
         imports: [
             passport_1.PassportModule,
             jwt_1.JwtModule.register({
-                secret: process.env.JWT_AUTH,
-                signOptions: { expiresIn: '1d' },
+                secret: process.env.JWT_AUTH ?? "yondaktaukoktanyasaya",
+                signOptions: {
+                    expiresIn: "7d"
+                },
             }),
         ],
         providers: [jwt_strategy_1.JwtStrategy, jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard],
         exports: [jwt_1.JwtModule, passport_1.PassportModule, jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard],
     })
-], AuthModule);
+], JwtAuthModule);
 //# sourceMappingURL=jwt.module.js.map

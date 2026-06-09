@@ -1,5 +1,5 @@
 // Auth Module
-export { AuthModule } from './jwt.module.js';
+export { JwtAuthModule } from './jwt.module.js';
 
 // Guards
 export { JwtAuthGuard } from './guards/jwt-auth.guard.js';

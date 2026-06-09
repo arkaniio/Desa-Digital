@@ -18,7 +18,12 @@ let TokenModule = class TokenModule {
 exports.TokenModule = TokenModule;
 exports.TokenModule = TokenModule = __decorate([
     (0, common_1.Module)({
-        imports: [jwt_1.JwtModule],
+        imports: [
+            jwt_1.JwtModule.register({
+                secret: process.env.JWT_AUTH ?? "yondaktaukoktanyasaya",
+                signOptions: { expiresIn: "7d" },
+            }),
+        ],
         providers: [token_service_1.default],
         exports: [token_service_1.default]
     })

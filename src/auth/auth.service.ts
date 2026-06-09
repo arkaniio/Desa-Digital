@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException, UnauthorizedExcepti
 import { PrismaService } from '../prisma/prisma.service';
 import TokenService from '../common/services/token/token.service';
 import PasswordService from '../common/services/password/password.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
@@ -9,7 +10,7 @@ export class AuthService {
     constructor(
         private prisma: PrismaService,
         private tokenService: TokenService,
-        private passwordService: PasswordService
+        private passwordService: PasswordService,
     ) { }
 
     async findUserByEmail(email: string) {
@@ -126,10 +127,10 @@ export class AuthService {
 
         try {
 
-            const token = this.tokenService.generateToken({
-                id: user_data.id,
-                role: user_data.Role,
+            const token = await this.tokenService.generateToken({
+                userId: user_data.id,
                 email: user_data.Email,
+                role: user_data.Role,
                 username: user_data.Username
             })
 

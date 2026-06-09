@@ -16,7 +16,7 @@ let TokenService = class TokenService {
     constructor(jwtService) {
         this.jwtService = jwtService;
     }
-    generateToken(userData) {
+    async generateToken(userData) {
         return this.jwtService.sign({
             id: userData.id,
             role: userData.Role,

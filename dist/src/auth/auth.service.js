@@ -107,12 +107,13 @@ let AuthService = class AuthService {
         if (!comparePassword)
             throw new common_1.BadRequestException("Failed to compare new password!");
         try {
-            const token = this.tokenService.generateToken({
-                id: user_data.id,
-                role: user_data.Role,
+            const token = await this.tokenService.generateToken({
+                userId: user_data.id,
                 email: user_data.Email,
+                role: user_data.Role,
                 username: user_data.Username
             });
+            console.log(token);
             return token;
         }
         catch (error) {
