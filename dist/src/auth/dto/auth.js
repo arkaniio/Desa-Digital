@@ -15,6 +15,7 @@ class CreateUserDto {
     Username;
     Email;
     Password;
+    Role;
 }
 exports.CreateUserDto = CreateUserDto;
 __decorate([
@@ -32,6 +33,10 @@ __decorate([
     (0, class_validator_1.MinLength)(6),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "Password", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "Role", void 0);
 class ChangePasswordDto {
     Password;
 }

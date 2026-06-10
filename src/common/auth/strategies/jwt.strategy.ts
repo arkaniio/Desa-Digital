@@ -12,6 +12,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         });
     }
 
+    // fix besok
     async validate(payload: any) {
         return { userId: payload.userId, email: payload.email, role: payload.role, username: payload.username };
     }

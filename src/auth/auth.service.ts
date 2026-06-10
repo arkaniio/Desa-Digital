@@ -72,6 +72,8 @@ export class AuthService {
 
     }
 
+
+    //validate the auth with google authentication
     async validateOrCreate(profile: any) {
 
         const email = profile.emails[0].value
@@ -96,6 +98,7 @@ export class AuthService {
             username: user.Username
         })
     }
+    //
 
     async registerUser(data: any) {
 

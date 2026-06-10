@@ -13,6 +13,9 @@ export class CreateUserDto {
     @IsString()
     @MinLength(6)
     Password: string
+
+    @IsString()
+    Role?: string
 }
 
 export class ChangePasswordDto {

@@ -14,9 +14,11 @@ import BoostrapService from './common/services/bootstrap/bootstrap.service';
 import { BootstrapModule } from './common/services/bootstrap/bootstrap.module';
 import { PasswordModule } from './common/services/password/password.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { AdminModule } from './super_admin/admin.module';
 
 @Module({
   imports: [
+    AdminModule,
     JwtAuthModule,
     AuthModule,
     DashboardModule,

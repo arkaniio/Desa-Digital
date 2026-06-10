@@ -26,12 +26,14 @@ const bootstrap_service_1 = __importDefault(require("./common/services/bootstrap
 const bootstrap_module_1 = require("./common/services/bootstrap/bootstrap.module");
 const password_module_1 = require("./common/services/password/password.module");
 const dashboard_module_1 = require("./dashboard/dashboard.module");
+const admin_module_1 = require("./super_admin/admin.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            admin_module_1.AdminModule,
             jwt_module_1.JwtAuthModule,
             auth_module_1.AuthModule,
             dashboard_module_1.DashboardModule,

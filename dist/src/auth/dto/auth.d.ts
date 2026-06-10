@@ -2,6 +2,7 @@ export declare class CreateUserDto {
     Username: string;
     Email: string;
     Password: string;
+    Role?: string;
 }
 export declare class ChangePasswordDto {
     Password: string;
