@@ -76,13 +76,13 @@ let AuthService = class AuthService {
                 Email: email,
                 Password: null,
                 Avatar: profile.photos?.[0]?.value,
-                Role: "WARGA"
             });
         }
-        return this.tokenService.generateToken({
-            id: user.id,
-            Role: user.Role,
-            Email: user.Email
+        return await this.tokenService.generateToken({
+            userId: user.id,
+            email: user.Email,
+            role: user.Role,
+            username: user.Username
         });
     }
     async registerUser(data) {

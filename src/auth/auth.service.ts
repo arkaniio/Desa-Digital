@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import TokenService from '../common/services/token/token.service';
 import PasswordService from '../common/services/password/password.service';
 import { JwtService } from '@nestjs/jwt';
+import { role } from '@prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -84,15 +85,15 @@ export class AuthService {
                 Email: email,
                 Password: null,
                 Avatar: profile.photos?.[0]?.value,
-                Role: "WARGA"
             })
 
         }
 
-        return this.tokenService.generateToken({
-            id: user.id,
-            Role: user.Role,
-            Email: user.Email
+        return await this.tokenService.generateToken({
+            userId: user.id,
+            email: user.Email,
+            role: user.Role,
+            username: user.Username
         })
     }
 

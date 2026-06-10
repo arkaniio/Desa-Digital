@@ -4,6 +4,7 @@ import { ChangePasswordDto, CreateUserDto, LoginDto } from './dto/auth';
 import { Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser, JwtAuthGuard } from '../common/auth';
+import { GoogleOAuthGuard } from '../common/auth/guards/google-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -24,20 +25,17 @@ export class AuthController {
     @Put('updatePassword')
     @UseGuards(JwtAuthGuard)
     async changePassword(@Body() data: any, @CurrentUser('userId') userId: number) {
-
-        console.log(data)
-
         return this.authService.changePassword(data, userId)
     }
 
     //redirect ke google
     @Get("google")
-    @UseGuards(AuthGuard("google"))
-    async googleAuth() { }
+    @UseGuards(GoogleOAuthGuard)
+    async googleAuth(@Req() req) { }
 
     //redirect dan callback ke google service url
     @Get("google/callback")
-    @UseGuards(AuthGuard("google"))
+    @UseGuards(GoogleOAuthGuard)
     async googleCallbackAuth(@Req() req: any) {
         return {
             access_token: req.user

@@ -11,7 +11,7 @@ export class GoogleStrategy extends PassportStrategy(
     constructor(private authService: AuthService) {
 
         let google_client_id: string | undefined = process.env.GOOGLE_CLIENT_ID
-        let google_client_secret: string | undefined = process.env.GOOGLE_CLIENT_SECRET
+        let google_client_secret: string | undefined = process.env.GOOGLE_SECRET_KEY
 
         let google_client_id_extract: string = google_client_id ?? ""
         let google_client_secret_extract: string = google_client_secret ?? ""
@@ -20,7 +20,7 @@ export class GoogleStrategy extends PassportStrategy(
             clientID: google_client_id_extract,
             clientSecret: google_client_secret_extract,
             callbackURL:
-                'http://localhost:3000/auth/google/callback',
+                'http://localhost:3000/api/auth/google/callback',
             scope: ['email', 'profile'],
         }
 
@@ -31,7 +31,7 @@ export class GoogleStrategy extends PassportStrategy(
         accessToken: string,
         refreshToken: string,
         profile: any,
-    ) {
+    ): Promise<any> {
 
         return this.authService.validateOrCreate(profile)
 

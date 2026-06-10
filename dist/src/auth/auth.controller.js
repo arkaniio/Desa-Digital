@@ -17,8 +17,8 @@ const common_1 = require("@nestjs/common");
 const auth_service_1 = require("./auth.service");
 const auth_1 = require("./dto/auth");
 const common_2 = require("@nestjs/common");
-const passport_1 = require("@nestjs/passport");
 const auth_2 = require("../common/auth");
+const google_auth_guard_1 = require("../common/auth/guards/google-auth.guard");
 let AuthController = class AuthController {
     authService;
     constructor(authService) {
@@ -31,10 +31,9 @@ let AuthController = class AuthController {
         return this.authService.loginUser(data);
     }
     async changePassword(data, userId) {
-        console.log(data);
         return this.authService.changePassword(data, userId);
     }
-    async googleAuth() { }
+    async googleAuth(req) { }
     async googleCallbackAuth(req) {
         return {
             access_token: req.user
@@ -67,14 +66,15 @@ __decorate([
 ], AuthController.prototype, "changePassword", null);
 __decorate([
     (0, common_1.Get)("google"),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)("google")),
+    (0, common_1.UseGuards)(google_auth_guard_1.GoogleOAuthGuard),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "googleAuth", null);
 __decorate([
     (0, common_1.Get)("google/callback"),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)("google")),
+    (0, common_1.UseGuards)(google_auth_guard_1.GoogleOAuthGuard),
     __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Object]),

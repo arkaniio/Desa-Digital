@@ -18,13 +18,13 @@ let GoogleStrategy = class GoogleStrategy extends (0, passport_1.PassportStrateg
     authService;
     constructor(authService) {
         let google_client_id = process.env.GOOGLE_CLIENT_ID;
-        let google_client_secret = process.env.GOOGLE_CLIENT_SECRET;
+        let google_client_secret = process.env.GOOGLE_SECRET_KEY;
         let google_client_id_extract = google_client_id ?? "";
         let google_client_secret_extract = google_client_secret ?? "";
         const options = {
             clientID: google_client_id_extract,
             clientSecret: google_client_secret_extract,
-            callbackURL: 'http://localhost:3000/auth/google/callback',
+            callbackURL: 'http://localhost:3000/api/auth/google/callback',
             scope: ['email', 'profile'],
         };
         super(options);
