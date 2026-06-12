@@ -2,7 +2,6 @@ export const SELECT_USER_DATA = {
     id: true,
     Username: true,
     Email: true,
-    Address: true,
     Role: true,
     Avatar: true,
     VillageId: true,
@@ -30,7 +29,6 @@ export const SELECT_USER_DATA = {
                     Leader: {
                         select: {
                             Username: true,
-                            Address: true
                         }
                     }
                 }
@@ -42,7 +40,6 @@ export const SELECT_USER_DATA = {
             Leader_Village: {
                 select: {
                     Username: true,
-                    Address: true
                 }
             }
         }
@@ -59,7 +56,6 @@ export const SELECT_USER_DATA = {
             Leader: {
                 select: {
                     Username: true,
-                    Address: true
                 }
             }
         }
@@ -80,7 +76,6 @@ export const SELECT_USER_DATA = {
                     Leader: {
                         select: {
                             Username: true,
-                            Address: true
                         }
                     }
                 }

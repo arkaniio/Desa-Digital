@@ -4,19 +4,6 @@ export declare class UserService {
     private prisma;
     private passwordService;
     constructor(prisma: PrismaService, passwordService: PasswordService);
-    createKepalaDesaAccount(user_id: number, data: any): Promise<{
-        id: number;
-        Username: string;
-        Email: string;
-        Password: string;
-        Role: import("@prisma/client").$Enums.role | null;
-        Avatar: string | null;
-        Created_at: Date;
-        Updated_at: Date;
-        VillageId: number | null;
-        RwId: number | null;
-        RtId: number | null;
-    }>;
     getProfile(user_id: number): Promise<{
         id: number;
         Username: string;
@@ -40,7 +27,6 @@ export declare class UserService {
                 Name: string;
                 Leader: {
                     Username: string;
-                    Address: never;
                 } | null;
             };
             Number: number;
@@ -48,7 +34,6 @@ export declare class UserService {
         LedVillages: {
             Leader_Village: {
                 Username: string;
-                Address: never;
             };
         }[];
         LedRws: {
@@ -59,7 +44,6 @@ export declare class UserService {
             Name: string;
             Leader: {
                 Username: string;
-                Address: never;
             } | null;
         }[];
         LedRts: {
@@ -72,12 +56,10 @@ export declare class UserService {
                 Name: string;
                 Leader: {
                     Username: string;
-                    Address: never;
                 } | null;
             };
             Number: number;
         }[];
-        Address: never;
     }>;
     updateProfile(file_path: Express.Multer.File, user_id: number, data: any): Promise<boolean>;
 }

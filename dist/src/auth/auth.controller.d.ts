@@ -4,6 +4,7 @@ export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
     registerUser(data: CreateUserDto): Promise<{
+        id: number;
         Username: string;
         Email: string;
         Password: string;
@@ -11,7 +12,6 @@ export declare class AuthController {
         Avatar: string | null;
         Created_at: Date;
         Updated_at: Date;
-        id: number;
         VillageId: number | null;
         RwId: number | null;
         RtId: number | null;

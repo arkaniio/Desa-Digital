@@ -45,7 +45,19 @@ export declare class AuthService {
         RwId: number | null;
         RtId: number | null;
     }>;
-    validateOrCreate(profile: any): Promise<string>;
+    validateOrCreate(profile: any): Promise<string | {
+        id: number;
+        Username: string;
+        Email: string;
+        Password: string;
+        Role: import("@prisma/client").$Enums.role | null;
+        Avatar: string | null;
+        Created_at: Date;
+        Updated_at: Date;
+        VillageId: number | null;
+        RwId: number | null;
+        RtId: number | null;
+    }>;
     registerUser(data: any): Promise<{
         id: number;
         Username: string;

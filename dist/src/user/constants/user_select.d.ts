@@ -2,7 +2,6 @@ export declare const SELECT_USER_DATA: {
     id: boolean;
     Username: boolean;
     Email: boolean;
-    Address: boolean;
     Role: boolean;
     Avatar: boolean;
     VillageId: boolean;
@@ -30,7 +29,6 @@ export declare const SELECT_USER_DATA: {
                     Leader: {
                         select: {
                             Username: boolean;
-                            Address: boolean;
                         };
                     };
                 };
@@ -42,7 +40,6 @@ export declare const SELECT_USER_DATA: {
             Leader_Village: {
                 select: {
                     Username: boolean;
-                    Address: boolean;
                 };
             };
         };
@@ -59,7 +56,6 @@ export declare const SELECT_USER_DATA: {
             Leader: {
                 select: {
                     Username: boolean;
-                    Address: boolean;
                 };
             };
         };
@@ -80,7 +76,6 @@ export declare const SELECT_USER_DATA: {
                     Leader: {
                         select: {
                             Username: boolean;
-                            Address: boolean;
                         };
                     };
                 };

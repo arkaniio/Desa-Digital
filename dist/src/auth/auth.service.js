@@ -71,12 +71,15 @@ let AuthService = class AuthService {
         const email = profile.emails[0].value;
         let user = await this.findUserByEmail(email);
         if (!user) {
-            user = await this.generateAuth({
-                Username: profile.displayName,
-                Email: email,
-                Password: null,
-                Avatar: profile.photos?.[0]?.value,
+            user = await this.prisma.user.create({
+                data: {
+                    Username: profile.displayName,
+                    Email: email,
+                    Password: "",
+                    Avatar: profile.photos?.[0]?.value,
+                }
             });
+            return user;
         }
         return await this.tokenService.generateToken({
             userId: user.id,

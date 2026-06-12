@@ -18,18 +18,15 @@ const user_service_1 = require("./user.service");
 const jwt_auth_guard_1 = require("../common/auth/guards/jwt-auth.guard");
 const current_user_decorator_1 = require("../common/auth/decorators/current-user.decorator");
 const user_dto_1 = require("./dto/user.dto");
-const auth_1 = require("../common/auth");
 const file_helper_1 = require("../common/files_tools/file_helper");
 let UserController = class UserController {
     userService;
     constructor(userService) {
         this.userService = userService;
     }
-    async getProfile(user_id) {
-        return this.userService.getProfile(user_id);
-    }
-    async createKepalaDesaAccount(data, user_id) {
-        return this.userService.createKepalaDesaAccount(user_id, data);
+    async getProfile(userId) {
+        console.log(userId);
+        return this.userService.getProfile(userId);
     }
     async updateProfile(data, user_id, file) {
         return this.userService.updateProfile(file, user_id, data);
@@ -39,27 +36,17 @@ exports.UserController = UserController;
 __decorate([
     (0, common_1.Get)('profile'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __param(0, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getProfile", null);
 __decorate([
-    (0, common_1.Post)('create-kepala-desa-account'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, auth_1.RolesGuard),
-    (0, auth_1.Roles)("SUPER_ADMIN"),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Number]),
-    __metadata("design:returntype", Promise)
-], UserController.prototype, "createKepalaDesaAccount", null);
-__decorate([
     (0, common_1.Put)("update"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.UseInterceptors)(file_helper_1.FileInterceptorTools),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('userId')),
     __param(2, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [user_dto_1.UpdateUserDto, Number, Object]),

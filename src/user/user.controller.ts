@@ -14,21 +14,14 @@ export class UserController {
 
     @Get('profile')
     @UseGuards(JwtAuthGuard)
-    async getProfile(@CurrentUser('user_id') user_id: number) {
-        return this.userService.getProfile(user_id)
-    }
-
-    @Post('create-kepala-desa-account')
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("SUPER_ADMIN")
-    async createKepalaDesaAccount(@Body() data: any, @CurrentUser('user_id') user_id: number) {
-        return this.userService.createKepalaDesaAccount(user_id, data)
+    async getProfile(@CurrentUser('userId') userId: number) {
+        return this.userService.getProfile(userId)
     }
 
     @Put("update")
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptorTools)
-    async updateProfile(@Body() data: UpdateUserDto, @CurrentUser('user_id') user_id: number, @UploadedFile() file: Express.Multer.File) {
+    async updateProfile(@Body() data: UpdateUserDto, @CurrentUser('userId') user_id: number, @UploadedFile() file: Express.Multer.File) {
         return this.userService.updateProfile(file, user_id, data)
     }
 

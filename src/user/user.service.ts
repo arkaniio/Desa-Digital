@@ -15,43 +15,12 @@ export class UserService {
         private passwordService: PasswordService
     ) { }
 
-    //This is for create the kepala desa, rw account
-
-    async createKepalaDesaAccount(user_id: number, data: any) {
-
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from authentication")
-
-        try {
-
-            if (data.Password) {
-
-                const hashPassword = await this.passwordService.hashPassword(data.Password)
-
-                if (!hashPassword) throw new BadRequestException("Failed to hash the password!")
-
-                data.Password = hashPassword
-
-            }
-
-            return this.prisma.user.create({
-                data: data
-            })
-
-        } catch (error) {
-            throw new BadRequestException(error.message)
-        }
-
-    }
-
-    //
 
     async getProfile(user_id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
-
         try {
 
-            const data_user = await this.prisma.user.findUnique({
+            const data_user = await this.prisma.user.findFirst({
                 where: {
                     id: user_id
                 },
