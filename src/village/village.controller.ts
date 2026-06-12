@@ -14,28 +14,40 @@ export class VillageController {
     @Post("create")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    async createNewVillage(@Body() data: CreateVillageDto, @CurrentUser('user_id') user_id: number) {
-        return this.villageService.createNewVillage(data, user_id)
+    async createNewVillage(
+        @Body() data: CreateVillageDto,
+        @CurrentUser('userId') userId: number
+    ) {
+        return this.villageService.createNewVillage(data, userId)
     }
 
     @Delete("delete/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    async deleteVillage(@Param('id', ParseIntPipe) id: number, @CurrentUser('user_id') user_id: number) {
-        return this.villageService.deleteVillage(id, user_id)
+    async deleteVillage(
+        @Param('id', ParseIntPipe) id: number,
+        @CurrentUser('userId') userId: number
+    ) {
+        return this.villageService.deleteVillage(id, userId)
     }
 
     @Put("update/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    async updateVillage(@Body() data: UpdateVillageDto, @Param('id', ParseIntPipe) id: number, @CurrentUser('user_id') user_id: number) {
-        return this.villageService.updateVillage(data, user_id, id)
+    async updateVillage(
+        @Body() data: UpdateVillageDto,
+        @Param('id', ParseIntPipe) id: number,
+        @CurrentUser('userId') userId: number
+    ) {
+        return this.villageService.updateVillage(data, userId, id)
     }
 
     @Get("allVillage")
     @UseGuards(JwtAuthGuard)
-    async getAllVillage(@CurrentUser('user_id') user_id: number) {
-        return this.villageService.getAllVillage(user_id)
+    async getAllVillage(
+        @CurrentUser('userId') userId: number
+    ) {
+        return this.villageService.getAllVillage(userId)
     }
 
 }

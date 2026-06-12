@@ -8,30 +8,6 @@ export class RtService {
 
     constructor(private prisma: PrismaService) { }
 
-    async registerRt(data: any, user_id: number) {
-
-        if (user_id == null) throw new UnauthorizedException("Failed to get user_id from token!")
-
-        try {
-
-            const data_create = await this.prisma.rt.create({
-                data: {
-                    Number: data.Number,
-                    RwId: data.RwId,
-                    VillageId: data.VillageId
-                }
-            })
-
-            if (!data_create) throw new BadRequestException("Failed to create and detect the data!")
-
-            return data_create
-
-        } catch (error) {
-            throw new BadRequestException(error.message)
-        }
-
-    }
-
     async updateRt(data: any, user_id: number, id: number) {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")

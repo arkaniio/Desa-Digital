@@ -17,8 +17,11 @@ export class SubmissionsController {
     @Get("all")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("WARGA")
-    async getAllSubmissions(@CurrentUser('user_id') user_id: number, @Query('query') query: PaginationDto) {
-        return this.submissionsService.getAllSubmissions(user_id, query)
+    async getAllSubmissions(
+        @CurrentUser('userId') userId: number,
+        @Query('query') query: PaginationDto
+    ) {
+        return this.submissionsService.getAllSubmissions(userId, query)
     }
 
     @Post("create")
@@ -27,10 +30,10 @@ export class SubmissionsController {
     @UseInterceptors(FileInterceptorTools)
     async createSubmissions(
         @Body() data: CreateSubmissionDto,
-        @CurrentUser('user_id') user_id: number,
+        @CurrentUser('userId') userId: number,
         @UploadedFile() file: Express.Multer.File
     ) {
-        return this.submissionsService.createSubmissions(data, user_id, file)
+        return this.submissionsService.createSubmissions(data, userId, file)
     }
 
     @Put("update/:id")
@@ -40,10 +43,10 @@ export class SubmissionsController {
     async updateSubmissions(
         @Body() data: UpdateSubmissionsDto,
         @Param('id', ParseIntPipe) id: number,
-        @CurrentUser('user_id') user_id: number,
+        @CurrentUser('userId') userId: number,
         @UploadedFile() file: Express.Multer.File
     ) {
-        return this.submissionsService.updateSubmissions(data, id, user_id, file)
+        return this.submissionsService.updateSubmissions(data, id, userId, file)
     }
 
     @Delete("delete/:id")
@@ -51,9 +54,9 @@ export class SubmissionsController {
     @Roles("WARGA")
     async deleteSubmissions(
         @Param('id', ParseIntPipe) id: number,
-        @CurrentUser() user_id: number
+        @CurrentUser("userId") userId: number
     ) {
-        return this.submissionsService.deleteSubmissions(user_id, id)
+        return this.submissionsService.deleteSubmissions(userId, id)
     }
 
     @Put("permissions_rt/:id")
@@ -61,23 +64,26 @@ export class SubmissionsController {
     @Roles("RT")
     async updateSubmissionsWithRt(@Body() data: UpdateRtSignSubmissions,
         @Param('id', ParseIntPipe) id: number,
-        @CurrentUser() user_id: number
+        @CurrentUser("userId") userId: number
     ) {
-        return this.submissionsService.updateSubmissionsWithRt(user_id, data, id)
+        return this.submissionsService.updateSubmissionsWithRt(userId, data, id)
     }
 
     @Put("permissions_kepdes/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
     async updateSubmissionsWithKepalaDesa(
-        @Body() data: UpdateKepalaDesaSignSubmissions, @Param('id', ParseIntPipe) id: number,
-        @CurrentUser() user_id: number
+        @Body() data: UpdateKepalaDesaSignSubmissions,
+        @Param('id', ParseIntPipe) id: number,
+        @CurrentUser("userId") userId: number
     ) {
-        return this.submissionsService.updateSubmissionsWithKepalaDesa(user_id, data, id)
+        return this.submissionsService.updateSubmissionsWithKepalaDesa(userId, data, id)
     }
 
     @Get("verify_submissions")
-    async verifySubmission(signature: string) {
+    async verifySubmission(
+        signature: string
+    ) {
         return this.submissionsService.verifySubmission(signature)
     }
 

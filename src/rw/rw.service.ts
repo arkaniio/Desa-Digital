@@ -8,29 +8,6 @@ export class RwService {
 
     constructor(private prisma: PrismaService) { }
 
-    async registerRw(data: any, user_id: number) {
-
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id data from token!")
-
-        try {
-
-            const data_create = await this.prisma.rw.create({
-                data: {
-                    VillageId: data.VillageId,
-                    Name: data.Name
-                }
-            })
-
-            if (!data_create) throw new BadRequestException("Failed to create data because data is nill!")
-
-            return data_create
-
-        } catch (error) {
-            throw new BadRequestException(error.message)
-        }
-
-    }
-
     async updateRw(data: any, user_id: number, id: number) {
 
         if (user_id == null) throw new UnauthorizedException("Failed to get user_id from token!")

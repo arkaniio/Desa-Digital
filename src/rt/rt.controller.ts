@@ -12,32 +12,36 @@ export class RtController {
 
     constructor(private readonly RtService: RtService) { }
 
-    @Post('register')
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("RW")
-    async registerRt(@Body() data: CreateRtDto, @CurrentUser('user_id') user_id: number) {
-        return this.RtService.registerRt(data, user_id)
-    }
-
     @Put("update/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    async updateRt(@Body() data: UpdateRtDto, @CurrentUser('user_id') user_id: number, @Param('id', ParseIntPipe) id: number) {
-        return this.RtService.updateRt(data, user_id, id)
+    async updateRt(
+        @Body() data: UpdateRtDto,
+        @CurrentUser('userId') userId: number,
+        @Param('id', ParseIntPipe) id: number
+    ) {
+        return this.RtService.updateRt(data, userId, id)
     }
 
     @Delete("delete/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    async deleteRt(@Param('id', ParseIntPipe) id: number, @CurrentUser('user_id') user_id: number) {
-        return this.RtService.deleteRt(user_id, id)
+    async deleteRt(
+        @Param('id', ParseIntPipe) id: number,
+        @CurrentUser('userId') userId: number
+    ) {
+        return this.RtService.deleteRt(userId, id)
     }
 
     @Get("all")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    async getAllRt(@CurrentUser('user_id') user_id: number, @Query('query') query: PaginationDto, @Param('village_id', ParseIntPipe) village_id: number) {
-        return this.RtService.getAllRt(user_id, query, village_id)
+    async getAllRt(
+        @CurrentUser('userId') userId: number,
+        @Query('query') query: PaginationDto,
+        @Param('village_id', ParseIntPipe) village_id: number
+    ) {
+        return this.RtService.getAllRt(userId, query, village_id)
     }
 
 

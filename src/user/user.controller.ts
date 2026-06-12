@@ -14,14 +14,20 @@ export class UserController {
 
     @Get('profile')
     @UseGuards(JwtAuthGuard)
-    async getProfile(@CurrentUser('userId') userId: number) {
+    async getProfile(
+        @CurrentUser('userId') userId: number
+    ) {
         return this.userService.getProfile(userId)
     }
 
     @Put("update")
     @UseGuards(JwtAuthGuard)
     @UseInterceptors(FileInterceptorTools)
-    async updateProfile(@Body() data: UpdateUserDto, @CurrentUser('userId') user_id: number, @UploadedFile() file: Express.Multer.File) {
+    async updateProfile(
+        @Body() data: UpdateUserDto,
+        @CurrentUser('userId') user_id: number,
+        @UploadedFile() file: Express.Multer.File
+    ) {
         return this.userService.updateProfile(file, user_id, data)
     }
 

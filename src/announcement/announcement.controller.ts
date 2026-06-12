@@ -5,7 +5,6 @@ import { RolesGuard } from '../common/auth/guards/roles.guard';
 import { Roles } from '../common/auth/decorators/roles.decorator';
 import { CurrentUser } from '../common/auth/decorators/current-user.decorator';
 import { AnnouncementDto } from './dto/announcement.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
 import type { UpdateDataAnnouncement } from './dto/announcement.dto';
 import { PaginationDto } from '../common/dto/pagination-query.dto';
 import { FileInterceptorTools } from '../common/files_tools/file_helper';
@@ -20,32 +19,44 @@ export class AnnouncementController {
     @Roles("KEPALA_DESA")
     @UseInterceptors(FileInterceptorTools)
     async createNewAnnouncement(@Body() data: AnnouncementDto,
-        @CurrentUser('user_id') user_id: number,
+        @CurrentUser('userId') userId: number,
         @UploadedFile() file: Express.Multer.File
     ) {
-        return this.announcementService.createNewAnnouncement(data, user_id, file)
+        return this.announcementService.createNewAnnouncement(data, userId, file)
     }
 
     @Put("update/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
     @UseInterceptors(FileInterceptorTools)
-    async updateAnnouncement(@Body() data: UpdateDataAnnouncement, @Param('id', ParseIntPipe) id: number, @CurrentUser() user_id: number, @UploadedFile() file: Express.Multer.File) {
-        return this.announcementService.updateAnnouncement(user_id, id, data, file)
+    async updateAnnouncement(
+        @Body() data: UpdateDataAnnouncement,
+        @Param('id', ParseIntPipe) id: number,
+        @CurrentUser("userId") userId: number,
+        @UploadedFile() file: Express.Multer.File
+    ) {
+        return this.announcementService.updateAnnouncement(userId, id, data, file)
     }
 
     @Get("all")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("WARGA")
-    async getAllAnnouncement(@CurrentUser('user_id') user_id: number, @Query('query') query: PaginationDto, @Param('id', ParseIntPipe) authorId: number) {
-        return this.announcementService.getAllAnnouncement(user_id, query, authorId)
+    async getAllAnnouncement(
+        @CurrentUser('userId') userId: number,
+        @Query('query') query: PaginationDto,
+        @Param('id', ParseIntPipe) authorId: number
+    ) {
+        return this.announcementService.getAllAnnouncement(userId, query, authorId)
     }
 
     @Delete("delete/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("KEPALA_DESA")
-    async deleteAnnouncement(@Param('id', ParseIntPipe) id: number, @CurrentUser('user_id') user_id: number) {
-        return this.announcementService.deleteAnnouncement(user_id, id)
+    async deleteAnnouncement(
+        @Param('id', ParseIntPipe) id: number,
+        @CurrentUser('userId') userId: number
+    ) {
+        return this.announcementService.deleteAnnouncement(userId, id)
     }
 
 }
