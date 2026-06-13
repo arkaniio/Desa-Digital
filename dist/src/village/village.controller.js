@@ -25,17 +25,14 @@ let VillageController = class VillageController {
     constructor(villageService) {
         this.villageService = villageService;
     }
-    async createNewVillage(data, user_id) {
-        return this.villageService.createNewVillage(data, user_id);
+    async createNewVillage(data, userId) {
+        return this.villageService.createNewVillage(data, userId);
     }
-    async deleteVillage(id, user_id) {
-        return this.villageService.deleteVillage(id, user_id);
+    async deleteVillage(id, userId) {
+        return this.villageService.deleteVillage(id, userId);
     }
-    async updateVillage(data, id, user_id) {
-        return this.villageService.updateVillage(data, user_id, id);
-    }
-    async getAllVillage(user_id) {
-        return this.villageService.getAllVillage(user_id);
+    async updateVillage(data, id, userId) {
+        return this.villageService.updateVillage(data, userId, id);
     }
 };
 exports.VillageController = VillageController;
@@ -44,7 +41,7 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [village_dto_1.CreateVillageDto, Number]),
     __metadata("design:returntype", Promise)
@@ -54,7 +51,7 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
@@ -65,19 +62,11 @@ __decorate([
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(2, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(2, (0, current_user_decorator_1.CurrentUser)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [village_dto_1.UpdateVillageDto, Number, Number]),
     __metadata("design:returntype", Promise)
 ], VillageController.prototype, "updateVillage", null);
-__decorate([
-    (0, common_1.Get)("allVillage"),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __param(0, (0, current_user_decorator_1.CurrentUser)('user_id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
-    __metadata("design:returntype", Promise)
-], VillageController.prototype, "getAllVillage", null);
 exports.VillageController = VillageController = __decorate([
     (0, common_1.Controller)('village'),
     __metadata("design:paramtypes", [village_service_1.VillageService])

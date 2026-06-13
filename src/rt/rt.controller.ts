@@ -32,18 +32,5 @@ export class RtController {
     ) {
         return this.RtService.deleteRt(userId, id)
     }
-
-    @Get("all")
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("KEPALA_DESA")
-    async getAllRt(
-        @CurrentUser('userId') userId: number,
-        @Query('query') query: PaginationDto,
-        @Param('village_id', ParseIntPipe) village_id: number
-    ) {
-        return this.RtService.getAllRt(userId, query, village_id)
-    }
-
-
 }
 

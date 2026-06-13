@@ -5,6 +5,7 @@ export declare class AdminService {
     private prismaService;
     constructor(passwordService: PasswordService, prismaService: PrismaService);
     createKepalaDesaAccount(data: any): Promise<{
+        id: number;
         Username: string;
         Email: string;
         Password: string;
@@ -12,12 +13,12 @@ export declare class AdminService {
         Avatar: string | null;
         Created_at: Date;
         Updated_at: Date;
-        id: number;
         VillageId: number | null;
         RwId: number | null;
         RtId: number | null;
     }>;
     createRwAccount(data: any): Promise<{
+        id: number;
         Username: string;
         Email: string;
         Password: string;
@@ -25,12 +26,12 @@ export declare class AdminService {
         Avatar: string | null;
         Created_at: Date;
         Updated_at: Date;
-        id: number;
         VillageId: number | null;
         RwId: number | null;
         RtId: number | null;
     }>;
     createRtAccount(data: any): Promise<{
+        id: number;
         Username: string;
         Email: string;
         Password: string;
@@ -38,7 +39,6 @@ export declare class AdminService {
         Avatar: string | null;
         Created_at: Date;
         Updated_at: Date;
-        id: number;
         VillageId: number | null;
         RwId: number | null;
         RtId: number | null;

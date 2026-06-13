@@ -17,7 +17,7 @@ let DashboardService = class DashboardService {
         this.prismaService = prismaService;
     }
     async getDashboardData(user_id, role) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get the dashboard from authorization!");
         switch (role) {
             case "SUPER_ADMIN":
@@ -33,7 +33,7 @@ let DashboardService = class DashboardService {
         }
     }
     async wargaDashboard(user_id) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get the user id from token authorization!");
         try {
             const total_submissions_pending = await this.prismaService.submissions.count({
@@ -79,7 +79,7 @@ let DashboardService = class DashboardService {
         }
     }
     async superAdminDashboard(user_id) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get the user id from authorization!");
         try {
             const data_warga = await this.prismaService.user.count();
@@ -102,7 +102,7 @@ let DashboardService = class DashboardService {
         }
     }
     async rtDashboard(user_id) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get the user id from authorization!");
         try {
             const findLeader = await this.prismaService.rt.findFirst({
@@ -131,7 +131,7 @@ let DashboardService = class DashboardService {
         }
     }
     async rwDashboard(user_id) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get the user id from authorization!");
         try {
             const findLeader = await this.prismaService.rw.findFirst({
@@ -160,7 +160,7 @@ let DashboardService = class DashboardService {
         }
     }
     async kepalaDesaDashboard(user_id) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get the user id from authorization!");
         try {
             const findLeader = await this.prismaService.village.findFirst({

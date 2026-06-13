@@ -13,40 +13,19 @@ exports.RtService = void 0;
 const common_1 = require("@nestjs/common");
 const prisma_service_1 = require("../prisma/prisma.service");
 const null_check_helper_1 = require("../common/helpers/null-check.helper");
-const rt_mapping_select_1 = require("./constants/rt.mapping_select");
 let RtService = class RtService {
     prisma;
     constructor(prisma) {
         this.prisma = prisma;
     }
-    async registerRt(data, user_id) {
-        if (user_id == null)
-            throw new common_1.UnauthorizedException("Failed to get user_id from token!");
-        try {
-            const data_create = await this.prisma.rt.create({
-                data: {
-                    Number: data.Number,
-                    RwId: data.RwId,
-                    VillageId: data.VillageId
-                }
-            });
-            if (!data_create)
-                throw new common_1.BadRequestException("Failed to create and detect the data!");
-            return data_create;
-        }
-        catch (error) {
-            throw new common_1.BadRequestException(error.message);
-        }
-    }
     async updateRt(data, user_id, id) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get data from token!");
-        if (id == null)
-            throw new common_1.NotFoundException("Failed to get the id from the param!");
         try {
             const findDataUsingId = await this.prisma.rt.findFirst({
                 where: {
-                    Id: id
+                    Id: id,
+                    Leader_Id: user_id
                 }
             });
             if (!findDataUsingId)
@@ -70,14 +49,13 @@ let RtService = class RtService {
         }
     }
     async deleteRt(user_id, id) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get the data user from token!");
-        if (id == null)
-            throw new common_1.NotFoundException("Failed to get the id from the param!");
         try {
             const findDataUsingId = await this.prisma.rt.findFirst({
                 where: {
-                    Id: id
+                    Id: id,
+                    Leader_Id: user_id
                 }
             });
             if (!findDataUsingId)
@@ -91,55 +69,6 @@ let RtService = class RtService {
             if (!delete_data)
                 throw new common_1.BadRequestException("Not found!");
             return true;
-        }
-        catch (error) {
-            throw new common_1.BadRequestException(error.message);
-        }
-    }
-    async getAllRt(user_id, query, village_id) {
-        if (user_id == null)
-            throw new common_1.UnauthorizedException("Failed to get the user id from token or auth params!");
-        const findDataVillage = await this.prisma.rt.findFirst({
-            where: {
-                VillageId: village_id
-            }
-        });
-        if (!findDataVillage)
-            throw new common_1.NotFoundException("Failed to detect the village id!");
-        const { page, limit } = query;
-        const skip = (page - 1) * limit;
-        try {
-            const [data, total_data] = await Promise.all([
-                this.prisma.rt.findMany({
-                    skip: skip,
-                    take: limit,
-                    where: {
-                        Leader_Id: user_id,
-                        VillageId: village_id
-                    },
-                    orderBy: {
-                        Id: "asc"
-                    },
-                    select: rt_mapping_select_1.MAPPING_SELECT_RT
-                }),
-                this.prisma.rt.count({
-                    where: {
-                        VillageId: user_id
-                    }
-                })
-            ]);
-            if (!data)
-                throw new common_1.BadRequestException("Failed to get the data and total data!");
-            return {
-                data: data,
-                meta: {
-                    total: total_data,
-                    page: page,
-                    limit: limit,
-                    skip: skip,
-                    last_page: Math.ceil(total_data / limit)
-                }
-            };
         }
         catch (error) {
             throw new common_1.BadRequestException(error.message);

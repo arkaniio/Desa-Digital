@@ -123,7 +123,7 @@ let AuthService = class AuthService {
         }
     }
     async changePassword(data, user_id) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("User id in authorization must be required!");
         try {
             const hashPassword = await this.passwordService.hashPassword(data.Password);

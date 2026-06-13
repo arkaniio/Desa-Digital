@@ -10,15 +10,14 @@ export class RtService {
 
     async updateRt(data: any, user_id: number, id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")
-
-        if (id == null) throw new NotFoundException("Failed to get the id from the param!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get data from token!")
 
         try {
 
             const findDataUsingId = await this.prisma.rt.findFirst({
                 where: {
-                    Id: id
+                    Id: id,
+                    Leader_Id: user_id
                 }
             })
 
@@ -48,15 +47,14 @@ export class RtService {
 
     async deleteRt(user_id: number, id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the data user from token!")
-
-        if (id == null) throw new NotFoundException("Failed to get the id from the param!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the data user from token!")
 
         try {
 
             const findDataUsingId = await this.prisma.rt.findFirst({
                 where: {
-                    Id: id
+                    Id: id,
+                    Leader_Id: user_id
                 }
             })
 
@@ -78,65 +76,5 @@ export class RtService {
         }
 
     }
-
-    async getAllRt(user_id: number, query: any, village_id: number) {
-
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token or auth params!")
-
-        const findDataVillage = await this.prisma.rt.findFirst({
-            where: {
-                VillageId: village_id
-            }
-        })
-
-        if (!findDataVillage) throw new NotFoundException("Failed to detect the village id!")
-
-        const { page, limit } = query
-
-        const skip = (page - 1) * limit
-
-        // Jangan Lupa difilter oleh sender id agar tidak bisa get submissions semua orang
-        try {
-
-            const [data, total_data] = await Promise.all([
-                this.prisma.rt.findMany({
-                    skip: skip,
-                    take: limit,
-                    where: {
-                        Leader_Id: user_id,
-                        VillageId: village_id
-                    },
-                    orderBy: {
-                        Id: "asc"
-                    },
-                    select: MAPPING_SELECT_RT
-                }),
-                this.prisma.rt.count({
-                    where: {
-                        VillageId: user_id
-                    }
-                })
-            ])
-
-            if (!data) throw new BadRequestException("Failed to get the data and total data!")
-
-            return {
-                data: data,
-                meta: {
-                    total: total_data,
-                    page: page,
-                    limit: limit,
-                    skip: skip,
-                    last_page: Math.ceil(total_data / limit)
-                }
-            }
-
-
-        } catch (error) {
-            throw new BadRequestException(error.message)
-        }
-
-    }
-
 }
 

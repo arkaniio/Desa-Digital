@@ -20,42 +20,25 @@ const jwt_auth_guard_1 = require("../common/auth/guards/jwt-auth.guard");
 const roles_guard_1 = require("../common/auth/guards/roles.guard");
 const rt_dto_1 = require("./dto/rt.dto");
 const rt_service_1 = require("./rt.service");
-const pagination_query_dto_1 = require("../common/dto/pagination-query.dto");
 let RtController = class RtController {
     RtService;
     constructor(RtService) {
         this.RtService = RtService;
     }
-    async registerRt(data, user_id) {
-        return this.RtService.registerRt(data, user_id);
+    async updateRt(data, userId, id) {
+        return this.RtService.updateRt(data, userId, id);
     }
-    async updateRt(data, user_id, id) {
-        return this.RtService.updateRt(data, user_id, id);
-    }
-    async deleteRt(id, user_id) {
-        return this.RtService.deleteRt(user_id, id);
-    }
-    async getAllRt(user_id, query, village_id) {
-        return this.RtService.getAllRt(user_id, query, village_id);
+    async deleteRt(id, userId) {
+        return this.RtService.deleteRt(userId, id);
     }
 };
 exports.RtController = RtController;
-__decorate([
-    (0, common_1.Post)('register'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("RW"),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [rt_dto_1.CreateRtDto, Number]),
-    __metadata("design:returntype", Promise)
-], RtController.prototype, "registerRt", null);
 __decorate([
     (0, common_1.Put)("update/:id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('userId')),
     __param(2, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [rt_dto_1.UpdateRtDto, Number, Number]),
@@ -66,22 +49,11 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], RtController.prototype, "deleteRt", null);
-__decorate([
-    (0, common_1.Get)("all"),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("KEPALA_DESA"),
-    __param(0, (0, current_user_decorator_1.CurrentUser)('user_id')),
-    __param(1, (0, common_1.Query)('query')),
-    __param(2, (0, common_1.Param)('village_id', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, pagination_query_dto_1.PaginationDto, Number]),
-    __metadata("design:returntype", Promise)
-], RtController.prototype, "getAllRt", null);
 exports.RtController = RtController = __decorate([
     (0, common_1.Controller)('rt'),
     __metadata("design:paramtypes", [rt_service_1.RtService])

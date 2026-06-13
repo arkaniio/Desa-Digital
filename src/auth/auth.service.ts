@@ -152,7 +152,7 @@ export class AuthService {
 
     async changePassword(data: any, user_id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("User id in authorization must be required!")
+        if (user_id == undefined) throw new UnauthorizedException("User id in authorization must be required!")
 
         try {
 
@@ -180,5 +180,4 @@ export class AuthService {
         }
 
     }
-
 }

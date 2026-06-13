@@ -27,23 +27,23 @@ let SubmissionsController = class SubmissionsController {
     constructor(submissionsService) {
         this.submissionsService = submissionsService;
     }
-    async getAllSubmissions(user_id, query) {
-        return this.submissionsService.getAllSubmissions(user_id, query);
+    async getAllSubmissions(userId, query) {
+        return this.submissionsService.getAllSubmissions(userId, query);
     }
-    async createSubmissions(data, user_id, file) {
-        return this.submissionsService.createSubmissions(data, user_id, file);
+    async createSubmissions(data, userId, file) {
+        return this.submissionsService.createSubmissions(data, userId, file);
     }
-    async updateSubmissions(data, id, user_id, file) {
-        return this.submissionsService.updateSubmissions(data, id, user_id, file);
+    async updateSubmissions(data, id, userId, file) {
+        return this.submissionsService.updateSubmissions(data, id, userId, file);
     }
-    async deleteSubmissions(id, user_id) {
-        return this.submissionsService.deleteSubmissions(user_id, id);
+    async deleteSubmissions(id, userId) {
+        return this.submissionsService.deleteSubmissions(userId, id);
     }
-    async updateSubmissionsWithRt(data, id, user_id) {
-        return this.submissionsService.updateSubmissionsWithRt(user_id, data, id);
+    async updateSubmissionsWithRt(data, id, userId) {
+        return this.submissionsService.updateSubmissionsWithRt(userId, data, id);
     }
-    async updateSubmissionsWithKepalaDesa(data, id, user_id) {
-        return this.submissionsService.updateSubmissionsWithKepalaDesa(user_id, data, id);
+    async updateSubmissionsWithKepalaDesa(data, id, userId) {
+        return this.submissionsService.updateSubmissionsWithKepalaDesa(userId, data, id);
     }
     async verifySubmission(signature) {
         return this.submissionsService.verifySubmission(signature);
@@ -54,7 +54,7 @@ __decorate([
     (0, common_1.Get)("all"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("WARGA"),
-    __param(0, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('userId')),
     __param(1, (0, common_1.Query)('query')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, pagination_query_dto_1.PaginationDto]),
@@ -66,7 +66,7 @@ __decorate([
     (0, roles_decorator_1.Roles)("WARGA"),
     (0, common_1.UseInterceptors)(file_helper_1.FileInterceptorTools),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('userId')),
     __param(2, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [submissions_dto_1.CreateSubmissionDto, Number, Object]),
@@ -79,7 +79,7 @@ __decorate([
     (0, common_1.UseInterceptors)(file_helper_1.FileInterceptorTools),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(2, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(2, (0, current_user_decorator_1.CurrentUser)('userId')),
     __param(3, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [submissions_dto_1.UpdateSubmissionsDto, Number, Number, Object]),
@@ -90,7 +90,7 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("WARGA"),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, current_user_decorator_1.CurrentUser)()),
+    __param(1, (0, current_user_decorator_1.CurrentUser)("userId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
@@ -101,7 +101,7 @@ __decorate([
     (0, roles_decorator_1.Roles)("RT"),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __param(2, (0, current_user_decorator_1.CurrentUser)("userId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [submissions_dto_1.UpdateRtSignSubmissions, Number, Number]),
     __metadata("design:returntype", Promise)
@@ -112,7 +112,7 @@ __decorate([
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __param(2, (0, current_user_decorator_1.CurrentUser)("userId")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [submissions_dto_1.UpdateKepalaDesaSignSubmissions, Number, Number]),
     __metadata("design:returntype", Promise)

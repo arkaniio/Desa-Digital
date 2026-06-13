@@ -11,7 +11,7 @@ export class AnnouncementService {
 
     async createNewAnnouncement(data: any, user_id: number, file: Express.Multer.File) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get data from token!")
 
         try {
 
@@ -54,11 +54,12 @@ export class AnnouncementService {
 
             const findDataUsingId = await this.prisma.announcement.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    AuthorId: user_id
                 }
             })
 
-            if (!findDataUsingId || findDataUsingId == undefined && findDataUsingId == null) throw new NotFoundException("Failed to find the data that you want to delete it!")
+            if (!findDataUsingId) throw new NotFoundException("Failed to find the data that you want to delete it!")
 
             if (findDataUsingId.AuthorId != user_id) throw new BadRequestException("Cannot delete others rt or rw announcement!")
 
@@ -81,19 +82,18 @@ export class AnnouncementService {
 
     async updateAnnouncement(user_id: number, id: number, data: any, file: Express.Multer.File) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the id from token!")
-
-        if (id == undefined || id == null) throw new NotFoundException("Failed to detect id from the params!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the id from token!")
 
         try {
 
             const findDataUsingId = await this.prisma.announcement.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    AuthorId: user_id
                 }
             })
 
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to find the data that you want to delete it!")
+            if (!findDataUsingId) throw new NotFoundException("Failed to find the data that you want to delete it!")
 
             if (findDataUsingId.AuthorId != user_id) throw new BadRequestException("Cannot to update others rt or rw annoucmenent!")
 
@@ -121,7 +121,7 @@ export class AnnouncementService {
 
     async getAllAnnouncement(user_id: number, query: any, autorId: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the id from token!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the id from token!")
 
         const { page, limit, search_query } = query
 
@@ -210,8 +210,6 @@ export class AnnouncementService {
             throw new BadRequestException(error.message)
         }
 
-
     }
-
 }
 

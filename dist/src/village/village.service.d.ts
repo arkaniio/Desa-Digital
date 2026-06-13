@@ -12,13 +12,4 @@ export declare class VillageService {
     }>;
     deleteVillage(id: number, user_id: number): Promise<boolean>;
     updateVillage(data: any, user_id: number, id: number): Promise<boolean>;
-    getAllVillage(user_id: number): Promise<{
-        Name: string;
-        Address: string;
-        Village_Age: number;
-        Leader_Village: {
-            Username: string;
-            Avatar: string | null;
-        };
-    }[]>;
 }

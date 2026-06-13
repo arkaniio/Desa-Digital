@@ -20,42 +20,25 @@ const jwt_auth_guard_1 = require("../common/auth/guards/jwt-auth.guard");
 const roles_guard_1 = require("../common/auth/guards/roles.guard");
 const rw_dto_js_1 = require("./dto/rw.dto.js");
 const current_user_decorator_1 = require("../common/auth/decorators/current-user.decorator");
-const pagination_query_dto_js_1 = require("../common/dto/pagination-query.dto.js");
 let RwController = class RwController {
     rwService;
     constructor(rwService) {
         this.rwService = rwService;
     }
-    async regsiterRw(data, user_id) {
-        return this.rwService.registerRw(data, user_id);
+    async updateRw(data, userId, id) {
+        return this.rwService.updateRw(data, userId, id);
     }
-    async updateRw(data, user_id, id) {
-        return this.rwService.updateRw(data, user_id, id);
-    }
-    async deleteRw(user_id, id) {
-        return this.rwService.deleteRw(user_id, id);
-    }
-    async getAllRw(user_id, query, village_id) {
-        return this.rwService.getAllRw(user_id, query, village_id);
+    async deleteRw(userId, id) {
+        return this.rwService.deleteRw(userId, id);
     }
 };
 exports.RwController = RwController;
-__decorate([
-    (0, common_1.Post)('register'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("KEPALA_DESA"),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [rw_dto_js_1.CreateRwDto, Number]),
-    __metadata("design:returntype", Promise)
-], RwController.prototype, "regsiterRw", null);
 __decorate([
     (0, common_1.Put)('update/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('userId')),
     __param(2, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [rw_dto_js_1.UpdateRwDto, Number, Number]),
@@ -65,23 +48,12 @@ __decorate([
     (0, common_1.Delete)('delete/:id'),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("KEPALA_DESA"),
-    __param(0, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('userId')),
     __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)
 ], RwController.prototype, "deleteRw", null);
-__decorate([
-    (0, common_1.Get)("all"),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("KEPALA_DESA"),
-    __param(0, (0, current_user_decorator_1.CurrentUser)('user_id')),
-    __param(1, (0, common_1.Query)()),
-    __param(2, (0, common_1.Param)('village_id', common_1.ParseIntPipe)),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, pagination_query_dto_js_1.PaginationDto, Number]),
-    __metadata("design:returntype", Promise)
-], RwController.prototype, "getAllRw", null);
 exports.RwController = RwController = __decorate([
     (0, common_1.Controller)('rw'),
     __metadata("design:paramtypes", [rw_service_js_1.RwService])

@@ -30,6 +30,5 @@ export class UserController {
     ) {
         return this.userService.updateProfile(file, user_id, data)
     }
-
 }
 

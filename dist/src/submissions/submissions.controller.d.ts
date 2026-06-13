@@ -4,8 +4,21 @@ import { CreateSubmissionDto, UpdateKepalaDesaSignSubmissions, UpdateRtSignSubmi
 export declare class SubmissionsController {
     private readonly submissionsService;
     constructor(submissionsService: SubmissionsService);
-    getAllSubmissions(user_id: number, query: PaginationDto): Promise<{
+    getAllSubmissions(userId: number, query: PaginationDto): Promise<{
         data: {
+            Rw: {
+                VillageId: number;
+                Name: string;
+                Id: number;
+                Leader_Id: number | null;
+            };
+            Rt: {
+                VillageId: number;
+                RwId: number;
+                Id: number;
+                Number: number;
+                Leader_Id: number | null;
+            };
             Nomor_surat_rt: number;
             Dokumen_pengajuan: string;
             Keterangan_pengajuan: string | null;
@@ -13,19 +26,6 @@ export declare class SubmissionsController {
             Rt_desa_sign: boolean;
             Kepala_desa_sign: boolean;
             QrCodeSignature: string | null;
-            Rt: {
-                RwId: number;
-                Id: number;
-                Number: number;
-                VillageId: number;
-                Leader_Id: number | null;
-            };
-            Rw: {
-                Id: number;
-                VillageId: number;
-                Leader_Id: number | null;
-                Name: string;
-            };
         }[];
         meta: {
             total: number;
@@ -35,15 +35,14 @@ export declare class SubmissionsController {
             last_page: number;
         };
     }>;
-    createSubmissions(data: CreateSubmissionDto, user_id: number, file: Express.Multer.File): Promise<{
+    createSubmissions(data: CreateSubmissionDto, userId: number, file: Express.Multer.File): Promise<{
         id: number;
-        Nomor_surat_rt: number;
-        SenderId: number;
-        RtId: number;
         RwId: number;
+        RtId: number;
+        Status: import("@prisma/client").$Enums.Status_Surat;
+        Nomor_surat_rt: number;
         Dokumen_pengajuan: string;
         Tipe_Surat: import("@prisma/client").$Enums.Tipe_Surat;
-        Status: import("@prisma/client").$Enums.Status_Surat;
         Keterangan_pengajuan: string | null;
         Keperluan: string;
         Tanggal_pengajuan: Date;
@@ -51,28 +50,29 @@ export declare class SubmissionsController {
         Rt_desa_sign: boolean;
         Kepala_desa_sign: boolean;
         QrCodeSignature: string | null;
+        SenderId: number;
     }>;
-    updateSubmissions(data: UpdateSubmissionsDto, id: number, user_id: number, file: Express.Multer.File): Promise<boolean>;
-    deleteSubmissions(id: number, user_id: number): Promise<boolean>;
-    updateSubmissionsWithRt(data: UpdateRtSignSubmissions, id: number, user_id: number): Promise<boolean>;
-    updateSubmissionsWithKepalaDesa(data: UpdateKepalaDesaSignSubmissions, id: number, user_id: number): Promise<boolean>;
+    updateSubmissions(data: UpdateSubmissionsDto, id: number, userId: number, file: Express.Multer.File): Promise<boolean>;
+    deleteSubmissions(id: number, userId: number): Promise<boolean>;
+    updateSubmissionsWithRt(data: UpdateRtSignSubmissions, id: number, userId: number): Promise<boolean>;
+    updateSubmissionsWithKepalaDesa(data: UpdateKepalaDesaSignSubmissions, id: number, userId: number): Promise<boolean>;
     verifySubmission(signature: string): Promise<{
         id: number;
+        Rw: {
+            Name: string;
+        };
+        Rt: {
+            Number: number;
+        };
+        Status: import("@prisma/client").$Enums.Status_Surat;
         Nomor_surat_rt: number;
         Tipe_Surat: import("@prisma/client").$Enums.Tipe_Surat;
-        Status: import("@prisma/client").$Enums.Status_Surat;
         Keterangan_pengajuan: string | null;
         Keperluan: string;
         Tanggal_pengajuan: Date;
         Tanggal_selesai: Date | null;
         Sender: {
             Username: string;
-        };
-        Rt: {
-            Number: number;
-        };
-        Rw: {
-            Name: string;
         };
     }>;
 }

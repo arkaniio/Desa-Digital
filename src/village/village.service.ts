@@ -9,7 +9,7 @@ export class VillageService {
 
     async createNewVillage(data: any, user_id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the user id from token!")
 
         const find_unique_name = await this.prisma.village.findUnique({
             where: {
@@ -43,23 +43,23 @@ export class VillageService {
 
     async deleteVillage(id: number, user_id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
-
-        if (id == null && id == undefined) throw new NotFoundException("Failed to detect the id from the parameter!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the user id from token!")
 
         try {
 
             const findDataUsingId = await this.prisma.village.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    Leader_VillageId: user_id
                 }
             })
 
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the id that you want to delete it!")
+            if (!findDataUsingId) throw new NotFoundException("Failed to detect the id that you want to delete it!")
 
             const delete_data = await this.prisma.village.delete({
                 where: {
-                    id: id
+                    id: id,
+                    Leader_VillageId: user_id
                 }
             })
 
@@ -75,19 +75,18 @@ export class VillageService {
 
     async updateVillage(data: any, user_id: number, id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id data from token!")
-
-        if (id == null && id == undefined) throw new NotFoundException("Failed to detect the id in the parameter request!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the user id data from token!")
 
         try {
 
             const findDataUsingId = await this.prisma.village.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    Leader_VillageId: user_id
                 }
             })
 
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the data that you want to update!")
+            if (!findDataUsingId) throw new NotFoundException("Failed to detect the data that you want to update!")
 
             //tools
             const update_data = CheckIsNullWithNumber(data)
@@ -95,10 +94,10 @@ export class VillageService {
 
             if (!update_data || Object.keys(update_data).length === 0) throw new BadRequestException("Failed to get the payload of the update data!")
 
-
             const update = await this.prisma.village.update({
                 where: {
-                    id: id
+                    id: id,
+                    Leader_VillageId: user_id
                 },
                 data: update_data
             })
@@ -112,36 +111,5 @@ export class VillageService {
         }
 
     }
-
-    async getAllVillage(user_id: number) {
-
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id data from token!")
-
-        try {
-
-            const getAll_village = await this.prisma.village.findMany({
-                select: {
-                    Name: true,
-                    Address: true,
-                    Village_Age: true,
-                    Leader_Village: {
-                        select: {
-                            Username: true,
-                            Avatar: true
-                        }
-                    }
-                }
-            })
-
-            if (!getAll_village || getAll_village == null && getAll_village == undefined) throw new BadRequestException("Failed to get village!")
-
-            return getAll_village
-
-        } catch (error) {
-            throw new BadRequestException(error.message)
-        }
-
-    }
-
 }
 

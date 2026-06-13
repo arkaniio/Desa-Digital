@@ -5,6 +5,9 @@ export declare class AuthController {
     constructor(authService: AuthService);
     registerUser(data: CreateUserDto): Promise<{
         id: number;
+        RtId: number | null;
+        RwId: number | null;
+        VillageId: number | null;
         Username: string;
         Email: string;
         Password: string;
@@ -12,14 +15,11 @@ export declare class AuthController {
         Avatar: string | null;
         Created_at: Date;
         Updated_at: Date;
-        VillageId: number | null;
-        RwId: number | null;
-        RtId: number | null;
     }>;
     loginUser(data: LoginDto): Promise<string>;
     changePassword(data: any, userId: number): Promise<boolean>;
     googleAuth(req: any): Promise<void>;
     googleCallbackAuth(req: any): Promise<{
-        access_token: any;
+        data: any;
     }>;
 }

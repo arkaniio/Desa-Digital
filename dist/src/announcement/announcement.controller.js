@@ -27,27 +27,27 @@ let AnnouncementController = class AnnouncementController {
     constructor(announcementService) {
         this.announcementService = announcementService;
     }
-    async createNewAnnouncement(data, user_id, file) {
-        return this.announcementService.createNewAnnouncement(data, user_id, file);
+    async createNewAnnouncement(data, userId, file) {
+        return this.announcementService.createNewAnnouncement(data, userId, file);
     }
-    async updateAnnouncement(data, id, user_id, file) {
-        return this.announcementService.updateAnnouncement(user_id, id, data, file);
+    async updateAnnouncement(data, id, userId, file) {
+        return this.announcementService.updateAnnouncement(userId, id, data, file);
     }
-    async getAllAnnouncement(user_id, query, authorId) {
-        return this.announcementService.getAllAnnouncement(user_id, query, authorId);
+    async getAllAnnouncement(userId, query, authorId) {
+        return this.announcementService.getAllAnnouncement(userId, query, authorId);
     }
-    async deleteAnnouncement(id, user_id) {
-        return this.announcementService.deleteAnnouncement(user_id, id);
+    async deleteAnnouncement(id, userId) {
+        return this.announcementService.deleteAnnouncement(userId, id);
     }
 };
 exports.AnnouncementController = AnnouncementController;
 __decorate([
     (0, common_1.Post)("create"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("KEPALA_DESA"),
+    (0, roles_decorator_1.Roles)("KEPALA_DESA", "RT", "RW"),
     (0, common_1.UseInterceptors)(file_helper_1.FileInterceptorTools),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('userId')),
     __param(2, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [announcement_dto_1.AnnouncementDto, Number, Object]),
@@ -56,11 +56,11 @@ __decorate([
 __decorate([
     (0, common_1.Put)("update/:id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("KEPALA_DESA"),
+    (0, roles_decorator_1.Roles)("KEPALA_DESA", "RT", "RW"),
     (0, common_1.UseInterceptors)(file_helper_1.FileInterceptorTools),
     __param(0, (0, common_1.Body)()),
     __param(1, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(2, (0, current_user_decorator_1.CurrentUser)()),
+    __param(2, (0, current_user_decorator_1.CurrentUser)("userId")),
     __param(3, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Function, Number, Number, Object]),
@@ -70,7 +70,7 @@ __decorate([
     (0, common_1.Get)("all"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("WARGA"),
-    __param(0, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('userId')),
     __param(1, (0, common_1.Query)('query')),
     __param(2, (0, common_1.Param)('id', common_1.ParseIntPipe)),
     __metadata("design:type", Function),
@@ -80,9 +80,9 @@ __decorate([
 __decorate([
     (0, common_1.Delete)("delete/:id"),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("KEPALA_DESA"),
+    (0, roles_decorator_1.Roles)("KEPALA_DESA", "RT", "RW"),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('user_id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('userId')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, Number]),
     __metadata("design:returntype", Promise)

@@ -5,10 +5,10 @@ import { PaginationDto } from '../common/dto/pagination-query.dto';
 export declare class AnnouncementController {
     private readonly announcementService;
     constructor(announcementService: AnnouncementService);
-    createNewAnnouncement(data: AnnouncementDto, user_id: number, file: Express.Multer.File): Promise<{
+    createNewAnnouncement(data: AnnouncementDto, userId: number, file: Express.Multer.File): Promise<{
         id: number;
-        RtId: number;
         RwId: number;
+        RtId: number;
         Status: import("@prisma/client").$Enums.Announcement_Status;
         Title: string;
         Content: string;
@@ -16,17 +16,14 @@ export declare class AnnouncementController {
         Dibuat_pada: Date;
         AuthorId: number;
     }>;
-    updateAnnouncement(data: UpdateDataAnnouncement, id: number, user_id: number, file: Express.Multer.File): Promise<boolean>;
-    getAllAnnouncement(user_id: number, query: PaginationDto, authorId: number): Promise<{
+    updateAnnouncement(data: UpdateDataAnnouncement, id: number, userId: number, file: Express.Multer.File): Promise<boolean>;
+    getAllAnnouncement(userId: number, query: PaginationDto, authorId: number): Promise<{
         data: {
             Title: string;
             Content: string;
             Dibuat_pada: Date;
             Author: {
                 id: number;
-                RtId: number | null;
-                RwId: number | null;
-                VillageId: number | null;
                 Username: string;
                 Email: string;
                 Password: string;
@@ -34,6 +31,9 @@ export declare class AnnouncementController {
                 Avatar: string | null;
                 Created_at: Date;
                 Updated_at: Date;
+                VillageId: number | null;
+                RwId: number | null;
+                RtId: number | null;
             };
         }[];
         meta: {
@@ -44,5 +44,5 @@ export declare class AnnouncementController {
             last_page: number;
         };
     }>;
-    deleteAnnouncement(id: number, user_id: number): Promise<boolean>;
+    deleteAnnouncement(id: number, userId: number): Promise<boolean>;
 }

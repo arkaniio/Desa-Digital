@@ -3,7 +3,7 @@ import { CreateVillageDto, UpdateVillageDto } from './dto/village.dto';
 export declare class VillageController {
     private readonly villageService;
     constructor(villageService: VillageService);
-    createNewVillage(data: CreateVillageDto, user_id: number): Promise<{
+    createNewVillage(data: CreateVillageDto, userId: number): Promise<{
         id: number;
         Name: string;
         Address: string;
@@ -11,15 +11,6 @@ export declare class VillageController {
         Village_Age: number;
         Leader_VillageId: number;
     }>;
-    deleteVillage(id: number, user_id: number): Promise<boolean>;
-    updateVillage(data: UpdateVillageDto, id: number, user_id: number): Promise<boolean>;
-    getAllVillage(user_id: number): Promise<{
-        Name: string;
-        Address: string;
-        Village_Age: number;
-        Leader_Village: {
-            Username: string;
-            Avatar: string | null;
-        };
-    }[]>;
+    deleteVillage(id: number, userId: number): Promise<boolean>;
+    updateVillage(data: UpdateVillageDto, id: number, userId: number): Promise<boolean>;
 }

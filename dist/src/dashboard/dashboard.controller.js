@@ -24,20 +24,75 @@ let DashboardController = class DashboardController {
     constructor(dashboardService) {
         this.dashboardService = dashboardService;
     }
-    async getDashboardData(user_id, role) {
-        return this.dashboardService.getDashboardData(user_id, role);
+    async getDashboardData(userId, role) {
+        return this.dashboardService.getDashboardData(userId, role);
+    }
+    async superAdminDashboard(userId) {
+        return this.dashboardService.superAdminDashboard(userId);
+    }
+    async wargaDashboard(userId) {
+        return this.dashboardService.wargaDashboard(userId);
+    }
+    async kepalaDesaDashboard(userId) {
+        return this.dashboardService.kepalaDesaDashboard(userId);
+    }
+    async rtDashboard(userId) {
+        return this.dashboardService.rtDashboard(userId);
+    }
+    async rwDashboard(userId) {
+        return this.dashboardService.rwDashboard(userId);
     }
 };
 exports.DashboardController = DashboardController;
 __decorate([
     (0, common_1.Get)(),
     (0, common_1.UseGuards)(auth_1.JwtAuthGuard),
-    __param(0, (0, auth_1.CurrentUser)('user_id')),
+    __param(0, (0, auth_1.CurrentUser)('userId')),
     __param(1, (0, auth_1.CurrentUser)('role')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [Number, String]),
     __metadata("design:returntype", Promise)
 ], DashboardController.prototype, "getDashboardData", null);
+__decorate([
+    (0, common_1.Get)("super_admin"),
+    (0, common_1.UseGuards)(auth_1.JwtAuthGuard),
+    __param(0, (0, auth_1.CurrentUser)("userId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], DashboardController.prototype, "superAdminDashboard", null);
+__decorate([
+    (0, common_1.Get)("warga"),
+    (0, common_1.UseGuards)(auth_1.JwtAuthGuard),
+    __param(0, (0, auth_1.CurrentUser)("userId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], DashboardController.prototype, "wargaDashboard", null);
+__decorate([
+    (0, common_1.Get)("kepala_desa"),
+    (0, common_1.UseGuards)(auth_1.JwtAuthGuard),
+    __param(0, (0, auth_1.CurrentUser)("userId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], DashboardController.prototype, "kepalaDesaDashboard", null);
+__decorate([
+    (0, common_1.Get)("rt"),
+    (0, common_1.UseGuards)(auth_1.JwtAuthGuard),
+    __param(0, (0, auth_1.CurrentUser)("userId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], DashboardController.prototype, "rtDashboard", null);
+__decorate([
+    (0, common_1.Get)("rw"),
+    (0, common_1.UseGuards)(auth_1.JwtAuthGuard),
+    __param(0, (0, auth_1.CurrentUser)("userId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], DashboardController.prototype, "rwDashboard", null);
 exports.DashboardController = DashboardController = __decorate([
     (0, common_1.Controller)("dashboard"),
     __metadata("design:paramtypes", [dashboard_service_1.default])

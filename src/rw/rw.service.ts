@@ -10,15 +10,14 @@ export class RwService {
 
     async updateRw(data: any, user_id: number, id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get user_id from token!")
-
-        if (id == null) throw new NotFoundException("Failed to get the param id!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get user_id from token!")
 
         try {
 
             const findDataUsingId = await this.prisma.rw.findFirst({
                 where: {
-                    Id: id
+                    Id: id,
+                    Leader_Id: user_id
                 }
             })
 
@@ -48,15 +47,14 @@ export class RwService {
 
     async deleteRw(user_id: number, id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token!")
-
-        if (id == null) throw new NotFoundException("Failed to get the id from the param!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the user id from token!")
 
         try {
 
             const findDataUsingId = await this.prisma.rw.findFirst({
                 where: {
-                    Id: id
+                    Id: id,
+                    Leader_Id: user_id
                 }
             })
 
@@ -72,66 +70,6 @@ export class RwService {
             if (!delete_data) throw new BadRequestException("Not found!")
 
             return true
-
-        } catch (error) {
-            throw new BadRequestException(error.message)
-        }
-
-    }
-
-    async getAllRw(user_id: number, query: any, village_id: number) {
-
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token or auth params!")
-
-        const findDataVillage = await this.prisma.rw.findFirst({
-            where: {
-                VillageId: village_id
-            }
-        })
-
-        if (!findDataVillage) throw new NotFoundException("Failed to detect the village id!")
-
-
-        const { page, limit } = query
-
-        const skip = (page - 1) * limit
-
-        // Jangan Lupa difilter oleh sender id agar tidak bisa get submissions semua orang
-        try {
-
-            const [data, total_data] = await Promise.all([
-                this.prisma.rw.findMany({
-                    skip: skip,
-                    take: limit,
-                    where: {
-                        Leader_Id: user_id,
-                        VillageId: village_id
-                    },
-                    orderBy: {
-                        Id: "asc"
-                    },
-                    select: MAPPING_SELECT_RW
-                }),
-                this.prisma.rw.count({
-                    where: {
-                        VillageId: user_id
-                    }
-                })
-            ])
-
-            if (!data) throw new BadRequestException("Failed to get the data and total data!")
-
-            return {
-                data: data,
-                meta: {
-                    total: total_data,
-                    page: page,
-                    limit: limit,
-                    skip: skip,
-                    last_page: Math.ceil(total_data / limit)
-                }
-            }
-
 
         } catch (error) {
             throw new BadRequestException(error.message)

@@ -32,17 +32,5 @@ export class RwController {
     ) {
         return this.rwService.deleteRw(userId, id)
     }
-
-    @Get("all")
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("KEPALA_DESA")
-    async getAllRw(
-        @CurrentUser('userId') userId: number,
-        @Query() query: PaginationDto,
-        @Param('village_id', ParseIntPipe) village_id: number
-    ) {
-        return this.rwService.getAllRw(userId, query, village_id)
-    }
-
 }
 

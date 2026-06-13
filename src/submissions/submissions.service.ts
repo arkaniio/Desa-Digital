@@ -13,7 +13,7 @@ export class SubmissionsService {
 
     async createSubmissions(data: any, user_id: number, file: Express.Multer.File) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the id data from token")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the id data from token")
 
         try {
 
@@ -46,15 +46,14 @@ export class SubmissionsService {
 
     async deleteSubmissions(user_id: number, id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get data from token!")
-
-        if (id == null) throw new NotFoundException("Failed to get id from param!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get data from token!")
 
         try {
 
             const findDataUsingId = await this.prisma.submissions.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    SenderId: user_id
                 }
             })
 
@@ -62,12 +61,12 @@ export class SubmissionsService {
 
             const deleteData = await this.prisma.submissions.delete({
                 where: {
-                    id: Number(id),
+                    id: id,
                     SenderId: user_id
                 }
             })
 
-            if (!deleteData || deleteData == null && deleteData == undefined) throw new BadRequestException("Can't find the data that you want to delete it!")
+            if (!deleteData) throw new BadRequestException("Can't find the data that you want to delete it!")
 
             return true
 
@@ -79,19 +78,18 @@ export class SubmissionsService {
 
     async updateSubmissions(data: any, id: number, user_id: number, file: Express.Multer.File) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get id from token!")
-
-        if (id == null && id == undefined) throw new NotFoundException("Failed to get id from param!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get id from token!")
 
         try {
 
             const findDataUsingId = await this.prisma.submissions.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    SenderId: user_id
                 }
             })
 
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the id that you want to delete it!")
+            if (!findDataUsingId) throw new NotFoundException("Failed to detect the id that you want to delete it!")
 
             const update_data = await CheckIsNullWitMulterDokumen(data, file, "Dokumen")
 
@@ -99,7 +97,7 @@ export class SubmissionsService {
 
             const update_db = await this.prisma.submissions.update({
                 where: {
-                    id: Number(id),
+                    id: id,
                     SenderId: user_id
                 },
                 data: update_data
@@ -118,7 +116,7 @@ export class SubmissionsService {
 
     async getAllSubmissions(user_id: number, query: any) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the id from token!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the id from token!")
 
         const { page, limit, search_query } = query
 
@@ -245,19 +243,18 @@ export class SubmissionsService {
 
     async updateSubmissionsWithRt(user_id: number, data: any, id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to detect the auth id from parameter!")
-
-        if (id == null && id == undefined) throw new NotFoundException("Failed to get the id in params to update data!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to detect the auth id from parameter!")
 
         try {
 
             const findDataUsingId = await this.prisma.submissions.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    SenderId: user_id
                 }
             })
 
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to detect the id that you want to update with rt!")
+            if (!findDataUsingId) throw new NotFoundException("Failed to detect the id that you want to update with rt!")
 
             const update_data = CheckIsNull(data)
 
@@ -269,6 +266,7 @@ export class SubmissionsService {
                 const update_data_rt_sign = await this.prisma.submissions.update({
                     where: {
                         id: id,
+                        SenderId: user_id
                     },
                     data: update_data
                 })
@@ -278,7 +276,8 @@ export class SubmissionsService {
                 // Update status submissionsq
                 const update_status = await this.prisma.submissions.update({
                     where: {
-                        id: id
+                        id: id,
+                        SenderId: user_id
                     },
                     data: {
                         Status: "APPROVED_RT"
@@ -301,9 +300,7 @@ export class SubmissionsService {
 
     async updateSubmissionsWithKepalaDesa(user_id: number, data: any, id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token and auth parameter!")
-
-        if (id == null && id == undefined) throw new NotFoundException("Failed to get the id from parameter!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the user id from token and auth parameter!")
 
         try {
 
@@ -313,11 +310,12 @@ export class SubmissionsService {
 
             const findDataUsingId = await this.prisma.submissions.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    SenderId: user_id
                 }
             })
 
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined) throw new NotFoundException("Failed to found the submissions data!")
+            if (!findDataUsingId) throw new NotFoundException("Failed to found the submissions data!")
 
             if (update_data.Rt_desa_sign == true && update_data.Kepala_desa_sign == true) {
 
@@ -328,7 +326,8 @@ export class SubmissionsService {
 
                 const update_data_submissions_new = await this.prisma.submissions.update({
                     where: {
-                        id: id
+                        id: id,
+                        SenderId: user_id
                     },
                     data: {
                         QrCodeSignature: secureSignature,
@@ -344,7 +343,8 @@ export class SubmissionsService {
             // Jika rt belum tanda tangan maka kepala desa bisa menandatangani duluan
             const update_data_desa_sign = await this.prisma.submissions.update({
                 where: {
-                    id: id
+                    id: id,
+                    SenderId: user_id
                 },
                 data: {
                     Kepala_desa_sign: update_data.Kepala_desa_sign,
@@ -393,8 +393,6 @@ export class SubmissionsService {
         }
         return submission;
     }
-
-
 }
 
 

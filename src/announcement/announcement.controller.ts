@@ -16,7 +16,7 @@ export class AnnouncementController {
 
     @Post("create")
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("KEPALA_DESA")
+    @Roles("KEPALA_DESA", "RT", "RW")
     @UseInterceptors(FileInterceptorTools)
     async createNewAnnouncement(@Body() data: AnnouncementDto,
         @CurrentUser('userId') userId: number,
@@ -27,7 +27,7 @@ export class AnnouncementController {
 
     @Put("update/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("KEPALA_DESA")
+    @Roles("KEPALA_DESA", "RT", "RW")
     @UseInterceptors(FileInterceptorTools)
     async updateAnnouncement(
         @Body() data: UpdateDataAnnouncement,
@@ -51,12 +51,11 @@ export class AnnouncementController {
 
     @Delete("delete/:id")
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("KEPALA_DESA")
+    @Roles("KEPALA_DESA", "RT", "RW")
     async deleteAnnouncement(
         @Param('id', ParseIntPipe) id: number,
         @CurrentUser('userId') userId: number
     ) {
         return this.announcementService.deleteAnnouncement(userId, id)
     }
-
 }

@@ -21,7 +21,7 @@ let SubmissionsService = class SubmissionsService {
         this.prisma = prisma;
     }
     async createSubmissions(data, user_id, file) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get the id data from token");
         try {
             const buffe_data_file = await (0, cloudinary_helper_1.BufferUpload)(file.buffer, "Dokumen");
@@ -47,25 +47,24 @@ let SubmissionsService = class SubmissionsService {
         }
     }
     async deleteSubmissions(user_id, id) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get data from token!");
-        if (id == null)
-            throw new common_1.NotFoundException("Failed to get id from param!");
         try {
             const findDataUsingId = await this.prisma.submissions.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    SenderId: user_id
                 }
             });
             if (!findDataUsingId)
                 throw new common_1.NotFoundException("Failed to detect the id that you want to delete it!");
             const deleteData = await this.prisma.submissions.delete({
                 where: {
-                    id: Number(id),
+                    id: id,
                     SenderId: user_id
                 }
             });
-            if (!deleteData || deleteData == null && deleteData == undefined)
+            if (!deleteData)
                 throw new common_1.BadRequestException("Can't find the data that you want to delete it!");
             return true;
         }
@@ -74,24 +73,23 @@ let SubmissionsService = class SubmissionsService {
         }
     }
     async updateSubmissions(data, id, user_id, file) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get id from token!");
-        if (id == null && id == undefined)
-            throw new common_1.NotFoundException("Failed to get id from param!");
         try {
             const findDataUsingId = await this.prisma.submissions.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    SenderId: user_id
                 }
             });
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined)
+            if (!findDataUsingId)
                 throw new common_1.NotFoundException("Failed to detect the id that you want to delete it!");
             const update_data = await (0, null_check_helper_1.CheckIsNullWitMulterDokumen)(data, file, "Dokumen");
             if (!update_data || Object.keys(update_data).length == 0)
                 throw new common_1.BadRequestException("Failed to get payload data!");
             const update_db = await this.prisma.submissions.update({
                 where: {
-                    id: Number(id),
+                    id: id,
                     SenderId: user_id
                 },
                 data: update_data
@@ -105,7 +103,7 @@ let SubmissionsService = class SubmissionsService {
         }
     }
     async getAllSubmissions(user_id, query) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get the id from token!");
         const { page, limit, search_query } = query;
         const skip = (page - 1) * limit;
@@ -214,17 +212,16 @@ let SubmissionsService = class SubmissionsService {
         }
     }
     async updateSubmissionsWithRt(user_id, data, id) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to detect the auth id from parameter!");
-        if (id == null && id == undefined)
-            throw new common_1.NotFoundException("Failed to get the id in params to update data!");
         try {
             const findDataUsingId = await this.prisma.submissions.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    SenderId: user_id
                 }
             });
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined)
+            if (!findDataUsingId)
                 throw new common_1.NotFoundException("Failed to detect the id that you want to update with rt!");
             const update_data = (0, null_check_helper_1.CheckIsNull)(data);
             if (!update_data || Object.keys(data).length == 0)
@@ -233,6 +230,7 @@ let SubmissionsService = class SubmissionsService {
                 const update_data_rt_sign = await this.prisma.submissions.update({
                     where: {
                         id: id,
+                        SenderId: user_id
                     },
                     data: update_data
                 });
@@ -240,7 +238,8 @@ let SubmissionsService = class SubmissionsService {
                     throw new common_1.BadRequestException("Failed to get update data and rt sign!");
                 const update_status = await this.prisma.submissions.update({
                     where: {
-                        id: id
+                        id: id,
+                        SenderId: user_id
                     },
                     data: {
                         Status: "APPROVED_RT"
@@ -259,20 +258,19 @@ let SubmissionsService = class SubmissionsService {
         }
     }
     async updateSubmissionsWithKepalaDesa(user_id, data, id) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get the user id from token and auth parameter!");
-        if (id == null && id == undefined)
-            throw new common_1.NotFoundException("Failed to get the id from parameter!");
         try {
             const update_data = (0, null_check_helper_1.CheckIsNull)(data);
             if (!update_data || Object.keys(update_data).length == 0 || update_data.Kepala_desa_sign == undefined)
                 throw new common_1.BadRequestException("Failed to get the value of the request body!");
             const findDataUsingId = await this.prisma.submissions.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    SenderId: user_id
                 }
             });
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined)
+            if (!findDataUsingId)
                 throw new common_1.NotFoundException("Failed to found the submissions data!");
             if (update_data.Rt_desa_sign == true && update_data.Kepala_desa_sign == true) {
                 const secureSignature = (0, node_crypto_1.createHash)('sha256')
@@ -280,7 +278,8 @@ let SubmissionsService = class SubmissionsService {
                     .digest('hex');
                 const update_data_submissions_new = await this.prisma.submissions.update({
                     where: {
-                        id: id
+                        id: id,
+                        SenderId: user_id
                     },
                     data: {
                         QrCodeSignature: secureSignature,
@@ -293,7 +292,8 @@ let SubmissionsService = class SubmissionsService {
             }
             const update_data_desa_sign = await this.prisma.submissions.update({
                 where: {
-                    id: id
+                    id: id,
+                    SenderId: user_id
                 },
                 data: {
                     Kepala_desa_sign: update_data.Kepala_desa_sign,

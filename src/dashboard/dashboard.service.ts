@@ -8,7 +8,7 @@ class DashboardService {
 
     async getDashboardData(user_id: number, role: string) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the dashboard from authorization!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the dashboard from authorization!")
 
         switch (role) {
 
@@ -29,7 +29,7 @@ class DashboardService {
 
     async wargaDashboard(user_id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from token authorization!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the user id from token authorization!")
 
         try {
 
@@ -87,7 +87,7 @@ class DashboardService {
 
     async superAdminDashboard(user_id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from authorization!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the user id from authorization!")
 
         try {
 
@@ -118,7 +118,7 @@ class DashboardService {
 
     async rtDashboard(user_id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from authorization!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the user id from authorization!")
 
         try {
 
@@ -156,7 +156,7 @@ class DashboardService {
 
     async rwDashboard(user_id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from authorization!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the user id from authorization!")
 
         try {
 
@@ -194,7 +194,7 @@ class DashboardService {
 
     async kepalaDesaDashboard(user_id: number) {
 
-        if (user_id == null) throw new UnauthorizedException("Failed to get the user id from authorization!")
+        if (user_id == undefined) throw new UnauthorizedException("Failed to get the user id from authorization!")
 
         try {
 

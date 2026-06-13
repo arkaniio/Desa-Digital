@@ -21,7 +21,7 @@ let AnnouncementService = class AnnouncementService {
         this.prisma = prisma;
     }
     async createNewAnnouncement(data, user_id, file) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get data from token!");
         try {
             const filebuffer_cloud = await (0, cloudinary_helper_1.BufferUpload)(file.buffer, "Image");
@@ -54,10 +54,11 @@ let AnnouncementService = class AnnouncementService {
         try {
             const findDataUsingId = await this.prisma.announcement.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    AuthorId: user_id
                 }
             });
-            if (!findDataUsingId || findDataUsingId == undefined && findDataUsingId == null)
+            if (!findDataUsingId)
                 throw new common_1.NotFoundException("Failed to find the data that you want to delete it!");
             if (findDataUsingId.AuthorId != user_id)
                 throw new common_1.BadRequestException("Cannot delete others rt or rw announcement!");
@@ -76,17 +77,16 @@ let AnnouncementService = class AnnouncementService {
         }
     }
     async updateAnnouncement(user_id, id, data, file) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get the id from token!");
-        if (id == undefined || id == null)
-            throw new common_1.NotFoundException("Failed to detect id from the params!");
         try {
             const findDataUsingId = await this.prisma.announcement.findFirst({
                 where: {
-                    id: id
+                    id: id,
+                    AuthorId: user_id
                 }
             });
-            if (!findDataUsingId || findDataUsingId == null && findDataUsingId == undefined)
+            if (!findDataUsingId)
                 throw new common_1.NotFoundException("Failed to find the data that you want to delete it!");
             if (findDataUsingId.AuthorId != user_id)
                 throw new common_1.BadRequestException("Cannot to update others rt or rw annoucmenent!");
@@ -109,7 +109,7 @@ let AnnouncementService = class AnnouncementService {
         }
     }
     async getAllAnnouncement(user_id, query, autorId) {
-        if (user_id == null)
+        if (user_id == undefined)
             throw new common_1.UnauthorizedException("Failed to get the id from token!");
         const { page, limit, search_query } = query;
         const skip = (page - 1) * limit;

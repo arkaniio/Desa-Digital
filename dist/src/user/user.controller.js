@@ -25,7 +25,6 @@ let UserController = class UserController {
         this.userService = userService;
     }
     async getProfile(userId) {
-        console.log(userId);
         return this.userService.getProfile(userId);
     }
     async updateProfile(data, user_id, file) {

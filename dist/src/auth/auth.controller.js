@@ -36,7 +36,7 @@ let AuthController = class AuthController {
     async googleAuth(req) { }
     async googleCallbackAuth(req) {
         return {
-            access_token: req.user
+            data: req.user
         };
     }
 };

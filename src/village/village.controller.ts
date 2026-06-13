@@ -41,14 +41,5 @@ export class VillageController {
     ) {
         return this.villageService.updateVillage(data, userId, id)
     }
-
-    @Get("allVillage")
-    @UseGuards(JwtAuthGuard)
-    async getAllVillage(
-        @CurrentUser('userId') userId: number
-    ) {
-        return this.villageService.getAllVillage(userId)
-    }
-
 }
 

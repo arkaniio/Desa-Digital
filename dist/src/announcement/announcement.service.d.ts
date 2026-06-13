@@ -3,13 +3,13 @@ export declare class AnnouncementService {
     private prisma;
     constructor(prisma: PrismaService);
     createNewAnnouncement(data: any, user_id: number, file: Express.Multer.File): Promise<{
-        Image: string;
-        Status: import("@prisma/client").$Enums.Announcement_Status;
         id: number;
-        RtId: number;
         RwId: number;
-        Content: string;
+        RtId: number;
+        Status: import("@prisma/client").$Enums.Announcement_Status;
         Title: string;
+        Content: string;
+        Image: string;
         Dibuat_pada: Date;
         AuthorId: number;
     }>;
@@ -17,21 +17,21 @@ export declare class AnnouncementService {
     updateAnnouncement(user_id: number, id: number, data: any, file: Express.Multer.File): Promise<boolean>;
     getAllAnnouncement(user_id: number, query: any, autorId: number): Promise<{
         data: {
-            Content: string;
             Title: string;
+            Content: string;
             Dibuat_pada: Date;
             Author: {
-                Avatar: string | null;
                 id: number;
-                RtId: number | null;
-                RwId: number | null;
-                VillageId: number | null;
                 Username: string;
                 Email: string;
                 Password: string;
                 Role: import("@prisma/client").$Enums.role | null;
+                Avatar: string | null;
                 Created_at: Date;
                 Updated_at: Date;
+                VillageId: number | null;
+                RwId: number | null;
+                RtId: number | null;
             };
         }[];
         meta: {
